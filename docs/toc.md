@@ -2,19 +2,22 @@
 
 - Introduction
 - Concepts
-    - Brain
-    - Knowledge
-    - Agent
+    - Brains
+    - Knowledge and Documents
+    - Agents
     - Tools
     - Chat History
 - Usage
     - Installation
+        - Composer
+        - Publish configuration file
     - Configuration
         - Tools
             - Bundled Tools
                 - EloquentQueryTool
                 - GoogleSearchTool (SerpApi)
                 - SimpleWebRequestTool (url -> text)
+                - EmailTool
             - Creating custom tools
     - Brain
         - Consuming Knowledge
@@ -28,11 +31,17 @@
         - Problem: Limited context length
             - Solution 1: Sliding memory window
             - Solution 2: Recursive summarization
-
-
-- Examples
+    - Events
+    - Logging
+        - Logging OpenAI calls
+        - Tracking cost
+        - Logging prompts using PromptLayer
+    - Debugging
+        - Laravel Debugbar integration
+- Cookbook
     - Building a Q&A Chatbot from a PDF
     - Building a Q&A Chatbot from a website
     - Building a meeting scheduler assistant using EloquentQueryTool
     - Building a meeting scheduler assistant using Custom tool Google Calendar
     - Connecting Mindwave to your own Email account.
+    - Integrating Mindwave with Livewire
