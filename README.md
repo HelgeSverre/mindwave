@@ -2,19 +2,56 @@
 
 # Mindwave: Building AI chatbots, agents, and document Q&A in Laravel made easy.
 
-## What is it?
+## What is Mindwave?
 
 Mindwave is a Laravel package that lets you easily build AI-powered chatbots, agents, and document question and
-answering (Q&A) functionality. With Mindwave, you can incorporate the power of OpenAI's state-of-the-art language models
-and Pinecone's vector search capabilities to create intelligent software applications.
+answering (Q&A) functionality into your application.
 
-## Why its different from LangChain
+With Mindwave, you can incorporate the power of OpenAI's state-of-the-art language models, Pinecone's vector search
+capabilities and your own custom "tools" to create intelligent software applications.
 
-Mindwave's intuitive API makes it easy to integrate AI into your Laravel app, whether you're building a chatbot to help
-customers with support inquiries, an intelligent agent to automate tasks, or a document Q&A system to extract insights
-from text. With Mindwave, you can leverage the power of AI to make your software smarter and more responsive.
+## Use Cases
 
-## Technical details
+- 💬 **Chatbots**: Building AI-powered chatbots to provide support to customers.
+- 🤖 **Agents**: Developing intelligent agents to automate tasks within an application.
+- ❓ **Document Q&A**: Creating document question and answering (Q&A) systems to extract insights from text.
+
+## Technical
+
+- Mindwave makes it easy to generate embeddings for many types of documents (text, pdf, html, csv, json, etc), store
+  those embeddings in a Vector database.
+- Using pre-made prompts you can instruct an Agent to run custom "tools" that can perform an action in your codebase,
+  lookup specific information from an external source, search your vector database for semantically similar information
+  and use the result of that action to generate an answer.
+
+## Support
+
+Mindwave is "driver" oriented, this means you can swap out the parts to suite your needs and use-cases.
+
+### Vector databases
+
+| Name     | Supported?    |
+|----------|---------------|
+| Pinecone | Yes           |
+| Weaviate | No (planned)  |
+| pgvector | No  (planned) |
+
+### LLMs
+
+| Name               | Supported?        |
+|--------------------|-------------------|
+| OpenAI Chat models | Yes (Recommended) |
+| OpenAI Completion  | Yes               |
+| Cohere AI          | No (planned)      |
+
+### Embeddings
+
+| Name                | Supported?        |
+|---------------------|-------------------|
+| OpenAI text-ada-002 | Yes (Recommended) |
+| TODO #1             | No                |
+| TODO #2             | No                |
+| TODO #3             | No                |
 
 - Mindwave provides an easy-to-use API for integrating OpenAI's GPT models and Pinecone's vector search capabilities
   into
