@@ -1,4 +1,6 @@
-# Table of Contents
+# Mindwave Documentation
+
+## Table of Contents
 
 - Introduction
 - Concepts

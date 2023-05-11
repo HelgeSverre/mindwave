@@ -1,6 +1,32 @@
-![Mindwave](./assets/header.png)
+![Mindwave](./art/header.png)
+
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/mindwave/mindwave.svg?style=flat-square)](https://packagist.org/packages/mindwave/mindwave)
+[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/mindwave/mindwave/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/mindwave/mindwave/actions?query=workflow%3Arun-tests+branch%3Amain)
+[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/mindwave/mindwave/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/mindwave/mindwave/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
+[![Total Downloads](https://img.shields.io/packagist/dt/mindwave/mindwave.svg?style=flat-square)](https://packagist.org/packages/mindwave/mindwave)
 
 # Mindwave: Building AI chatbots, agents, and document Q&A in Laravel made easy.
+
+## Installation
+
+You can install the package via composer:
+
+```bash
+composer require mindwave/mindwave
+```
+
+You can publish and run the migrations with:
+
+```bash
+php artisan vendor:publish --tag="mindwave-migrations"
+php artisan migrate
+```
+
+You can publish the config file with:
+
+```bash
+php artisan vendor:publish --tag="mindwave-config"
+```
 
 ## What is Mindwave?
 
@@ -12,7 +38,12 @@ capabilities and your own custom "tools" to create intelligent software applicat
 
 ## Example
 
-![Code Example](./assets/code.png)
+![Code Example](./art/code.png)
+
+```php
+$mindwave = new Mindwave\Mindwave();
+// TODO: Implement example
+```
 
 ## Use Cases
 
@@ -87,3 +118,26 @@ Here are the current context length limits for some of the OpenAI models support
 
 It's important to keep these limitations in mind when building applications with Mindwave, and to test and evaluate the
 results carefully to ensure the desired outcomes are being achieved.
+
+## Testing
+
+```bash
+composer test
+```
+
+## Documentation
+
+Please see [here](docs/start.md) for the full documentation.
+
+## Changelog
+
+Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
+
+## Credits
+
+- [Helge Sverre](https://github.com/helgesverre)
+- [All Contributors](../../contributors)
+
+## License
+
+The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
