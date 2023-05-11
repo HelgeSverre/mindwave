@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Robot\Tools;
+namespace Mindwave\Mindwave\Tools;
 
 use Exception;
 

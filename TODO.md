@@ -17,4 +17,4 @@
 - [] Sketch out Knoweldge class, it is essentially an abstraction around splitting, embedding and indexing a piece of
   text, with converters for other filetypes (ex: pdf -> text))
 - [] Write some simple tests that shows that an agent can answer a simple question based on the content of a text file.
- 
+- [] Replace .txt prompts with blade files.
