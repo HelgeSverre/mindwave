@@ -2,9 +2,9 @@
 
 namespace Mindwave\Mindwave;
 
+use Mindwave\Mindwave\Commands\MindwaveCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Mindwave\Mindwave\Commands\MindwaveCommand;
 
 class MindwaveServiceProvider extends PackageServiceProvider
 {
