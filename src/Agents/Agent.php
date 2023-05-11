@@ -34,7 +34,7 @@ class Agent
 
         $json = json_decode($cleaned, true);
 
-        if (!$json) {
+        if (! $json) {
             throw new Exception("Could not parse response: $cleaned");
         }
 
@@ -48,9 +48,9 @@ class Agent
         $input = $action['action_input'];
 
         /** @var Tool $selectedTool */
-        $selectedTool = $this->tools->first(fn(Tool $tool) => $tool->name() === $toolName);
+        $selectedTool = $this->tools->first(fn (Tool $tool) => $tool->name() === $toolName);
 
-        if (!$selectedTool) {
+        if (! $selectedTool) {
             return 'No tool found with that name';
         }
 
@@ -65,8 +65,8 @@ class Agent
         $initialPrompt = PromptTemplate::combine([
             file_get_contents(base_path('app/Robot/Prompts/1_prefix.txt')),
             PromptTemplate::from(base_path('app/Robot/Prompts/2_tools.txt'))->format([
-                '[TOOL_DESCRIPTIONS]' => $this->tools->map(fn($t) => sprintf('> %s: %s', $t->name(), $t->description()))->join("\n"),
-                '[TOOL_LIST]' => $this->tools->map(fn(Tool $tool) => $tool->name())->join(', '),
+                '[TOOL_DESCRIPTIONS]' => $this->tools->map(fn ($t) => sprintf('> %s: %s', $t->name(), $t->description()))->join("\n"),
+                '[TOOL_LIST]' => $this->tools->map(fn (Tool $tool) => $tool->name())->join(', '),
             ]),
             PromptTemplate::from(base_path('app/Robot/Prompts/history.txt'))->format([
                 '[HISTORY]' => $this->messageHistory->conversationAsString('Human', 'Turid'),
@@ -89,7 +89,7 @@ class Agent
         /** @var CreateResponseMessage $message */
         $message = $response->choices[0]?->message;
 
-        if (!$message) {
+        if (! $message) {
             dd($response);
         }
 
