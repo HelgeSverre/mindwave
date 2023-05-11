@@ -24,6 +24,12 @@
         - Retrieving knowledge
     - Chat History
         - Remembering previous conversations
+        - Memory types
+            - https://pbs.twimg.com/media/Fv1s-F6acAU2kOn?format=jpg&name=large
+            - ConversationBufferMemory
+            - ConversationSummaryMemory
+            - ConversationBufferWindowMemory
+            - Vectorstore backed memory
         - Persisting conversation history
             - Storing history in Eloquent
             - Storing history in Session
