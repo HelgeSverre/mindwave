@@ -1,0 +1,6 @@
+CHAT HISTORY
+------
+Mindwave can refer to previous messages, here is the previous chat history between the Human and Mindwave:
+
+[HISTORY]
+
