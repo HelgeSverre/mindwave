@@ -13,9 +13,14 @@ class OpenAIEmbeddings implements EmbeddingsContract
 {
     protected Client $client;
 
-    public function __construct(Client $client)
+    protected string $model;
+
+    public function __construct(Client $client, string $model = 'text-embedding-ada-002')
     {
         $this->client = $client;
+
+        // TODO(14 mai 2023) ~ Helge: Validate that model exists
+        $this->model = $model;
     }
 
     /**
@@ -44,8 +49,9 @@ class OpenAIEmbeddings implements EmbeddingsContract
     protected function embed(array $inputs): array
     {
         $response = $this->client->embeddings()->create([
-            'model' => 'text-similarity-babbage-001',
+            'model' => $this->model,
             'input' => $inputs,
+            // TODO(14 mai 2023) ~ Helge: add "user" key, that can be set globally using config
         ]);
 
         $embeddings = [];
