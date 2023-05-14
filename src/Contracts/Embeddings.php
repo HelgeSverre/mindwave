@@ -3,10 +3,17 @@
 namespace Mindwave\Mindwave\Contracts;
 
 use Illuminate\Support\Collection;
+use Mindwave\Mindwave\Embeddings\Data\EmbeddingVector;
+use Mindwave\Mindwave\Knowledge\Data\Knowledge;
 
 interface Embeddings
 {
-    public function embedKnowledge(array|Collection $items): array;
+    public function embed(Knowledge $knowledge): EmbeddingVector;
 
-    public function embedQuery(string $text): array;
+    /**
+     * @return EmbeddingVector[]
+     */
+    public function embedMultiple(array|Collection $items): array;
+
+    public function embedQuery(string $text): EmbeddingVector;
 }
