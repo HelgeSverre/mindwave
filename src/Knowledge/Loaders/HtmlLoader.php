@@ -10,6 +10,8 @@ class HtmlLoader implements KnowledgeLoader
 {
     public function load(mixed $data, array $meta = []): ?Knowledge
     {
+        // TODO(14 mai 2023) ~ Helge: Allow elements to remove and whitespace normalization to be configured in config file.
+
         return new Knowledge(
             content: TextUtils::cleanHtml($data),
             meta: $meta
