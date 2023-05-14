@@ -6,10 +6,15 @@
 - [] Sketch out Knowledge class, it is essentially an abstraction around splitting, embedding and indexing a piece of
 
 ## Next
+
 - [] Write Wrapper around Pinecone php package, extract interface
 
 ## later
 
+- [] PGVector vectorstore driver
+- [] Pinecone vectorstore driver
+- [] Weaviate vectorstore driver
+- [] Array vectorstore driver
 - [] Add "dummy brain" (stores everything as an array) for testing
 - [] expand LLM interface, add cohere and some other common llms to dogfood a suitable interface on.
 - [] Port the different "agent types" from langchain, but simplify them.
