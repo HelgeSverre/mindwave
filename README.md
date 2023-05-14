@@ -45,6 +45,40 @@ $mindwave = new Mindwave\Mindwave();
 // TODO: Implement example
 ```
 
+```php
+// TODO: Remove this old example code, its for "API" reference
+<?php
+
+$client = OpenAI::client(config('mindwave.openai.api_key'));
+
+$robot = Mindwave\Mindwave::agent()->make(
+    client: $openAI,
+    brain: Brain::fromPinecone("api-key")
+        ->consume(Knowledge::fromPdf(
+            data: File::get("uploads/important-document.pdf"),
+            meta: ["name" => "Important document"],
+        ))
+        ->consume(Knowledge::fromUrl(
+            data: "https://docs.langchain.com/docs/",
+            meta: ["name" => "Langchain introduction"],
+        ))
+        ->consume(Knowledge::make("My name is Helge Sverre")),
+    messageHistory: ChatMessageHistory::fromSession(),
+    tools: [
+        new WebSearchTool("google", language: "en"),
+        new EloquentQueryTool(table: "articles"),
+        new EloquentQueryTool(
+            table: "events",
+            query: fn(Builder $q) => $q->where("date", ">", now())
+        ),
+    ]
+);
+
+$robot->ask("When was our latest article published?");
+
+$robot->ask("When is the next board meeting scheduled?");
+```
+
 ## Use Cases
 
 - 💬 **Chatbots**: Building AI-powered chatbots to provide support to customers.
