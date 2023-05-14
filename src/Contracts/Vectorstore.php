@@ -28,7 +28,10 @@ interface Vectorstore
      */
     public function upsertVectors(array $entries): void;
 
-    public function similaritySearchByVector(EmbeddingVector $embedding, int $k = 4, array $meta = []): array;
+    /**
+     * @return  VectorStoreEntry[]
+     */
+    public function similaritySearchByVector(EmbeddingVector $embedding, int $count = 5): array;
 
     // TODO(14 mai 2023) ~ Helge: Wait with this one
     // public function maxMarginalRelevanceSearchByVector(EmbeddingVector $embedding, int $k = 4, int $fetch_k = 20, float $lambda_mult = 0.5, array $meta = []): array;

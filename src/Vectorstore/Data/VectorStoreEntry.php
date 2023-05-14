@@ -12,13 +12,23 @@ class VectorStoreEntry
 
     public readonly array $metadata;
 
-    public readonly ?float $similarityScore;
+    public readonly ?float $score;
 
-    public function __construct(string $id, EmbeddingVector $vector, array $metadata, ?float $similarityScore = null)
+    public function __construct(string $id, EmbeddingVector $vector, array $metadata = [], ?float $score = null)
     {
         $this->id = $id;
         $this->vector = $vector;
         $this->metadata = $metadata;
-        $this->similarityScore = $similarityScore;
+        $this->score = $score;
+    }
+
+    public function cloneWithScore(float $score): self
+    {
+        return new self(
+            id: $this->id,
+            vector: $this->vector,
+            metadata: $this->metadata,
+            score: $score,
+        );
     }
 }

@@ -4,10 +4,14 @@ namespace Mindwave\Mindwave\Vectorstore\Drivers;
 
 use Mindwave\Mindwave\Contracts\Vectorstore;
 use Mindwave\Mindwave\Embeddings\Data\EmbeddingVector;
+use Mindwave\Mindwave\Support\Similarity;
 use Mindwave\Mindwave\Vectorstore\Data\VectorStoreEntry;
 
 class InMemory implements Vectorstore
 {
+    /**
+     * @var array<string, VectorStoreEntry>
+     */
     protected array $items = [];
 
     public function fetchById(string $id): ?VectorStoreEntry
@@ -20,6 +24,7 @@ class InMemory implements Vectorstore
         return collect($ids)
             ->map(fn ($id) => $this->fetchById($id))
             ->filter()
+            ->values()
             ->all();
     }
 
@@ -45,8 +50,15 @@ class InMemory implements Vectorstore
         $this->insertVectors($entries);
     }
 
-    public function similaritySearchByVector(EmbeddingVector $embedding, int $k = 4, array $meta = []): array
+    public function similaritySearchByVector(EmbeddingVector $embedding, int $count = 5): array
     {
-        // TODO: Implement similaritySearchByVector() method.
+        return collect($this->items)
+            ->map(fn (VectorStoreEntry $entry) => $entry->cloneWithScore(
+                score: Similarity::cosine($entry->vector, $embedding)
+            ))
+            ->sortByDesc(fn (VectorStoreEntry $entry) => $entry->score, SORT_NUMERIC)
+            ->take($count)
+            ->values()
+            ->all();
     }
 }
