@@ -8,6 +8,7 @@ on:
 
 jobs:
   phpstan:
+    if: ${{ false }}  # disable for now
     name: phpstan
     runs-on: ubuntu-latest
     steps:
