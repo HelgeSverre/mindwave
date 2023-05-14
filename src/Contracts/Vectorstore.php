@@ -3,15 +3,33 @@
 namespace Mindwave\Mindwave\Contracts;
 
 use Mindwave\Mindwave\Embeddings\Data\EmbeddingVector;
-use Mindwave\Mindwave\Knowledge\Data\Knowledge;
+use Mindwave\Mindwave\Vectorstore\Data\VectorStoreEntry;
 
 interface Vectorstore
 {
-    public function addKnowledge(Knowledge $knowledge, array $extra = []): array;
+    public function fetchById(string $id): ?VectorStoreEntry;
 
-    public function search(string $query, string $search_type, array $extra = []): array;
+    /**
+     * @return  VectorStoreEntry[]
+     */
+    public function fetchByIds(array $ids): array;
 
-    public function similaritySearchByVector(EmbeddingVector $embedding, int $k = 4, array $extra = []): array;
+    public function insertVector(VectorStoreEntry $entry): void;
 
-    public function maxMarginalRelevanceSearchByVector(EmbeddingVector $embedding, int $k = 4, int $fetch_k = 20, float $lambda_mult = 0.5, array $extra = []): array;
+    public function upsertVector(VectorStoreEntry $entry): void;
+
+    /**
+     * @param  VectorStoreEntry[]  $entries
+     */
+    public function insertVectors(array $entries): void;
+
+    /**
+     * @param  VectorStoreEntry[]  $entries
+     */
+    public function upsertVectors(array $entries): void;
+
+    public function similaritySearchByVector(EmbeddingVector $embedding, int $k = 4, array $meta = []): array;
+
+    // TODO(14 mai 2023) ~ Helge: Wait with this one
+    // public function maxMarginalRelevanceSearchByVector(EmbeddingVector $embedding, int $k = 4, int $fetch_k = 20, float $lambda_mult = 0.5, array $meta = []): array;
 }

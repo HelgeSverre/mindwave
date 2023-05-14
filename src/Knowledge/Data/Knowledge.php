@@ -2,6 +2,7 @@
 
 namespace Mindwave\Mindwave\Knowledge\Data;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Traits\Macroable;
 
 class Knowledge
@@ -31,5 +32,18 @@ class Knowledge
     public static function make(string $content, array $meta = []): self
     {
         return new self($content, $meta);
+    }
+
+    public function getMetaValue(string $key, $fallback = null): mixed
+    {
+        return Arr::get($this->meta, $key, $fallback);
+    }
+
+    public function toArray(): array
+    {
+        return [
+            '_value' => $this->content,
+            ...$this->meta,
+        ];
     }
 }
