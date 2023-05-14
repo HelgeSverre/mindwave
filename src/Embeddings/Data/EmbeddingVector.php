@@ -3,11 +3,13 @@
 namespace Mindwave\Mindwave\Embeddings\Data;
 
 use ArrayAccess;
+use ArrayIterator;
 use Countable;
 use Illuminate\Contracts\Support\Arrayable;
+use IteratorAggregate;
 use RuntimeException;
 
-class EmbeddingVector implements ArrayAccess, Arrayable, Countable
+class EmbeddingVector implements ArrayAccess, Arrayable, Countable, IteratorAggregate
 {
     public readonly array $values;
 
@@ -49,5 +51,10 @@ class EmbeddingVector implements ArrayAccess, Arrayable, Countable
     public function count(): int
     {
         return count($this->values);
+    }
+
+    public function getIterator(): \Traversable
+    {
+        return new ArrayIterator($this->values);
     }
 }
