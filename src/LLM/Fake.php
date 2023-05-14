@@ -2,17 +2,18 @@
 
 namespace Mindwave\Mindwave\LLM;
 
+use Mindwave\Mindwave\Contracts\LLM;
+
 class Fake implements LLM
 {
     protected string $response;
 
     public function __construct($response)
     {
-
         $this->response = $response;
     }
 
-    public function predict($input): string
+    public function predict(string $prompt): ?string
     {
         return $this->response;
     }

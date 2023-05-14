@@ -3,27 +3,25 @@
 namespace Mindwave\Mindwave\Agents;
 
 use App\Robot\PromptTemplate;
-use App\Robot\Tools\Tool;
 use Exception;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use Mindwave\Mindwave\Contracts\LLM;
+use Mindwave\Mindwave\Contracts\Tool;
 use Mindwave\Mindwave\Memory\ChatMessageHistory;
-use OpenAI\Client;
-use OpenAI\Laravel\Facades\OpenAI;
-use OpenAI\Responses\Chat\CreateResponseMessage;
 
 class Agent
 {
-    protected Client $client;
+    protected LLM $llm;
 
     /** @var Collection<Tool> */
     protected Collection $tools;
 
     protected ChatMessageHistory $messageHistory;
 
-    public function __construct(Client $client, ChatMessageHistory $messageHistory, array $tools = [])
+    public function __construct(LLM $llm, ChatMessageHistory $messageHistory, array $tools = [])
     {
-        $this->client = $client;
+        $this->llm = $llm;
         $this->messageHistory = $messageHistory;
         $this->tools = collect($tools);
     }
@@ -76,27 +74,16 @@ class Agent
             ]),
         ]);
 
-        $response = OpenAI::chat()->create([
-            'model' => 'gpt-3.5-turbo',
-            'messages' => [
-                [
-                    'role' => 'system',
-                    'content' => $initialPrompt,
-                ],
-            ],
-        ]);
+        $answer = $this->llm->predict($initialPrompt);
 
-        /** @var CreateResponseMessage $message */
-        $message = $response->choices[0]?->message;
-
-        if (! $message) {
-            dd($response);
+        if (! $answer) {
+            throw new Exception('No response');
         }
 
         dump($initialPrompt);
-        dd($message);
+        dd($answer);
 
-        $parsed = $this->parseActionResponse($message->content);
+        $parsed = $this->parseActionResponse($answer);
 
         if ($parsed['action'] === 'Final Answer') {
             $this->messageHistory->addAiMessage($parsed['action_input']);
@@ -111,21 +98,9 @@ class Agent
             ]),
         ]);
 
-        dd($finalPrompt);
-        $response = OpenAI::chat()->create([
-            'model' => 'gpt-3.5-turbo',
-            'messages' => [
-                [
-                    'role' => 'system',
-                    'content' => $finalPrompt,
-                ],
-            ],
-        ]);
+        $answer = $this->llm->predict($finalPrompt);
 
-        /** @var CreateResponseMessage $message */
-        $message = $response->choices[0]?->message;
-
-        $parsed = $this->parseActionResponse($message->content);
+        $parsed = $this->parseActionResponse($answer);
 
         if ($parsed['action'] === 'Final Answer') {
             $this->messageHistory->addAiMessage($parsed['action_input']);

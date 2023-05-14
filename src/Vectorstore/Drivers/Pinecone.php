@@ -2,10 +2,10 @@
 
 namespace Mindwave\Mindwave\Vectorstore\Drivers;
 
-use Mindwave\Mindwave\Contracts\VectorstoreContract;
+use Mindwave\Mindwave\Contracts\Vectorstore;
 use Probots\Pinecone\Client as PineconeClient;
 
-class Pinecone implements VectorstoreContract
+class Pinecone implements Vectorstore
 {
     protected PineconeClient $client;
 

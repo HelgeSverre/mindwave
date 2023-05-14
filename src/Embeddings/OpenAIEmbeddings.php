@@ -4,12 +4,12 @@ namespace Mindwave\Mindwave\Embeddings;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use Mindwave\Mindwave\Contracts\EmbeddingsContract;
-use Mindwave\Mindwave\Knowledge\Knowledge;
+use Mindwave\Mindwave\Contracts\Embeddings;
+use Mindwave\Mindwave\Knowledge\Data\Knowledge;
 use OpenAI\Client;
 use OpenAI\Responses\Embeddings\CreateResponseEmbedding;
 
-class OpenAIEmbeddings implements EmbeddingsContract
+class OpenAIEmbeddings implements Embeddings
 {
     protected Client $client;
 
@@ -24,7 +24,7 @@ class OpenAIEmbeddings implements EmbeddingsContract
     }
 
     /**
-     * @param  array<Knowledge>|Collection<Knowledge>  $items
+     * @param  array<\Mindwave\Mindwave\Knowledge\Data\Knowledge>|Collection<Knowledge>  $items
      * @return array<array<float>>
      */
     public function embedKnowledge(array|Collection $items): array

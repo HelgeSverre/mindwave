@@ -3,6 +3,7 @@
 namespace Mindwave\Mindwave\Tools;
 
 use Exception;
+use Mindwave\Mindwave\Contracts\Tool;
 
 class GoogleSearch implements Tool
 {

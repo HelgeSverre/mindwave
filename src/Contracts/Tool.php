@@ -1,6 +1,6 @@
 <?php
 
-namespace Mindwave\Mindwave\Tools;
+namespace Mindwave\Mindwave\Contracts;
 
 interface Tool
 {

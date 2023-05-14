@@ -1,6 +1,6 @@
 <?php
 
-namespace Mindwave\Mindwave\Knowledge;
+namespace Mindwave\Mindwave\Knowledge\Data;
 
 use Illuminate\Support\Traits\Macroable;
 
@@ -26,5 +26,10 @@ class Knowledge
     public function meta(): array
     {
         return $this->meta;
+    }
+
+    public static function make(string $content, array $meta = []): self
+    {
+        return new self($content, $meta);
     }
 }

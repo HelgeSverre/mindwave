@@ -4,7 +4,7 @@ namespace Mindwave\Mindwave\Contracts;
 
 use Illuminate\Support\Collection;
 
-interface EmbeddingsContract
+interface Embeddings
 {
     public function embedKnowledge(array|Collection $items): array;
 

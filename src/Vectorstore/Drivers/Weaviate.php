@@ -2,10 +2,10 @@
 
 namespace Mindwave\Mindwave\Vectorstore\Drivers;
 
-use Mindwave\Mindwave\Contracts\VectorstoreContract;
+use Mindwave\Mindwave\Contracts\Vectorstore;
 use Weaviate\Weaviate as WeaviateClient;
 
-class Weaviate implements VectorstoreContract
+class Weaviate implements Vectorstore
 {
     protected WeaviateClient $client;
 

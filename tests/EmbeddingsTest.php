@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Str;
 use Mindwave\Mindwave\Embeddings\OpenAIEmbeddings;
-use Mindwave\Mindwave\Knowledge\Knowledge;
+use Mindwave\Mindwave\Knowledge\Data\Knowledge;
 
 it('embeds a query using OpenAI API', function () {
     $text = 'This is a test query.';
