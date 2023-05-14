@@ -10,11 +10,21 @@ class Knowledge
 
     protected string $content;
 
-    protected ?array $meta = [];
+    protected array $meta = [];
 
-    public function __construct(string $content, ?array $meta)
+    public function __construct(string $content, array $meta = [])
     {
         $this->content = $content;
         $this->meta = $meta;
+    }
+
+    public function content(): string
+    {
+        return $this->content;
+    }
+
+    public function meta(): array
+    {
+        return $this->meta;
     }
 }

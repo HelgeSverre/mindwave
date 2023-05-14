@@ -27,10 +27,12 @@ class Loader
         $pdfParser = new Parser();
         $document = $pdfParser->parseContent($pdf);
 
-        $text = $document?->getText();
+        $text = $document->getText();
 
-        // Replace control characters with space
-        $text = preg_replace('/[[:cntrl:]]/', ' ', $text);
+        return new Knowledge(
+            content: $text,
+            meta: $meta,
+        );
 
     }
 
@@ -43,7 +45,10 @@ class Loader
             return null;
         }
 
-        return self::fromHTML($response->body(), array_merge(['url' => $url], $meta));
+        return self::fromHTML(
+            html: $response->body(),
+            meta: array_merge(['url' => $url], $meta)
+        );
     }
 
     public static function fromHTML($html, ?array $meta = []): ?Knowledge
@@ -54,7 +59,7 @@ class Loader
         );
     }
 
-    public static function fromText(Stringable $text, ?array $meta = []): ?Knowledge
+    public static function fromText(string|Stringable $text, ?array $meta = []): ?Knowledge
     {
         return new Knowledge(
             content: $text,
