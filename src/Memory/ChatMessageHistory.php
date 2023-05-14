@@ -17,7 +17,6 @@ class ChatMessageHistory
 
     public static function fromMessages(Collection $messages): self
     {
-
         $instance = new self();
 
         foreach ($messages as $message) {
