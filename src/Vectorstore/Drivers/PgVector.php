@@ -1,10 +1,11 @@
 <?php
 
-namespace Mindwave\Mindwave\Brain\Drivers;
+namespace Mindwave\Mindwave\Vectorstore\Drivers;
 
+use Mindwave\Mindwave\Contracts\VectorstoreContract;
 use Weaviate\Weaviate as WeaviateClient;
 
-class Weaviate
+class PgVector implements VectorstoreContract
 {
     protected WeaviateClient $client;
 
