@@ -36,9 +36,26 @@ it('keeps whitespaces in HTML', function () {
     $html = '
         <p>Hello   World!</p>
     ';
-    $expectedOutput = 'Hello   World!';
 
-    $output = TextUtils::cleanHtml($html, [], true, false);
+    $output = TextUtils::cleanHtml($html, elementsToRemove: [], normalizeWhitespace: true);
+
+    expect($output)->toBe('Hello World!');
+});
+
+it('ignores the head tag when cleaning html', function () {
+    $html = '
+        <html>
+            <head>
+                <title>Test Page</title>
+            </head>
+            <body>
+                <p>This is a test page.</p>
+            </body>
+        </html>
+    ';
+    $expectedOutput = 'This is a test page.';
+
+    $output = TextUtils::cleanHtml($html);
 
     expect($output)->toBe($expectedOutput);
 });
@@ -46,17 +63,14 @@ it('keeps whitespaces in HTML', function () {
 it('removes comments from HTML', function () {
     $html = '
         <html>
-            <head>
-                <title>Test Page</title>
-                <!-- This is a comment -->
-            </head>
             <body>
-                <p>This is a test page.</p>
+                <p>This is a test</p>
                 <!-- Another comment -->
+                <p>page.</p>
             </body>
         </html>
     ';
-    $expectedOutput = 'Test Page This is a test page.';
+    $expectedOutput = 'This is a test page.';
 
     $output = TextUtils::cleanHtml($html);
 
