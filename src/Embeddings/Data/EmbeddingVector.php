@@ -3,9 +3,11 @@
 namespace Mindwave\Mindwave\Embeddings\Data;
 
 use ArrayAccess;
+use Countable;
+use Illuminate\Contracts\Support\Arrayable;
 use RuntimeException;
 
-class EmbeddingVector implements ArrayAccess
+class EmbeddingVector implements ArrayAccess, Arrayable, Countable
 {
     public readonly array $values;
 
@@ -37,5 +39,15 @@ class EmbeddingVector implements ArrayAccess
     public function __toArray(): array
     {
         return $this->values;
+    }
+
+    public function toArray()
+    {
+        return $this->__toArray();
+    }
+
+    public function count(): int
+    {
+        return count($this->values);
     }
 }
