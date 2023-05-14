@@ -33,7 +33,6 @@ class Loader
             content: $text,
             meta: $meta,
         );
-
     }
 
     public static function fromUrl(string $url, ?array $meta = []): ?Knowledge

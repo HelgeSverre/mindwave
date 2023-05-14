@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Http;
 use Mindwave\Mindwave\Knowledge\Knowledge;
 use Mindwave\Mindwave\Knowledge\Loader;
 
-it('can load PDF files', function ($file) {
+it('loads content from a PDFs', function ($file) {
     $pdfContent = file_get_contents($file);
 
     expect($pdfContent)->not()->toBeNull();
