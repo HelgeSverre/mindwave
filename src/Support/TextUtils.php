@@ -4,9 +4,19 @@ namespace Mindwave\Mindwave\Support;
 
 use Illuminate\Support\Str;
 use Symfony\Component\DomCrawler\Crawler;
+use Yethee\Tiktoken\EncoderProvider;
 
 class TextUtils
 {
+    public static function countTokens(string $text, $model = 'gpt-3.5-turbo'): int
+    {
+        $provider = new EncoderProvider();
+        $encoder = $provider->getForModel($model);
+        $tokens = $encoder->encode('Hello world!');
+
+        return count($tokens);
+    }
+
     public static function normalizeWhitespace(string $text): string
     {
         return Str::of($text)->squish()->trim()->toString();
