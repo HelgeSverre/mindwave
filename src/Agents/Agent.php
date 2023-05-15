@@ -92,7 +92,7 @@ class Agent
 
         $finalPrompt = PromptTemplate::combine([
             $initialPrompt,
-            PromptTemplate::from(base_path('app/Robot/Prompts/no/4_tool_response.txt'))->format([
+            PromptTemplate::from(__DIR__.'/../Prompts/4_tool_response.txt')->format([
                 '[TOOL_RESPONSE]' => $this->runTool($parsed),
             ]),
         ]);
