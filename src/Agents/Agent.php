@@ -43,17 +43,18 @@ class Agent
     {
 
         $toolName = $action['action'];
+
         $input = $action['action_input'];
 
-        /** @var Tool $selectedTool */
+        // TODO(16 May 2023) ~ Helge: Cleanup this
+        /** @var null|Tool $selectedTool */
         $selectedTool = $this->tools->first(fn (Tool $tool) => $tool->name() === $toolName);
 
-        if (! $selectedTool) {
-            return 'No tool found with that name';
+        if ($selectedTool) {
+        return $selectedTool->run($input);
         }
 
-        return $selectedTool->run($input);
-
+        return 'No tool found with that name';
     }
 
     public function ask($input)
