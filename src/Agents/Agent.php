@@ -2,13 +2,13 @@
 
 namespace Mindwave\Mindwave\Agents;
 
-use App\Robot\PromptTemplate;
 use Exception;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Mindwave\Mindwave\Contracts\LLM;
 use Mindwave\Mindwave\Contracts\Tool;
 use Mindwave\Mindwave\Memory\ChatMessageHistory;
+use Mindwave\Mindwave\PromptTemplate;
 
 class Agent
 {
