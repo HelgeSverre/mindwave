@@ -4,6 +4,7 @@ namespace Mindwave\Mindwave\LLM;
 
 use Mindwave\Mindwave\Contracts\LLM;
 use OpenAI\Client;
+use OpenAI\Responses\Chat\CreateResponseMessage;
 
 class OpenAIChat implements LLM
 {
@@ -34,10 +35,17 @@ class OpenAIChat implements LLM
             'temperature' => $this->temperature,
             'model' => $this->model,
             'messages' => [
+                // TODO(16 May 2023) ~ Helge:
+                //  When using chat endpoint should we provide the history as
+                //  separate messages does it matter, in the end does it get concatenated
+                //  together behind the scenes or does the role provide any context ot the model? Investigate.
                 ['role' => 'system', 'content' => $prompt],
             ],
         ]);
 
-        return $response->choices[0]?->message;
+        /** @var CreateResponseMessage $message */
+        $message = $response->choices[0]->message;
+
+        return $message->content;
     }
 }
