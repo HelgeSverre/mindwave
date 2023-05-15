@@ -51,7 +51,7 @@ class Agent
         $selectedTool = $this->tools->first(fn (Tool $tool) => $tool->name() === $toolName);
 
         if ($selectedTool) {
-        return $selectedTool->run($input);
+            return $selectedTool->run($input);
         }
 
         return 'No tool found with that name';
