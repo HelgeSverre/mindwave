@@ -81,6 +81,7 @@ class Agent
             throw new Exception('No response');
         }
 
+        // TODO(16 May 2023) ~ Helge: Output parser
         $parsed = $this->parseActionResponse($answer);
 
         if ($parsed['action'] === 'Final Answer') {
@@ -98,6 +99,7 @@ class Agent
 
         $answer = $this->llm->predict($finalPrompt);
 
+        // TODO(16 May 2023) ~ Helge: Output parser
         $parsed = $this->parseActionResponse($answer);
 
         if ($parsed['action'] === 'Final Answer') {
