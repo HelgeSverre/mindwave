@@ -62,15 +62,15 @@ class Agent
         $this->messageHistory->addUserMessage($input);
 
         $initialPrompt = PromptTemplate::combine([
-            file_get_contents(base_path('app/Robot/Prompts/1_prefix.txt')),
-            PromptTemplate::from(base_path('app/Robot/Prompts/2_tools.txt'))->format([
+            file_get_contents(__DIR__.'/../Prompts/1_prefix.txt'),
+            PromptTemplate::from(__DIR__.'/../Prompts/2_tools.txt')->format([
                 '[TOOL_DESCRIPTIONS]' => $this->tools->map(fn ($t) => sprintf('> %s: %s', $t->name(), $t->description()))->join("\n"),
                 '[TOOL_LIST]' => $this->tools->map(fn (Tool $tool) => $tool->name())->join(', '),
             ]),
-            PromptTemplate::from(base_path('app/Robot/Prompts/history.txt'))->format([
+            PromptTemplate::from(__DIR__.'/../Prompts/history.txt')->format([
                 '[HISTORY]' => $this->messageHistory->conversationAsString('Human', 'Turid'),
             ]),
-            PromptTemplate::from(base_path('app/Robot/Prompts/3_input.txt'))->format([
+            PromptTemplate::from(__DIR__.'/../Prompts/3_input.txt')->format([
                 '[INPUT]' => $input,
             ]),
         ]);
