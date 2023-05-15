@@ -2,7 +2,6 @@
 
 namespace Mindwave\Mindwave\Memory;
 
-use Illuminate\Support\Collection;
 use Mindwave\Mindwave\Message\AIMessage;
 use Mindwave\Mindwave\Message\BaseMessage;
 use Mindwave\Mindwave\Message\HumanMessage;
@@ -15,7 +14,7 @@ class ChatMessageHistory
      */
     protected array $messages = [];
 
-    public static function fromMessages(Collection $messages): self
+    public static function fromMessages(array $messages): self
     {
         $instance = new self();
 
