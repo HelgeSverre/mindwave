@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Robot;
+namespace Mindwave\Mindwave;
 
 use Illuminate\Support\Str;
 
