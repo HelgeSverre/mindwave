@@ -81,9 +81,6 @@ class Agent
             throw new Exception('No response');
         }
 
-        dump($initialPrompt);
-        dd($answer);
-
         $parsed = $this->parseActionResponse($answer);
 
         if ($parsed['action'] === 'Final Answer') {
