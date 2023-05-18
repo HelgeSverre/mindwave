@@ -14,7 +14,7 @@ class EmbeddingsManager extends Manager
         return $this->config->get('mindwave-embeddings.default');
     }
 
-    public function createOpenAIEmbeddingsDriver(): Embeddings
+    public function createOpenaiDriver(): Embeddings
     {
         return new OpenAIEmbeddings(
             client: OpenAI::client(

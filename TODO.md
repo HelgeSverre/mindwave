@@ -44,3 +44,4 @@
 - [] PGVector vectorstore driver
 - [] Laravel Scout-ish feature where you can modify your Model to make it indexable, and toPrompt() method to describe
   the model in natural language or as a CSV 
+- [] Command to generate a Tool class (php artisan make:tool)

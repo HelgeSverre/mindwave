@@ -35,9 +35,9 @@ class ChatMessageHistory
         return $instance;
     }
 
-    public function addUserMessage($message): void
+    public function addSystemMessage($message): void
     {
-        $this->messages[] = new HumanMessage($message);
+        $this->messages[] = new SystemMessage($message);
     }
 
     public function addAiMessage($message): void
@@ -45,9 +45,9 @@ class ChatMessageHistory
         $this->messages[] = new AIMessage($message);
     }
 
-    public function addSystemMessage($message): void
+    public function addUserMessage($message): void
     {
-        $this->messages[] = new SystemMessage($message);
+        $this->messages[] = new HumanMessage($message);
     }
 
     public function clear(): void

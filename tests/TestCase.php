@@ -9,6 +9,8 @@ use Orchestra\Testbench\TestCase as Orchestra;
 
 class TestCase extends Orchestra
 {
+    protected $loadEnvironmentVariables = true;
+
     protected function setUp(): void
     {
         parent::setUp();

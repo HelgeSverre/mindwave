@@ -33,12 +33,12 @@ class MindwaveServiceProvider extends PackageServiceProvider
 
     public function registeringPackage()
     {
-        $this->app->bind('mindwave.document.loader', function () {
-            return new DocumentLoader();
-        });
-
+        // Managers
         $this->app->singleton('mindwave.embeddings.manager', fn ($app) => new EmbeddingsManager($app));
         $this->app->singleton('mindwave.vectorstore.manager', fn ($app) => new VectorstoreManager($app));
         $this->app->singleton('mindwave.llm.manager', fn ($app) => new LLMManager($app));
+
+        // Misc
+        $this->app->bind('mindwave.document.loader', fn () => new DocumentLoader());
     }
 }
