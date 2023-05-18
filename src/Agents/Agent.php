@@ -89,18 +89,22 @@ class Agent
         $answer = $this->llm->predict($initialPrompt);
 
         if (! $answer) {
+            // TODO(18 mai 2023) ~ Helge: Retry until "max retries" is exhausted?
+
             throw new Exception('No response');
         }
 
         // TODO(16 May 2023) ~ Helge: Output parser
         $parsed = $this->parseActionResponse($answer);
-        
 
         if ($parsed['action'] === 'Final Answer') {
             $this->messageHistory->addAiMessage($parsed['action_input']);
 
             return $parsed['action_input'];
         }
+
+        // TODO(18 mai 2023) ~ Helge: Put this in a loop until final answer found or max attempts is exhausted
+        // ======================================================================================================
 
         $finalPrompt = PromptTemplate::combine([
             $initialPrompt,
@@ -119,5 +123,6 @@ class Agent
 
             return $parsed['action_input'];
         }
+        // ======================================================================================================
     }
 }
