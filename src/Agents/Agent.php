@@ -68,6 +68,7 @@ class Agent
 
         $relevantDocuments = $this->brain->search($input, count: 3);
 
+        // TODO(18 mai 2023) ~ Helge: Abstract away
         $initialPrompt = PromptTemplate::combine([
             file_get_contents(__DIR__.'/../Prompts/Templates/prefix.txt'),
             PromptTemplate::from(__DIR__.'/../Prompts/Templates/tools.txt')->format([
@@ -80,7 +81,7 @@ class Agent
             PromptTemplate::from(__DIR__.'/../Prompts/Templates/history.txt')->format([
                 '[HISTORY]' => $this->messageHistory->conversationAsString('Human', 'Turid'),
             ]),
-            PromptTemplate::from(__DIR__.'/../Prompts/Templates/3_input.txt')->format([
+            PromptTemplate::from(__DIR__.'/../Prompts/Templates/input.txt')->format([
                 '[INPUT]' => $input,
             ]),
         ]);
@@ -93,8 +94,7 @@ class Agent
 
         // TODO(16 May 2023) ~ Helge: Output parser
         $parsed = $this->parseActionResponse($answer);
-
-        dump($parsed);
+        
 
         if ($parsed['action'] === 'Final Answer') {
             $this->messageHistory->addAiMessage($parsed['action_input']);
