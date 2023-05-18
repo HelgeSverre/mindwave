@@ -5,8 +5,8 @@ namespace Mindwave\Mindwave\Embeddings\Drivers;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Mindwave\Mindwave\Contracts\Embeddings;
+use Mindwave\Mindwave\Document\Data\Document;
 use Mindwave\Mindwave\Embeddings\Data\EmbeddingVector;
-use Mindwave\Mindwave\Knowledge\Data\Document;
 use OpenAI\Client;
 use OpenAI\Responses\Embeddings\CreateResponseEmbedding;
 
@@ -22,15 +22,15 @@ class OpenAIEmbeddings implements Embeddings
         $this->model = $model;
     }
 
-    public function embed(Document $knowledge): EmbeddingVector
+    public function embed(Document $document): EmbeddingVector
     {
-        return Arr::first($this->embedInternal([$knowledge->content()]));
+        return Arr::first($this->embedInternal([$document->content()]));
     }
 
     public function embedMultiple(array|Collection $items): array
     {
         return collect($items)
-            ->map(fn (Document $knowledge) => $knowledge->content())
+            ->map(fn (Document $document) => $document->content())
             ->pipe(fn (Collection $collection) => $this->embedInternal($collection->toArray()));
     }
 

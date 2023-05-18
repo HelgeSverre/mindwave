@@ -1,6 +1,6 @@
 <?php
 
-namespace Mindwave\Mindwave\Knowledge\Loaders;
+namespace Mindwave\Mindwave\Document\Loaders;
 
 use Illuminate\Support\Facades\Http;
 use Mindwave\Mindwave\Contracts\DocumentLoader;

@@ -1,3 +1,4 @@
+
 # TODO
 
 ## Done
@@ -25,6 +26,7 @@
 
 - [] Pinecone vectorstore driver ( index = collection, meta = meta) + tests
 - [] Weaviate vectorstore driver ( collection = collection, properties = meta) + tests
+- [] Milvus vectorstore driver ( collection = collection, properties = meta) + tests
 
 ## Next
 

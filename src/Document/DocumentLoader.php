@@ -1,11 +1,11 @@
 <?php
 
-namespace Mindwave\Mindwave\Knowledge;
+namespace Mindwave\Mindwave\Document;
 
-use Mindwave\Mindwave\Knowledge\Data\Document;
-use Mindwave\Mindwave\Knowledge\Loaders\HtmlLoader;
-use Mindwave\Mindwave\Knowledge\Loaders\PdfLoader;
-use Mindwave\Mindwave\Knowledge\Loaders\UrlLoader;
+use Mindwave\Mindwave\Document\Data\Document;
+use Mindwave\Mindwave\Document\Loaders\HtmlLoader;
+use Mindwave\Mindwave\Document\Loaders\PdfLoader;
+use Mindwave\Mindwave\Document\Loaders\UrlLoader;
 use Smalot\PdfParser\Parser;
 
 class DocumentLoader

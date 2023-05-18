@@ -20,14 +20,21 @@ return [
     | todo: taylorized description
     */
     'vectorstores' => [
+        'array' => [
+            // Has no configuration, used for testing
+        ],
+
         'pinecone' => [
-            'api_key' => env('MINDWAVE_LLM_OPENAI_CHAT_API_KEY'),
-            'collection' => 'items', // TODO(18 May 2023) ~ Helge: configurable
+            'api_key' => env('MINDWAVE_PINECONE_API_KEY'),
+            'environment' => env('MINDWAVE_PINECONE_ENVIRONMENT'),
+            'index' => 'items', // TODO(18 May 2023) ~ Helge: this concept needs to be implemented in vectorstore
         ],
 
         'weaviate' => [
-            'api_key' => env('MINDWAVE_LLM_OPENAI_COMPLETION_API_KEY'),
-            'collection' => 'items', // TODO(18 May 2023) ~ Helge: configurable
+            'api_url' => env('MINDWAVE_WEAVIATE_URL'),
+            'api_token' => env('MINDWAVE_WEAVIATE_API_TOKEN'),
+            'additional_headers' => [],
+            'index' => 'items', // TODO(18 May 2023) ~ Helge: this concept needs to be implemented in vectorstore
         ],
     ],
 

@@ -1,9 +1,9 @@
 <?php
 
 use Illuminate\Support\Str;
+use Mindwave\Mindwave\Document\Data\Document;
 use Mindwave\Mindwave\Embeddings\Data\EmbeddingVector;
-use Mindwave\Mindwave\Embeddings\OpenAIEmbeddings;
-use Mindwave\Mindwave\Knowledge\Data\Document;
+use Mindwave\Mindwave\Embeddings\Drivers\OpenAIEmbeddings;
 
 it('embeds a query using OpenAI API', function () {
     $client = OpenAI::client(env('OPENAI_API_KEY'));

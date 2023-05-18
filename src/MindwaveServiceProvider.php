@@ -2,10 +2,10 @@
 
 namespace Mindwave\Mindwave;
 
-use Mindwave\Mindwave\Commands\MindwaveCommand;
-use Mindwave\Mindwave\Knowledge\DocumentLoader;
-use Mindwave\Mindwave\LLM\LLMManager as LLMManager;
-use Mindwave\Mindwave\Vectorstore\VectorstoreManager as VectorstoreManager;
+use Mindwave\Mindwave\Document\DocumentLoader;
+use Mindwave\Mindwave\Embeddings\EmbeddingsManager;
+use Mindwave\Mindwave\LLM\LLMManager;
+use Mindwave\Mindwave\Vectorstore\VectorstoreManager;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -21,18 +21,23 @@ class MindwaveServiceProvider extends PackageServiceProvider
          */
         $package
             ->name('mindwave')
-            ->hasConfigFile()
-            ->hasViews()
-            ->hasMigration('create_mindwave_table')
-            ->hasCommand(MindwaveCommand::class);
+            ->hasConfigFile([
+                'mindwave-embeddings',
+                'mindwave-llm',
+                'mindwave-vectorstore',
+            ]);
+        // ->hasViews()
+        // ->hasMigration('create_mindwave_table')
+        // ->hasCommand(MindwaveCommand::class)
     }
 
     public function registeringPackage()
     {
-        $this->app->bind('mindwave.knowledge.loader', function () {
+        $this->app->bind('mindwave.document.loader', function () {
             return new DocumentLoader();
         });
 
+        $this->app->singleton('mindwave.embeddings.manager', fn ($app) => new EmbeddingsManager($app));
         $this->app->singleton('mindwave.vectorstore.manager', fn ($app) => new VectorstoreManager($app));
         $this->app->singleton('mindwave.llm.manager', fn ($app) => new LLMManager($app));
     }

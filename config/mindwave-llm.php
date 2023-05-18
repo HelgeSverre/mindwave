@@ -30,6 +30,7 @@ return [
             'api_key' => env('MINDWAVE_OPENAI_API_KEY'),
             'org_id' => env('MINDWAVE_OPENAI_ORG_ID'),
             'model' => env('MINDWAVE_OPENAI_MODEL', 'gpt-3.5-turbo'),
+            'max_tokens' => 1000,
             'temperature' => 0.4,
         ],
 
@@ -37,8 +38,8 @@ return [
             'api_key' => env('MINDWAVE_OPENAI_API_KEY'),
             'org_id' => env('MINDWAVE_OPENAI_ORG_ID'),
             'model' => env('MINDWAVE_OPENAI_MODEL', 'text-davinci-003'),
+            'max_tokens' => 1000,
             'temperature' => 0.4,
         ],
     ],
-
 ];

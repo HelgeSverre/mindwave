@@ -1,7 +1,5 @@
 <?php
 
-use Mindwave\Mindwave\Facades\Mindwave;
-
 //
 //it('Can correctly list the colors from a file', function () {
 //

@@ -3,9 +3,9 @@
 namespace Mindwave\Mindwave\Facades;
 
 use Illuminate\Support\Facades\Facade;
-use Mindwave\Mindwave\Knowledge\DocumentLoader as Concrete;
+use Mindwave\Mindwave\Document\DocumentLoader as Concrete;
 
-class KnowledgeLoader extends Facade
+class DocumentLoader extends Facade
 {
     protected static function getFacadeAccessor()
     {

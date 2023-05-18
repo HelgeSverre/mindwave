@@ -5,7 +5,7 @@ namespace Mindwave\Mindwave\Brain;
 use Illuminate\Support\Str;
 use Mindwave\Mindwave\Contracts\Embeddings;
 use Mindwave\Mindwave\Contracts\Vectorstore;
-use Mindwave\Mindwave\Knowledge\Data\Document;
+use Mindwave\Mindwave\Document\Data\Document;
 use Mindwave\Mindwave\Vectorstore\Data\VectorStoreEntry;
 
 class Brain
@@ -35,14 +35,14 @@ class Brain
 
     }
 
-    public function consume(Document $knowledge): self
+    public function consume(Document $document): self
     {
         // TODO(14 mai 2023) ~ Helge: Text splitter
 
         $this->vectorstore->upsertVector(new VectorStoreEntry(
-            id: $knowledge->getMetaValue('id', Str::uuid()),
-            vector: $this->embeddings->embed($knowledge),
-            metadata: $knowledge->toArray(),
+            id: $document->getMetaValue('id', Str::uuid()),
+            vector: $this->embeddings->embed($document),
+            metadata: $document->toArray(),
         ));
 
         return $this;

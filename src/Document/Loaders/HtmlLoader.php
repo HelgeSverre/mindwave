@@ -1,6 +1,6 @@
 <?php
 
-namespace Mindwave\Mindwave\Knowledge\Loaders;
+namespace Mindwave\Mindwave\Document\Loaders;
 
 use Mindwave\Mindwave\Contracts\DocumentLoader;
 use Mindwave\Mindwave\Document\Data\Document;

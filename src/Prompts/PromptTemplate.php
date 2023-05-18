@@ -1,6 +1,6 @@
 <?php
 
-namespace Mindwave\Mindwave;
+namespace Mindwave\Mindwave\Prompts;
 
 use Illuminate\Support\Str;
 
