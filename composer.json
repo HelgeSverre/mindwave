@@ -10,9 +10,10 @@
     "license": "MIT",
     "authors": [
         {
+            "role": "Developer",
             "name": "Helge Sverre",
             "email": "helge.sverre@gmail.com",
-            "role": "Developer"
+            "homepage": "https://helgesver.re"
         }
     ],
     "require": {
