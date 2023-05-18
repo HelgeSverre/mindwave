@@ -8,6 +8,7 @@ use Countable;
 use Illuminate\Contracts\Support\Arrayable;
 use IteratorAggregate;
 use RuntimeException;
+use Traversable;
 
 class EmbeddingVector implements ArrayAccess, Arrayable, Countable, IteratorAggregate
 {
@@ -53,7 +54,7 @@ class EmbeddingVector implements ArrayAccess, Arrayable, Countable, IteratorAggr
         return count($this->values);
     }
 
-    public function getIterator(): \Traversable
+    public function getIterator(): Traversable
     {
         return new ArrayIterator($this->values);
     }

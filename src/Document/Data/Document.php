@@ -1,11 +1,11 @@
 <?php
 
-namespace Mindwave\Mindwave\Knowledge\Data;
+namespace Mindwave\Mindwave\Document\Data;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Traits\Macroable;
 
-class Knowledge
+class Document
 {
     use Macroable;
 

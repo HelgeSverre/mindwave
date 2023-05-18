@@ -4,11 +4,11 @@ namespace Mindwave\Mindwave\Contracts;
 
 use Illuminate\Support\Collection;
 use Mindwave\Mindwave\Embeddings\Data\EmbeddingVector;
-use Mindwave\Mindwave\Knowledge\Data\Knowledge;
+use Mindwave\Mindwave\Knowledge\Data\Document;
 
 interface Embeddings
 {
-    public function embed(Knowledge $knowledge): EmbeddingVector;
+    public function embed(Document $knowledge): EmbeddingVector;
 
     /**
      * @return EmbeddingVector[]

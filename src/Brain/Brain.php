@@ -5,7 +5,7 @@ namespace Mindwave\Mindwave\Brain;
 use Illuminate\Support\Str;
 use Mindwave\Mindwave\Contracts\Embeddings;
 use Mindwave\Mindwave\Contracts\Vectorstore;
-use Mindwave\Mindwave\Knowledge\Data\Knowledge;
+use Mindwave\Mindwave\Knowledge\Data\Document;
 use Mindwave\Mindwave\Vectorstore\Data\VectorStoreEntry;
 
 class Brain
@@ -24,7 +24,7 @@ class Brain
     {
         $results = $this->vectorstore->similaritySearchByVector(
             embedding: $this->embeddings->embedQuery($query),
-            k: $count,
+            count: $count,
         );
 
         $docs = [];
@@ -35,7 +35,7 @@ class Brain
 
     }
 
-    public function consume(Knowledge $knowledge): self
+    public function consume(Document $knowledge): self
     {
         // TODO(14 mai 2023) ~ Helge: Text splitter
 

@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Http;
 use Mindwave\Mindwave\Facades\KnowledgeLoader;
-use Mindwave\Mindwave\Knowledge\Data\Knowledge;
+use Mindwave\Mindwave\Knowledge\Data\Document;
 
 it('loads content from a PDFs', function ($file) {
     $pdfContent = file_get_contents($file);
@@ -11,7 +11,7 @@ it('loads content from a PDFs', function ($file) {
 
     $knowledge = KnowledgeLoader::fromPdf($pdfContent);
 
-    expect($knowledge)->toBeInstanceOf(Knowledge::class);
+    expect($knowledge)->toBeInstanceOf(Document::class);
     expect($knowledge->content())->toContain('Lorem ipsum');
 })->with([
     __DIR__.'/data/samples/sample-1-page.pdf',
@@ -30,14 +30,14 @@ it('loads content from a URL', function () {
 
     $knowledge = KnowledgeLoader::fromUrl('https://example.com');
 
-    expect($knowledge)->toBeInstanceOf(Knowledge::class);
+    expect($knowledge)->toBeInstanceOf(Document::class);
     expect($knowledge->content())->toBe('It works!');
 });
 
 it('loads content from HTML', function () {
     $knowledge = KnowledgeLoader::fromHTML('<html><head><title>Ignored</title></head><body><h1>It works!</h1></body></html>');
 
-    expect($knowledge)->toBeInstanceOf(Knowledge::class);
+    expect($knowledge)->toBeInstanceOf(Document::class);
     expect($knowledge->content())->toBe('It works!');
 });
 
@@ -46,6 +46,6 @@ it('loads content from text', function () {
 
     $knowledge = KnowledgeLoader::fromText($textContent);
 
-    expect($knowledge)->toBeInstanceOf(Knowledge::class);
+    expect($knowledge)->toBeInstanceOf(Document::class);
     expect($knowledge->content())->toBe($textContent);
 });

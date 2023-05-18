@@ -7,7 +7,10 @@ return [
     | Default LLM
     |--------------------------------------------------------------------------
     |
-    | todo: taylorized description
+    | The default LLM (Language Model) configuration defines the default LLM to use
+    | for generating responses. This option allows you to specify the default LLM
+    | provider to be used throughout the application. By default, the 'openai_chat'
+    | LLM is set. You can customize this option by updating the 'MINDWAVE_LLM' environment variable.
     */
 
     'default' => env('MINDWAVE_LLM', 'openai_chat'),
@@ -17,20 +20,23 @@ return [
     | LLMs
     |--------------------------------------------------------------------------
     |
-    | todo: taylorized description
+    | The LLMs configuration allows you to define different Language Model providers and their settings.
+    | Here we have 'openai_chat' and 'openai_completion' LLM providers with their respective models,
+    | API keys, organization IDs, and temperature settings for response generation.
     */
+
     'llms' => [
         'openai_chat' => [
-            'api_key' => env('MINDWAVE_LLM_OPENAI_CHAT_API_KEY'),
-            'org_id' => env('MINDWAVE_LLM_OPENAI_CHAT_ORG_ID'),
-            'model' => env('MINDWAVE_LLM_OPENAI_CHAT_MODEL', 'gpt-3.5-turbo'),
+            'api_key' => env('MINDWAVE_OPENAI_API_KEY'),
+            'org_id' => env('MINDWAVE_OPENAI_ORG_ID'),
+            'model' => env('MINDWAVE_OPENAI_MODEL', 'gpt-3.5-turbo'),
             'temperature' => 0.4,
         ],
 
         'openai_completion' => [
-            'api_key' => env('MINDWAVE_LLM_OPENAI_COMPLETION_API_KEY'),
-            'org_id' => env('MINDWAVE_LLM_OPENAI_COMPLETION_ORG_ID'),
-            'model' => 'text-davinci-003',
+            'api_key' => env('MINDWAVE_OPENAI_API_KEY'),
+            'org_id' => env('MINDWAVE_OPENAI_ORG_ID'),
+            'model' => env('MINDWAVE_OPENAI_MODEL', 'text-davinci-003'),
             'temperature' => 0.4,
         ],
     ],

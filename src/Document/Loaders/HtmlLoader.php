@@ -2,17 +2,17 @@
 
 namespace Mindwave\Mindwave\Knowledge\Loaders;
 
-use Mindwave\Mindwave\Contracts\KnowledgeLoader;
-use Mindwave\Mindwave\Knowledge\Data\Knowledge;
+use Mindwave\Mindwave\Contracts\DocumentLoader;
+use Mindwave\Mindwave\Document\Data\Document;
 use Mindwave\Mindwave\Support\TextUtils;
 
-class HtmlLoader implements KnowledgeLoader
+class HtmlLoader implements DocumentLoader
 {
-    public function load(mixed $data, array $meta = []): ?Knowledge
+    public function load(mixed $data, array $meta = []): ?Document
     {
         // TODO(14 mai 2023) ~ Helge: Allow elements to remove and whitespace normalization to be configured in config file.
 
-        return new Knowledge(
+        return new Document(
             content: TextUtils::cleanHtml($data),
             meta: $meta
         );

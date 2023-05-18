@@ -1,6 +1,6 @@
 <?php
 
-namespace Mindwave\Mindwave\LLM;
+namespace Mindwave\Mindwave\LLM\Drivers;
 
 use Mindwave\Mindwave\Contracts\LLM;
 

@@ -3,7 +3,7 @@
 use Illuminate\Support\Str;
 use Mindwave\Mindwave\Embeddings\Data\EmbeddingVector;
 use Mindwave\Mindwave\Embeddings\OpenAIEmbeddings;
-use Mindwave\Mindwave\Knowledge\Data\Knowledge;
+use Mindwave\Mindwave\Knowledge\Data\Document;
 
 it('embeds a query using OpenAI API', function () {
     $client = OpenAI::client(env('OPENAI_API_KEY'));
@@ -21,8 +21,8 @@ it('embeds a collection of knowledge items using OpenAI API', function () {
     $embeddings = new OpenAIEmbeddings($client);
 
     $result = $embeddings->embedMultiple([
-        new Knowledge('hello'),
-        new Knowledge('world'),
+        new Document('hello'),
+        new Document('world'),
     ]);
 
     expect($result)->toBeArray();
@@ -40,7 +40,7 @@ it('can embed knowledge that exceed the max token length of the embedding model.
     $embeddings = new OpenAIEmbeddings($client);
 
     $result = $embeddings->embedMultiple([
-        new Knowledge(Str::random(90000)),
+        new Document(Str::random(90000)),
     ]);
 
     expect($result)->toBeArray();
