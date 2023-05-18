@@ -31,6 +31,8 @@ class Brain
         );
 
         return $results;
+
+        // TODO(18 mai 2023) ~ Helge: unsure what we should do here yet...
         $docs = [];
 
         dump($results);
@@ -43,7 +45,7 @@ class Brain
 
     public function consume(Document $document): self
     {
-        // TODO(14 mai 2023) ~ Helge: Text splitter
+        // TODO(14 mai 2023) ~ Helge: Text splitter here
 
         $this->vectorstore->upsertVector(new VectorStoreEntry(
             id: $document->getMetaValue('id', Str::uuid()),
