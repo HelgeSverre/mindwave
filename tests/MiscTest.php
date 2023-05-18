@@ -1,6 +1,6 @@
 <?php
 
-use Mindwave\Mindwave\Embeddings\OpenAIEmbeddings;
+use Mindwave\Mindwave\Embeddings\Drivers\OpenAIEmbeddings;
 use Mindwave\Mindwave\Support\Similarity;
 
 it('Calculates similarity correctly', function () {
