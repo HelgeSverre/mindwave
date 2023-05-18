@@ -20,6 +20,9 @@ class Brain
         $this->embeddings = $embeddings;
     }
 
+    /**
+     * @return VectorStoreEntry[]
+     */
     public function search(string $query, int $count = 5): array
     {
         $results = $this->vectorstore->similaritySearchByVector(
@@ -27,12 +30,15 @@ class Brain
             count: $count,
         );
 
+        return $results;
         $docs = [];
 
+        dump($results);
         foreach ($results as $result) {
 
         }
 
+        return $docs;
     }
 
     public function consume(Document $document): self

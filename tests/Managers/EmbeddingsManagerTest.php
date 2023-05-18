@@ -16,6 +16,11 @@ it('returns the default driver', function () {
 });
 
 it('creates the OpenAIEmbeddings driver', function () {
+
+    Config::shouldReceive('get')
+        ->with('mindwave-embeddings.default')
+        ->andReturn('openai');
+
     Config::shouldReceive('get')
         ->with('mindwave-embeddings.embeddings.openai.api_key')
         ->andReturn('your_openai_api_key');
@@ -29,7 +34,7 @@ it('creates the OpenAIEmbeddings driver', function () {
         ->andReturn('your_openai_model');
 
     $manager = new EmbeddingsManager($this->app);
-    $driver = $manager->createOpenAIEmbeddingsDriver();
+    $driver = $manager->createOpenaiDriver();
 
     expect($driver)->toBeInstanceOf(OpenAIEmbeddings::class);
     expect($driver)->toBeInstanceOf(Embeddings::class);

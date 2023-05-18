@@ -5,10 +5,12 @@ namespace Mindwave\Mindwave\Agents;
 use Exception;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use Mindwave\Mindwave\Brain\Brain;
 use Mindwave\Mindwave\Contracts\LLM;
 use Mindwave\Mindwave\Contracts\Tool;
 use Mindwave\Mindwave\Memory\ChatMessageHistory;
-use Mindwave\Mindwave\PromptTemplate;
+use Mindwave\Mindwave\Prompts\PromptTemplate;
+use Mindwave\Mindwave\Vectorstore\Data\VectorStoreEntry;
 
 class Agent
 {
@@ -19,11 +21,14 @@ class Agent
 
     protected ChatMessageHistory $messageHistory;
 
-    public function __construct(LLM $llm, ChatMessageHistory $messageHistory, array $tools = [])
+    protected Brain $brain;
+
+    public function __construct(LLM $llm, ChatMessageHistory $messageHistory, Brain $brain, array $tools = [])
     {
         $this->llm = $llm;
         $this->messageHistory = $messageHistory;
         $this->tools = collect($tools);
+        $this->brain = $brain;
     }
 
     public function parseActionResponse(string $text): ?array
@@ -61,16 +66,21 @@ class Agent
     {
         $this->messageHistory->addUserMessage($input);
 
+        $relevantDocuments = $this->brain->search($input, count: 3);
+
         $initialPrompt = PromptTemplate::combine([
-            file_get_contents(__DIR__.'/../Prompts/1_prefix.txt'),
-            PromptTemplate::from(__DIR__.'/../Prompts/2_tools.txt')->format([
+            file_get_contents(__DIR__.'/../Prompts/Templates/prefix.txt'),
+            PromptTemplate::from(__DIR__.'/../Prompts/Templates/tools.txt')->format([
                 '[TOOL_DESCRIPTIONS]' => $this->tools->map(fn ($t) => sprintf('> %s: %s', $t->name(), $t->description()))->join("\n"),
                 '[TOOL_LIST]' => $this->tools->map(fn (Tool $tool) => $tool->name())->join(', '),
             ]),
-            PromptTemplate::from(__DIR__.'/../Prompts/history.txt')->format([
+            PromptTemplate::from(__DIR__.'/../Prompts/Templates/relevant_documents.txt')->format([
+                '[DOCUMENTS]' => collect($relevantDocuments)->map(fn (VectorStoreEntry $entry, $i) => "[$i] - ".$entry->metadata['_value'])->join("\n"),
+            ]),
+            PromptTemplate::from(__DIR__.'/../Prompts/Templates/history.txt')->format([
                 '[HISTORY]' => $this->messageHistory->conversationAsString('Human', 'Turid'),
             ]),
-            PromptTemplate::from(__DIR__.'/../Prompts/3_input.txt')->format([
+            PromptTemplate::from(__DIR__.'/../Prompts/Templates/3_input.txt')->format([
                 '[INPUT]' => $input,
             ]),
         ]);
@@ -84,6 +94,8 @@ class Agent
         // TODO(16 May 2023) ~ Helge: Output parser
         $parsed = $this->parseActionResponse($answer);
 
+        dump($parsed);
+
         if ($parsed['action'] === 'Final Answer') {
             $this->messageHistory->addAiMessage($parsed['action_input']);
 
@@ -92,7 +104,7 @@ class Agent
 
         $finalPrompt = PromptTemplate::combine([
             $initialPrompt,
-            PromptTemplate::from(__DIR__.'/../Prompts/4_tool_response.txt')->format([
+            PromptTemplate::from(__DIR__.'/../Prompts/tool_response.txt')->format([
                 '[TOOL_RESPONSE]' => $this->runTool($parsed),
             ]),
         ]);

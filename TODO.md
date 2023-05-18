@@ -1,4 +1,3 @@
-
 # TODO
 
 ## Done
@@ -30,8 +29,8 @@
 
 ## Next
 
-- [] expand LLM interface, add cohere and some other common llms to dogfood a suitable interface on.
-- [] Sketch out a simple QA Retrival Agent that uses a dummy brain to dogfood the LLM and Brain implementation
+- [] expand LLM interface, add some other common llms to dogfood a suitable interface on.
+- [] Sketch out a simple QA Retrieval Agent that uses a dummy brain to dogfood the LLM and Brain implementation
 - [] Add "dummy brain" (stores everything as an array) for testing
 
 ## Later
@@ -43,5 +42,5 @@
 - [] Replace .txt prompts with blade files.
 - [] PGVector vectorstore driver
 - [] Laravel Scout-ish feature where you can modify your Model to make it indexable, and toPrompt() method to describe
-  the model in natural language or as a CSV 
+  the model in natural language or as a CSV
 - [] Command to generate a Tool class (php artisan make:tool)

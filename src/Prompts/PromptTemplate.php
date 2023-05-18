@@ -27,9 +27,6 @@ class PromptTemplate
 
     public function format(array $replacements = []): string
     {
-        return collect($replacements)->reduce(
-            callback: fn ($final, $with, $replace) => $final->replace($replace, $with),
-            initial: Str::of($this->content)
-        )->toString();
+        return Str::swap($replacements, $this->content);
     }
 }
