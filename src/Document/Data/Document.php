@@ -34,7 +34,7 @@ class Document
         return $this->isEmpty() === false;
     }
 
-    public function meta(): array
+    public function metadata(): array
     {
         return $this->meta;
     }
@@ -52,7 +52,7 @@ class Document
     public function toArray(): array
     {
         return [
-            '_value' => $this->content,
+            '_mindwave_content' => $this->content,
             ...$this->meta,
         ];
     }
