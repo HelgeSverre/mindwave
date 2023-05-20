@@ -26,6 +26,7 @@
     "spatie/laravel-package-tools": "^1.14.0",
     "symfony/dom-crawler": "^6.2",
     "timkley/weaviate-php": "^0.3.0",
+    "wapmorgan/file-type-detector": "^1.1",
     "yethee/tiktoken": "^0.1.2"
   },
   "require-dev": {

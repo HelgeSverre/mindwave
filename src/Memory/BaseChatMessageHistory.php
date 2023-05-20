@@ -20,9 +20,9 @@ abstract class BaseChatMessageHistory
 
     abstract public static function fromMessages(array $messages): self;
 
-    abstract public function addAiMessage( $message): void;
+    abstract public function addAiMessage($message): void;
 
-    abstract public function addUserMessage( $message): void;
+    abstract public function addUserMessage($message): void;
 
     abstract public function clear(): void;
 
@@ -31,7 +31,8 @@ abstract class BaseChatMessageHistory
     public function conversationAsString(
         string $humanPrefix = 'Human',
         string $aiPrefix = 'AI'
-    ): string {
+    ): string
+    {
         $stringMessages = [];
 
         foreach ($this->messages as $m) {

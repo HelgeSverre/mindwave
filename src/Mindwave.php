@@ -2,10 +2,13 @@
 
 namespace Mindwave\Mindwave;
 
+use Mindwave\Mindwave\Agents\Agent;
 use Mindwave\Mindwave\Brain\Brain;
 use Mindwave\Mindwave\Contracts\Embeddings;
 use Mindwave\Mindwave\Contracts\LLM;
 use Mindwave\Mindwave\Contracts\Vectorstore;
+use Mindwave\Mindwave\Memory\BaseChatMessageHistory;
+use Mindwave\Mindwave\Memory\ConversationBufferMemory;
 
 class Mindwave
 {
@@ -22,6 +25,25 @@ class Mindwave
         $this->brain = new Brain(
             vectorstore: $vectorstore,
             embeddings: $embeddings,
+        );
+    }
+
+    public function agent(?BaseChatMessageHistory $memory = null): Agent
+    {
+        return new Agent(
+            llm: $this->llm,
+            messageHistory: $memory ?? ConversationBufferMemory::fromMessages([]),
+            brain: $this->brain,
+        );
+    }
+
+    public function agentWithTools(array $tools): Agent
+    {
+        return new Agent(
+            llm: $this->llm,
+            messageHistory: ConversationBufferMemory::fromMessages([]),
+            brain: $this->brain,
+            tools: $tools
         );
     }
 

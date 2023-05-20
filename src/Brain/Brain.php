@@ -6,6 +6,7 @@ use Illuminate\Support\Str;
 use Mindwave\Mindwave\Contracts\Embeddings;
 use Mindwave\Mindwave\Contracts\Vectorstore;
 use Mindwave\Mindwave\Document\Data\Document;
+use Mindwave\Mindwave\TextSplitters\RecursiveCharacterTextSplitter;
 use Mindwave\Mindwave\Vectorstore\Data\VectorStoreEntry;
 
 class Brain
@@ -45,13 +46,26 @@ class Brain
 
     public function consume(Document $document): self
     {
-        // TODO(14 mai 2023) ~ Helge: Text splitter here
+        $splitter = new RecursiveCharacterTextSplitter();
 
-        $this->vectorstore->upsertVector(new VectorStoreEntry(
-            id: $document->getMetaValue('id', Str::uuid()),
-            vector: $this->embeddings->embed($document),
-            metadata: $document->toArray(),
-        ));
+        $docs = $splitter->splitDocument($document);
+
+        $entries = [];
+
+        foreach ($docs as $chunkIndex => $doc) {
+
+            $entries[] = new VectorStoreEntry(
+                id: $doc->getMetaValue('id', Str::uuid()),
+                vector: $this->embeddings->embed($doc),
+                metadata: [
+                    '_mindwave_content' => $doc->content(),
+                    '_mindwave_chunk_index' => $chunkIndex,
+                    "metadata" => $doc->metadata(),
+                ],
+            );
+        }
+
+        $this->vectorstore->upsertVectors($entries);
 
         return $this;
     }

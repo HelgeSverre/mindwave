@@ -3,7 +3,7 @@
 namespace Mindwave\Mindwave\Facades;
 
 use Illuminate\Support\Facades\Facade;
-use Mindwave\Mindwave\Document\DocumentLoader as Concrete;
+use Mindwave\Mindwave\Document\Loader as Concrete;
 
 class DocumentLoader extends Facade
 {

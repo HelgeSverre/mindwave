@@ -4,7 +4,7 @@ namespace Mindwave\Mindwave;
 
 use Mindwave\Mindwave\Contracts\Embeddings;
 use Mindwave\Mindwave\Contracts\LLM;
-use Mindwave\Mindwave\Document\DocumentLoader;
+use Mindwave\Mindwave\Document\Loader;
 use Mindwave\Mindwave\Embeddings\EmbeddingsManager;
 use Mindwave\Mindwave\Facades\Vectorstore;
 use Mindwave\Mindwave\LLM\LLMManager;
@@ -48,7 +48,7 @@ class MindwaveServiceProvider extends PackageServiceProvider
         $this->app->singleton(LLM::class, fn($app) => $app['mindwave.llm.manager']->driver());
 
         // Misc
-        $this->app->bind('mindwave.document.loader', fn() => new DocumentLoader());
+        $this->app->bind('mindwave.document.loader', fn() => new Loader());
 
         // Shortcut
         $this->app->singleton('mindwave', fn($app) => new Mindwave(

@@ -12,7 +12,9 @@ class Similarity
     {
         // Check if the vectors have the same length
         if (count($vectorA) !== count($vectorB)) {
-            throw new InvalidArgumentException('Vectors must have the same length.');
+
+            dd($vectorA, $vectorB);
+            throw new InvalidArgumentException(sprintf("Vectors must have the same length, got %s and %s", count($vectorA), count($vectorB)));
         }
 
         // Calculate the dot product and magnitudes

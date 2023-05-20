@@ -29,7 +29,11 @@ class File implements Vectorstore
             $this->items = [];
 
             foreach ($data as $id => $item) {
-                $this->items[$id] = new VectorStoreEntry($id, $item['vector'], $item['metadata'] ?? null);
+                $this->items[$id] = new VectorStoreEntry(
+                    id: $id,
+                    vector: new EmbeddingVector($item['vector']),
+                    metadata: $item['metadata'] ?? null
+                );
             }
         } else {
             $this->items = [];
@@ -46,7 +50,7 @@ class File implements Vectorstore
 
             $data[$id] = [
                 'id' => $entry->id,
-                'vector' => $entry->vector,
+                'vector' => $entry->vector->toArray(),
                 'score' => $entry->score,
                 'metadata' => $entry->metadata,
             ];
@@ -101,9 +105,12 @@ class File implements Vectorstore
     public function similaritySearchByVector(EmbeddingVector $embedding, int $count = 5): array
     {
         return collect($this->items)
-            ->map(fn(VectorStoreEntry $entry) => $entry->cloneWithScore(
-                score: Similarity::cosine($entry->vector, $embedding)
-            ))
+            ->map(function (VectorStoreEntry $entry) use ($embedding) {
+
+                return $entry->cloneWithScore(
+                    score: Similarity::cosine($entry->vector, $embedding)
+                );
+            })
             ->sortByDesc(fn(VectorStoreEntry $entry) => $entry->score, SORT_NUMERIC)
             ->take($count)
             ->values()

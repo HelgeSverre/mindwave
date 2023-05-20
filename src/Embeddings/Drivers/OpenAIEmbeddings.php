@@ -30,8 +30,8 @@ class OpenAIEmbeddings implements Embeddings
     public function embedMultiple(array|Collection $items): array
     {
         return collect($items)
-            ->map(fn (Document $document) => $document->content())
-            ->pipe(fn (Collection $collection) => $this->embedInternal($collection->toArray()));
+            ->map(fn(Document $document) => $document->content())
+            ->pipe(fn(Collection $collection) => $this->embedInternal($collection->toArray()));
     }
 
     public function embedQuery(string $text): EmbeddingVector
@@ -40,7 +40,7 @@ class OpenAIEmbeddings implements Embeddings
     }
 
     /**
-     * @param  array<string>  $inputs
+     * @param array<string> $inputs
      * @return array<EmbeddingVector[]>
      */
     protected function embedInternal(array $inputs): array

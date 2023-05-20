@@ -71,20 +71,23 @@ class Agent
         // TODO(18 mai 2023) ~ Helge: Abstract away
         $initialPrompt = PromptTemplate::combine([
             file_get_contents(__DIR__ . '/../Prompts/Templates/prefix.txt'),
-            PromptTemplate::from(__DIR__ . '/../Prompts/Templates/tools.txt')->format([
+            $this->tools->isEmpty()
+                ? PromptTemplate::from(__DIR__ . '/../Prompts/Templates/no_tools.txt')->format()
+                : PromptTemplate::from(__DIR__ . '/../Prompts/Templates/tools.txt')->format([
                 '[TOOL_DESCRIPTIONS]' => $this->tools->map(fn($t) => sprintf('> %s: %s', $t->name(), $t->description()))->join("\n"),
                 '[TOOL_LIST]' => $this->tools->map(fn(Tool $tool) => $tool->name())->join(', '),
             ]),
             PromptTemplate::from(__DIR__ . '/../Prompts/Templates/relevant_documents.txt')->format([
-                '[DOCUMENTS]' => collect($relevantDocuments)->map(fn(VectorStoreEntry $entry, $i) => "[$i] - " . $entry->metadata['_value'])->join("\n"),
+                '[DOCUMENTS]' => collect($relevantDocuments)->map(fn(VectorStoreEntry $entry, $i) => "[$i] - " . $entry->metadata['_mindwave_content'])->join("\n"),
             ]),
             PromptTemplate::from(__DIR__ . '/../Prompts/Templates/history.txt')->format([
-                '[HISTORY]' => $this->messageHistory->conversationAsString('Human', 'Turid'),
+                '[HISTORY]' => $this->messageHistory->conversationAsString('Human', 'Mindwave'),
             ]),
             PromptTemplate::from(__DIR__ . '/../Prompts/Templates/input.txt')->format([
                 '[INPUT]' => $input,
             ]),
         ]);
+
 
         $answer = $this->llm->predict($initialPrompt);
 
@@ -103,12 +106,13 @@ class Agent
             return $parsed['action_input'];
         }
 
+
         // TODO(18 mai 2023) ~ Helge: Put this in a loop until final answer found or max attempts is exhausted
         // ======================================================================================================
 
         $finalPrompt = PromptTemplate::combine([
             $initialPrompt,
-            PromptTemplate::from(__DIR__ . '/../Prompts/tool_response.txt')->format([
+            PromptTemplate::from(__DIR__ . '/../Prompts/Templates/tool_response.txt')->format([
                 '[TOOL_RESPONSE]' => $this->runTool($parsed),
             ]),
         ]);

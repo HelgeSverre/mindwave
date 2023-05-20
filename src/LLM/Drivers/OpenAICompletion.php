@@ -18,9 +18,10 @@ class OpenAICompletion implements LLM
     public function __construct(
         Client $client,
         string $model = 'text-davinci-003',
-        int $maxTokens = 800,
-        float $temperature = 0.7,
-    ) {
+        int    $maxTokens = 800,
+        float  $temperature = 0.7,
+    )
+    {
         $this->client = $client;
         $this->model = $model;
         $this->maxTokens = $maxTokens;

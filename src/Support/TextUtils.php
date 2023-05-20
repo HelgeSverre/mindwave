@@ -24,9 +24,10 @@ class TextUtils
 
     public static function cleanHtml(
         string $html,
-        array $elementsToRemove = ['script', 'style', 'link', 'head', 'noscript', 'template', 'svg', 'br', 'hr'],
-        bool $normalizeWhitespace = true
-    ): string {
+        array  $elementsToRemove = ['script', 'style', 'link', 'head', 'noscript', 'template', 'svg', 'br', 'hr'],
+        bool   $normalizeWhitespace = true
+    ): string
+    {
         $inputHtml = $normalizeWhitespace
             ? Str::of($html)
                 ->replace('<', ' <')
