@@ -19,7 +19,7 @@ class PdfLoader implements DocumentLoader
     {
         return new Document(
             content: $this->parser->parseContent($data)->getText(),
-            meta: $meta,
+            metadata: $meta,
         );
     }
 }

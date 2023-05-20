@@ -13,10 +13,10 @@ class Document
 
     protected array $meta = [];
 
-    public function __construct(string $content, array $meta = [])
+    public function __construct(string $content, array $metadata = [])
     {
         $this->content = $content;
-        $this->meta = $meta;
+        $this->meta = $metadata;
     }
 
     public function content(): string

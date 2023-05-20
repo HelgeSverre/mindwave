@@ -21,7 +21,7 @@ class WebLoader implements DocumentLoader
 
         return new Document(
             content: TextUtils::cleanHtml($response->body()),
-            meta: array_merge([
+            metadata: array_merge([
                 'url' => $data,
                 'effective_url' => (string) $response->effectiveUri(),
             ], $meta)

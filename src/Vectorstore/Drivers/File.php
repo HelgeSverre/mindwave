@@ -29,21 +29,26 @@ class File implements Vectorstore
             $this->items = [];
 
             foreach ($data as $id => $item) {
-                $this->items[$id] = new VectorStoreEntry($id, $item['vector'], $item['score']);
+                $this->items[$id] = new VectorStoreEntry($id, $item['vector'], $item['metadata'] ?? null);
             }
         } else {
             $this->items = [];
         }
     }
 
+    // TODO(20 mai 2023) ~ Helge: do this in destructor?
     protected function saveToFile(): void
     {
         $data = [];
 
         foreach ($this->items as $id => $entry) {
+            /** @var VectorStoreEntry $entry */
+
             $data[$id] = [
+                'id' => $entry->id,
                 'vector' => $entry->vector,
                 'score' => $entry->score,
+                'metadata' => $entry->metadata,
             ];
         }
 

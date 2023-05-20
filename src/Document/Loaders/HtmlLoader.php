@@ -14,7 +14,7 @@ class HtmlLoader implements DocumentLoader
 
         return new Document(
             content: TextUtils::cleanHtml($data),
-            meta: $meta
+            metadata: $meta
         );
     }
 }
