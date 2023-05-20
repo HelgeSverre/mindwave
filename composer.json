@@ -16,9 +16,6 @@
       "homepage": "https://helgesver.re"
     }
   ],
-  "suggest": {
-    "ankane/pgvector": "^0.1.2"
-  },
   "require": {
     "php": "^8.1",
     "guzzlehttp/guzzle": "^7.5",
