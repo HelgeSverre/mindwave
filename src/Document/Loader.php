@@ -7,8 +7,9 @@ use Mindwave\Mindwave\Document\Loaders\HtmlLoader;
 use Mindwave\Mindwave\Document\Loaders\PdfLoader;
 use Mindwave\Mindwave\Document\Loaders\WebLoader;
 use Smalot\PdfParser\Parser;
+use wapmorgan\FileTypeDetector\Detector;
 
-class DocumentLoader
+class Loader
 {
     protected array $loaders = [];
 
@@ -17,6 +18,7 @@ class DocumentLoader
         $this->loaders = $loaders ?: $this->defaultLoaders();
     }
 
+    // TODO(20 mai 2023) ~ Helge: Register in service provider, use manager pattern instead
     protected function defaultLoaders(): array
     {
         return [
@@ -26,12 +28,12 @@ class DocumentLoader
         ];
     }
 
-    public function registerLoader(string $loaderName, DocumentLoader $loader): void
+    public function registerLoader(string $loaderName, Loader $loader): void
     {
         $this->loaders[$loaderName] = $loader;
     }
 
-    public function load(string $loaderName, $input, ?array $meta = []): ?Document
+    public function loader(string $loaderName, $input, ?array $meta = []): ?Document
     {
         if (isset($this->loaders[$loaderName])) {
             return $this->loaders[$loaderName]->load($input, $meta);
@@ -42,18 +44,35 @@ class DocumentLoader
 
     public function fromPdf($pdf, ?array $meta = []): ?Document
     {
-        return $this->load('pdf', $pdf, $meta);
+        return $this->loader('pdf', $pdf, $meta);
     }
 
     public function fromHtml($html, ?array $meta = []): ?Document
     {
-        return $this->load('html', $html, $meta);
+        return $this->loader('html', $html, $meta);
     }
 
     public function fromUrl($url, ?array $meta = []): ?Document
     {
-        return $this->load('url', $url, $meta);
+        return $this->loader('url', $url, $meta);
     }
+
+
+    public function load($data, ?array $meta = []): ?Document
+    {
+        $stream = fopen('php://memory', 'r+');
+        fwrite($stream, $data);
+        rewind($stream);
+
+        $type = Detector::detectByContent($stream);
+
+        fclose($stream);
+
+        dump($type);
+
+        return null;
+    }
+
 
     public function fromText($text, ?array $meta = []): ?Document
     {
