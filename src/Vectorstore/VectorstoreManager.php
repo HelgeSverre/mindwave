@@ -4,6 +4,7 @@ namespace Mindwave\Mindwave\Vectorstore;
 
 use Illuminate\Support\Manager;
 use Mindwave\Mindwave\Contracts\Vectorstore;
+use Mindwave\Mindwave\Vectorstore\Drivers\File;
 use Mindwave\Mindwave\Vectorstore\Drivers\InMemory;
 use Mindwave\Mindwave\Vectorstore\Drivers\Pinecone;
 use Mindwave\Mindwave\Vectorstore\Drivers\Weaviate;
@@ -19,7 +20,7 @@ class VectorstoreManager extends Manager
 
     public function createFileDriver(): Vectorstore
     {
-        return new InMemory(
+        return new File(
             path: $this->config->get('mindwave-vectorstore.vectorstores.file.path')
         );
     }

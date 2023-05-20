@@ -9,18 +9,23 @@ use Mindwave\Mindwave\Vectorstore\Data\VectorStoreEntry;
 
 class File implements Vectorstore
 {
-    protected string $filepath;
+    protected string $path;
+
+    /**
+     * @var array<string, VectorStoreEntry>
+     */
+    protected array $items = [];
 
     public function __construct(string $path)
     {
-        $this->filepath = $path;
+        $this->path = $path;
         $this->loadFromFile();
     }
 
     protected function loadFromFile(): void
     {
-        if (file_exists($this->filepath)) {
-            $data = json_decode(file_get_contents($this->filepath), true);
+        if (file_exists($this->path)) {
+            $data = json_decode(file_get_contents($this->path), true);
             $this->items = [];
 
             foreach ($data as $id => $item) {
@@ -42,7 +47,13 @@ class File implements Vectorstore
             ];
         }
 
-        file_put_contents($this->filepath, json_encode($data));
+        $directory = dirname($this->path);
+
+        if (!file_exists($directory)) {
+            mkdir($directory, 0777, true);
+        }
+
+        file_put_contents($this->path, json_encode($data));
     }
 
     public function fetchById(string $id): ?VectorStoreEntry

@@ -25,7 +25,7 @@ return [
         ],
 
         'file' => [
-            "path" => storage_path("mindwave/vectorstore.json")
+            "path" => env("MINDWAVE_VECTORSTORE_PATH", storage_path("mindwave/vectorstore.json"))
         ],
 
         'pinecone' => [
