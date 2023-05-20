@@ -24,6 +24,16 @@ class Document
         return $this->content;
     }
 
+    public function isEmpty(): bool
+    {
+        return trim($this->content) == "";
+    }
+
+    public function isNotEmpty(): bool
+    {
+        return $this->isEmpty() === false;
+    }
+
     public function meta(): array
     {
         return $this->meta;

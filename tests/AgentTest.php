@@ -7,7 +7,7 @@ use Mindwave\Mindwave\Document\Data\Document;
 use Mindwave\Mindwave\Facades\Embeddings;
 use Mindwave\Mindwave\Facades\LLM;
 use Mindwave\Mindwave\Facades\Vectorstore;
-use Mindwave\Mindwave\Memory\ChatMessageHistory;
+use Mindwave\Mindwave\Memory\ConversationBufferMemory;
 
 it('can correctly list the colors from a file', function () {
 
@@ -23,7 +23,7 @@ it('can correctly list the colors from a file', function () {
 
     $agent = new Agent(
         llm: LLM::driver(),
-        messageHistory: ChatMessageHistory::fromMessages([]),
+        messageHistory: ConversationBufferMemory::fromMessages([]),
         brain: $brain,
     );
 
@@ -57,7 +57,7 @@ it('We can use an agent to ask questions about the contents of a text file', fun
 
     $agent = new Agent(
         llm: LLM::driver(),
-        messageHistory: ChatMessageHistory::fromMessages([]),
+        messageHistory: ConversationBufferMemory::fromMessages([]),
         brain: $brain,
     );
 

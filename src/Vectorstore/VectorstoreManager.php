@@ -17,6 +17,13 @@ class VectorstoreManager extends Manager
         return $this->config->get('mindwave-vectorstore.default');
     }
 
+    public function createFileDriver(): Vectorstore
+    {
+        return new InMemory(
+            path: $this->config->get('mindwave-vectorstore.vectorstores.file.path')
+        );
+    }
+
     public function createArrayDriver(): Vectorstore
     {
         return new InMemory();

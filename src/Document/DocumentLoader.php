@@ -5,7 +5,7 @@ namespace Mindwave\Mindwave\Document;
 use Mindwave\Mindwave\Document\Data\Document;
 use Mindwave\Mindwave\Document\Loaders\HtmlLoader;
 use Mindwave\Mindwave\Document\Loaders\PdfLoader;
-use Mindwave\Mindwave\Document\Loaders\UrlLoader;
+use Mindwave\Mindwave\Document\Loaders\WebLoader;
 use Smalot\PdfParser\Parser;
 
 class DocumentLoader
@@ -22,7 +22,7 @@ class DocumentLoader
         return [
             'pdf' => new PdfLoader(new Parser()),
             'html' => new HtmlLoader(),
-            'url' => new UrlLoader(),
+            'url' => new WebLoader(),
         ];
     }
 

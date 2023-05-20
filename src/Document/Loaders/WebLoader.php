@@ -7,7 +7,7 @@ use Mindwave\Mindwave\Contracts\DocumentLoader;
 use Mindwave\Mindwave\Document\Data\Document;
 use Mindwave\Mindwave\Support\TextUtils;
 
-class UrlLoader implements DocumentLoader
+class WebLoader implements DocumentLoader
 {
     public function load(mixed $data, array $meta = []): ?Document
     {

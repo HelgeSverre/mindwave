@@ -2,8 +2,11 @@
 
 namespace Mindwave\Mindwave;
 
+use Mindwave\Mindwave\Contracts\Embeddings;
+use Mindwave\Mindwave\Contracts\LLM;
 use Mindwave\Mindwave\Document\DocumentLoader;
 use Mindwave\Mindwave\Embeddings\EmbeddingsManager;
+use Mindwave\Mindwave\Facades\Vectorstore;
 use Mindwave\Mindwave\LLM\LLMManager;
 use Mindwave\Mindwave\Vectorstore\VectorstoreManager;
 use Spatie\LaravelPackageTools\Package;
@@ -31,14 +34,29 @@ class MindwaveServiceProvider extends PackageServiceProvider
         // ->hasCommand(MindwaveCommand::class)
     }
 
+
     public function registeringPackage()
     {
         // Managers
-        $this->app->singleton('mindwave.embeddings.manager', fn ($app) => new EmbeddingsManager($app));
-        $this->app->singleton('mindwave.vectorstore.manager', fn ($app) => new VectorstoreManager($app));
-        $this->app->singleton('mindwave.llm.manager', fn ($app) => new LLMManager($app));
+        $this->app->singleton('mindwave.embeddings.manager', fn($app) => new EmbeddingsManager($app));
+        $this->app->singleton('mindwave.vectorstore.manager', fn($app) => new VectorstoreManager($app));
+        $this->app->singleton('mindwave.llm.manager', fn($app) => new LLMManager($app));
+
+        // Interfaces
+        $this->app->singleton(Embeddings::class, fn($app) => $app['mindwave.embeddings.manager']->driver());
+        $this->app->singleton(Vectorstore::class, fn($app) => $app['mindwave.vectorstore.manager']->driver());
+        $this->app->singleton(LLM::class, fn($app) => $app['mindwave.llm.manager']->driver());
 
         // Misc
-        $this->app->bind('mindwave.document.loader', fn () => new DocumentLoader());
+        $this->app->bind('mindwave.document.loader', fn() => new DocumentLoader());
+
+        // Shortcut
+        $this->app->singleton('mindwave', fn($app) => new Mindwave(
+            llm: $app->make(LLM::class),
+            embeddings: $app->make(Embeddings::class),
+            vectorstore: $app->make(Vectorstore::class),
+        ));
     }
+
+
 }

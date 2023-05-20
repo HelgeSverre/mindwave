@@ -21,7 +21,7 @@ class Brain
     }
 
     /**
-     * @return VectorStoreEntry[]
+     * @return Document[]
      */
     public function search(string $query, int $count = 5): array
     {

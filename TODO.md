@@ -25,7 +25,6 @@
 
 - [] Pinecone vectorstore driver ( index = collection, meta = meta) + tests
 - [] Weaviate vectorstore driver ( collection = collection, properties = meta) + tests
-- [] Milvus vectorstore driver ( collection = collection, properties = meta) + tests
 
 ## Next
 
@@ -35,7 +34,7 @@
 
 ## Later
 
-- [] Sketch out Brain class that is an abstraction around vectorstores that operate on Knowledge
+- [] Sketch out Brain class that is an abstraction around vectorstores that operate on Documents
 - [] Port the different "agent types" from LangChain, but simplify them.
   text, with converters for other filetypes (ex: pdf -> text))
 - [] Write some simple tests that shows that an agent can answer a simple question based on the content of a text file.
@@ -44,3 +43,4 @@
 - [] Laravel Scout-ish feature where you can modify your Model to make it indexable, and toPrompt() method to describe
   the model in natural language or as a CSV
 - [] Command to generate a Tool class (php artisan make:tool)
+- [] Milvus vectorstore driver ( collection = collection, properties = meta) + tests

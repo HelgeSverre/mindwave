@@ -24,6 +24,10 @@ return [
             // Has no configuration, used for testing
         ],
 
+        'file' => [
+            "path" => storage_path("mindwave/vectorstore.json")
+        ],
+
         'pinecone' => [
             'api_key' => env('MINDWAVE_PINECONE_API_KEY'),
             'environment' => env('MINDWAVE_PINECONE_ENVIRONMENT'),

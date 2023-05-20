@@ -9,7 +9,7 @@ class HumanMessage extends BaseMessage
         return "<|im_start|>user\n".$this->content."\n<|im_end|>";
     }
 
-    public function getType(): string
+    public function type(): string
     {
         return 'human';
     }

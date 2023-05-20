@@ -2,7 +2,9 @@
 
 namespace Mindwave\Mindwave\Message;
 
-abstract class BaseMessage
+use Mindwave\Mindwave\Contracts\Message;
+
+abstract class BaseMessage implements Message
 {
     protected string $content;
 
@@ -17,10 +19,20 @@ abstract class BaseMessage
     // TODO(11 May 2023) ~ Helge: remove
     abstract public function formatChatML(): string;
 
-    abstract public function getType(): string;
+    abstract public function type(): string;
 
-    public function getContent(): string
+    public function content(): string
     {
         return $this->content;
+    }
+
+    public function toArray(): array
+    {
+        return [
+            // TODO(20 mai 2023) ~ Helge: revisit if this should be "role" instead
+            'type' => $this->type(),
+            'content' => $this->content(),
+            'chatml' => $this->formatChatML(),
+        ];
     }
 }
