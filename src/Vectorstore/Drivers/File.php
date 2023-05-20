@@ -47,7 +47,6 @@ class File implements Vectorstore
 
         foreach ($this->items as $id => $entry) {
             /** @var VectorStoreEntry $entry */
-
             $data[$id] = [
                 'id' => $entry->id,
                 'vector' => $entry->vector->toArray(),
@@ -58,7 +57,7 @@ class File implements Vectorstore
 
         $directory = dirname($this->path);
 
-        if (!file_exists($directory)) {
+        if (! file_exists($directory)) {
             mkdir($directory, 0777, true);
         }
 
@@ -73,7 +72,7 @@ class File implements Vectorstore
     public function fetchByIds(array $ids): array
     {
         return collect($ids)
-            ->map(fn($id) => $this->fetchById($id))
+            ->map(fn ($id) => $this->fetchById($id))
             ->filter()
             ->values()
             ->all();
@@ -111,7 +110,7 @@ class File implements Vectorstore
                     score: Similarity::cosine($entry->vector, $embedding)
                 );
             })
-            ->sortByDesc(fn(VectorStoreEntry $entry) => $entry->score, SORT_NUMERIC)
+            ->sortByDesc(fn (VectorStoreEntry $entry) => $entry->score, SORT_NUMERIC)
             ->take($count)
             ->values()
             ->all();

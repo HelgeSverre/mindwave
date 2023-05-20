@@ -57,7 +57,6 @@ class Loader
         return $this->loader('url', $url, $meta);
     }
 
-
     public function load($data, ?array $meta = []): ?Document
     {
         $stream = fopen('php://memory', 'r+');
@@ -72,7 +71,6 @@ class Loader
 
         return null;
     }
-
 
     public function fromText($text, ?array $meta = []): ?Document
     {

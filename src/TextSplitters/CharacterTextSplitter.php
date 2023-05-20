@@ -2,7 +2,6 @@
 
 namespace Mindwave\Mindwave\TextSplitters;
 
-
 class CharacterTextSplitter extends TextSplitter
 {
     protected string $separator;

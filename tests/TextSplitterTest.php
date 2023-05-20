@@ -1,6 +1,5 @@
 <?php
 
-
 use Mindwave\Mindwave\Document\Data\Document;
 use Mindwave\Mindwave\Facades\DocumentLoader;
 use Mindwave\Mindwave\TextSplitters\CharacterTextSplitter;
@@ -8,7 +7,7 @@ use Mindwave\Mindwave\TextSplitters\RecursiveCharacterTextSplitter;
 
 it('splits the text into chunks')
     ->expect(function () {
-        $text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed accumsan tortor id ex tincidunt condimentum. Nulla bibendum urna nec laoreet euismod. Suspendisse tempor ex eget nibh gravida interdum. Duis convallis urna at diam mattis, a dictum massa egestas. Nam ac orci vitae justo vulputate sagittis. Fusce consectetur rutrum arcu in convallis. Aliquam venenatis libero nec sem ultricies placerat. Pellentesque vel metus non ligula finibus finibus. Suspendisse id nisl id tellus dapibus egestas.";
+        $text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed accumsan tortor id ex tincidunt condimentum. Nulla bibendum urna nec laoreet euismod. Suspendisse tempor ex eget nibh gravida interdum. Duis convallis urna at diam mattis, a dictum massa egestas. Nam ac orci vitae justo vulputate sagittis. Fusce consectetur rutrum arcu in convallis. Aliquam venenatis libero nec sem ultricies placerat. Pellentesque vel metus non ligula finibus finibus. Suspendisse id nisl id tellus dapibus egestas.';
 
         $splitter = new CharacterTextSplitter();
         $chunks = $splitter->splitText($text);
@@ -17,10 +16,9 @@ it('splits the text into chunks')
     })
     ->toBeGreaterThan(0);
 
-
 it('splits pdf files into chunks')
     ->expect(function () {
-        $text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed accumsan tortor id ex tincidunt condimentum. Nulla bibendum urna nec laoreet euismod. Suspendisse tempor ex eget nibh gravida interdum. Duis convallis urna at diam mattis, a dictum massa egestas. Nam ac orci vitae justo vulputate sagittis. Fusce consectetur rutrum arcu in convallis. Aliquam venenatis libero nec sem ultricies placerat. Pellentesque vel metus non ligula finibus finibus. Suspendisse id nisl id tellus dapibus egestas.";
+        $text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed accumsan tortor id ex tincidunt condimentum. Nulla bibendum urna nec laoreet euismod. Suspendisse tempor ex eget nibh gravida interdum. Duis convallis urna at diam mattis, a dictum massa egestas. Nam ac orci vitae justo vulputate sagittis. Fusce consectetur rutrum arcu in convallis. Aliquam venenatis libero nec sem ultricies placerat. Pellentesque vel metus non ligula finibus finibus. Suspendisse id nisl id tellus dapibus egestas.';
 
         $splitter = new CharacterTextSplitter();
         $chunks = $splitter->splitText($text);
@@ -35,10 +33,9 @@ it('loads content from a PDFs', function ($file) {
     expect($pdfContent)->not()->toBeNull();
 
     $document = DocumentLoader::fromPdf($pdfContent, [
-        "id" => "test",
-        "source" => $file
+        'id' => 'test',
+        'source' => $file,
     ]);
-
 
     $splitter = new RecursiveCharacterTextSplitter(["\t", "\n"], chunkSize: 180, chunkOverlap: 80);
 
@@ -48,10 +45,9 @@ it('loads content from a PDFs', function ($file) {
     expect($document)->toBeInstanceOf(Document::class);
     expect($document->content())->toContain('Lorem ipsum');
 })->with([
-    __DIR__ . '/data/samples/sample-1-page.pdf',
-    __DIR__ . '/data/samples/sample-2-pages.pdf',
+    __DIR__.'/data/samples/sample-1-page.pdf',
+    __DIR__.'/data/samples/sample-2-pages.pdf',
 ]);
-
 
 it('splits the text using a custom separator')
     ->expect(function () {
@@ -67,9 +63,9 @@ it('splits the text using a custom separator')
 it('creates documents from texts')
     ->expect(function () {
         $texts = [
-            "Lorem ipsum dolor",
-            "sit amet, consectetur",
-            "adipiscing elit"
+            'Lorem ipsum dolor',
+            'sit amet, consectetur',
+            'adipiscing elit',
         ];
 
         $splitter = new CharacterTextSplitter();
@@ -84,7 +80,7 @@ it('splits documents')
         $documents = [
             new Document('Lorem ipsum dolor'),
             new Document('sit amet, consectetur'),
-            new Document('adipiscing elit')
+            new Document('adipiscing elit'),
         ];
 
         $splitter = new CharacterTextSplitter();
@@ -93,5 +89,3 @@ it('splits documents')
         return count($splitDocuments);
     })
     ->toBeGreaterThan(0);
-
-

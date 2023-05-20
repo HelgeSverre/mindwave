@@ -60,7 +60,7 @@ class Brain
                 metadata: [
                     '_mindwave_content' => $doc->content(),
                     '_mindwave_chunk_index' => $chunkIndex,
-                    "metadata" => $doc->metadata(),
+                    'metadata' => $doc->metadata(),
                 ],
             );
         }

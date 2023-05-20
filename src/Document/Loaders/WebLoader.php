@@ -23,7 +23,7 @@ class WebLoader implements DocumentLoader
             content: TextUtils::cleanHtml($response->body()),
             metadata: array_merge([
                 'url' => $data,
-                'effective_url' => (string)$response->effectiveUri(),
+                'effective_url' => (string) $response->effectiveUri(),
             ], $meta)
         );
     }

@@ -26,7 +26,7 @@ class Document
 
     public function isEmpty(): bool
     {
-        return trim($this->content) == "";
+        return trim($this->content) == '';
     }
 
     public function isNotEmpty(): bool

@@ -11,6 +11,6 @@ class Mindwave extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return "mindwave";
+        return 'mindwave';
     }
 }

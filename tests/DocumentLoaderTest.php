@@ -14,13 +14,13 @@ it('loads content from a PDFs', function ($file) {
     expect($knowledge)->toBeInstanceOf(Document::class);
     expect($knowledge->content())->toContain('Lorem ipsum');
 })->with([
-    __DIR__ . '/data/samples/sample-1-page.pdf',
-    __DIR__ . '/data/samples/sample-2-pages.pdf',
+    __DIR__.'/data/samples/sample-1-page.pdf',
+    __DIR__.'/data/samples/sample-2-pages.pdf',
 ]);
 
 // TODO(14 mai 2023) ~ Helge: Should null be returned, or an Error Object (functional optional/some pattern)?
 it('If PDF is invalid, exception is thrown.', function () {
-    expect(fn() => DocumentLoader::fromPdf('Not a valid PDF'))->toThrow(Exception::class);
+    expect(fn () => DocumentLoader::fromPdf('Not a valid PDF'))->toThrow(Exception::class);
 });
 
 it('loads content from a URL', function () {
@@ -50,7 +50,6 @@ it('loads content from text', function () {
     expect($knowledge->content())->toBe($textContent);
 });
 
-
 it('can auto detect which content is in the file', function ($file) {
 
     dump($file);
@@ -58,20 +57,19 @@ it('can auto detect which content is in the file', function ($file) {
     $document = DocumentLoader::load(file_get_contents($file));
     // TODO(20 mai 2023) ~ Helge: finish this test
 
-
-//    expect($document)->toBeInstanceOf(Document::class, "Failed to parse: {$file}");
-//    expect($document->content())->toBeString("Failed to get text from {$file}");
+    //    expect($document)->toBeInstanceOf(Document::class, "Failed to parse: {$file}");
+    //    expect($document->content())->toBeString("Failed to get text from {$file}");
 })->with([
-    __DIR__ . '/data/samples/flags-royal-palace-norway-en.txt',
-    __DIR__ . "/data/samples/file-sample_100kB.odt",
-    __DIR__ . "/data/samples/file-sample_100kB.rtf",
-    __DIR__ . "/data/samples/file_example_XLS_1000.xls",
-    __DIR__ . "/data/samples/Financial Sample.xlsx",
-    __DIR__ . "/data/samples/podcast.rss",
-    __DIR__ . "/data/samples/sample.xml",
-    __DIR__ . "/data/samples/sample-1-page.docx",
-    __DIR__ . "/data/samples/sample-1-page.pdf",
-    __DIR__ . "/data/samples/sample-2-pages.docx",
-    __DIR__ . "/data/samples/sample-2-pages.pdf",
-    __DIR__ . "/data/samples/samplepptx.pptx",
+    __DIR__.'/data/samples/flags-royal-palace-norway-en.txt',
+    __DIR__.'/data/samples/file-sample_100kB.odt',
+    __DIR__.'/data/samples/file-sample_100kB.rtf',
+    __DIR__.'/data/samples/file_example_XLS_1000.xls',
+    __DIR__.'/data/samples/Financial Sample.xlsx',
+    __DIR__.'/data/samples/podcast.rss',
+    __DIR__.'/data/samples/sample.xml',
+    __DIR__.'/data/samples/sample-1-page.docx',
+    __DIR__.'/data/samples/sample-1-page.pdf',
+    __DIR__.'/data/samples/sample-2-pages.docx',
+    __DIR__.'/data/samples/sample-2-pages.pdf',
+    __DIR__.'/data/samples/samplepptx.pptx',
 ]);

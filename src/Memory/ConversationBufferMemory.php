@@ -9,7 +9,7 @@ use Mindwave\Mindwave\Message\HumanMessage;
 class ConversationBufferMemory extends BaseChatMessageHistory
 {
     /**
-     * @param array<array{role: string, content: string}> $messages
+     * @param  array<array{role: string, content: string}>  $messages
      */
     public static function fromMessages(array $messages): self
     {
@@ -48,7 +48,7 @@ class ConversationBufferMemory extends BaseChatMessageHistory
     public function toArray(): array
     {
         return array_map(
-            fn(Message $message) => $message->toArray(),
+            fn (Message $message) => $message->toArray(),
             $this->messages
         );
     }

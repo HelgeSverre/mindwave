@@ -2,23 +2,19 @@
 
 namespace Mindwave\Mindwave\TextSplitters;
 
-
 class RecursiveCharacterTextSplitter extends TextSplitter
 {
     protected array $separators;
 
-
     public function __construct(
         array $separators = ["\n\n", "\n", ' ', ''],
-        int   $chunkSize = 1000,
-        int   $chunkOverlap = 200
-    )
-    {
+        int $chunkSize = 1000,
+        int $chunkOverlap = 200
+    ) {
         parent::__construct($chunkSize, $chunkOverlap);
 
         $this->separators = $separators;
     }
-
 
     public function splitText(string $text): array
     {
@@ -69,5 +65,4 @@ class RecursiveCharacterTextSplitter extends TextSplitter
 
         return $finalChunks;
     }
-
 }

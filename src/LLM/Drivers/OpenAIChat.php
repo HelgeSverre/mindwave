@@ -19,10 +19,9 @@ class OpenAIChat implements LLM
     public function __construct(
         Client $client,
         string $model = 'gpt-3.5-turbo',
-        int    $maxTokens = 800,
-        float  $temperature = 0.7,
-    )
-    {
+        int $maxTokens = 800,
+        float $temperature = 0.7,
+    ) {
         $this->client = $client;
         $this->model = $model;
         $this->maxTokens = $maxTokens;

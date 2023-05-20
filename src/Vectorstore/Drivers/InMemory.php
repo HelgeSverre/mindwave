@@ -22,7 +22,7 @@ class InMemory implements Vectorstore
     public function fetchByIds(array $ids): array
     {
         return collect($ids)
-            ->map(fn($id) => $this->fetchById($id))
+            ->map(fn ($id) => $this->fetchById($id))
             ->filter()
             ->values()
             ->all();
@@ -53,10 +53,10 @@ class InMemory implements Vectorstore
     public function similaritySearchByVector(EmbeddingVector $embedding, int $count = 5): array
     {
         return collect($this->items)
-            ->map(fn(VectorStoreEntry $entry) => $entry->cloneWithScore(
+            ->map(fn (VectorStoreEntry $entry) => $entry->cloneWithScore(
                 score: Similarity::cosine($entry->vector, $embedding)
             ))
-            ->sortByDesc(fn(VectorStoreEntry $entry) => $entry->score, SORT_NUMERIC)
+            ->sortByDesc(fn (VectorStoreEntry $entry) => $entry->score, SORT_NUMERIC)
             ->take($count)
             ->values()
             ->all();

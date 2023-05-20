@@ -34,29 +34,26 @@ class MindwaveServiceProvider extends PackageServiceProvider
         // ->hasCommand(MindwaveCommand::class)
     }
 
-
     public function registeringPackage()
     {
         // Managers
-        $this->app->singleton('mindwave.embeddings.manager', fn($app) => new EmbeddingsManager($app));
-        $this->app->singleton('mindwave.vectorstore.manager', fn($app) => new VectorstoreManager($app));
-        $this->app->singleton('mindwave.llm.manager', fn($app) => new LLMManager($app));
+        $this->app->singleton('mindwave.embeddings.manager', fn ($app) => new EmbeddingsManager($app));
+        $this->app->singleton('mindwave.vectorstore.manager', fn ($app) => new VectorstoreManager($app));
+        $this->app->singleton('mindwave.llm.manager', fn ($app) => new LLMManager($app));
 
         // Interfaces
-        $this->app->singleton(Embeddings::class, fn($app) => $app['mindwave.embeddings.manager']->driver());
-        $this->app->singleton(Vectorstore::class, fn($app) => $app['mindwave.vectorstore.manager']->driver());
-        $this->app->singleton(LLM::class, fn($app) => $app['mindwave.llm.manager']->driver());
+        $this->app->singleton(Embeddings::class, fn ($app) => $app['mindwave.embeddings.manager']->driver());
+        $this->app->singleton(Vectorstore::class, fn ($app) => $app['mindwave.vectorstore.manager']->driver());
+        $this->app->singleton(LLM::class, fn ($app) => $app['mindwave.llm.manager']->driver());
 
         // Misc
-        $this->app->bind('mindwave.document.loader', fn() => new Loader());
+        $this->app->bind('mindwave.document.loader', fn () => new Loader());
 
         // Shortcut
-        $this->app->singleton('mindwave', fn($app) => new Mindwave(
+        $this->app->singleton('mindwave', fn ($app) => new Mindwave(
             llm: $app->make(LLM::class),
             embeddings: $app->make(Embeddings::class),
             vectorstore: $app->make(Vectorstore::class),
         ));
     }
-
-
 }

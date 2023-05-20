@@ -31,8 +31,7 @@ abstract class BaseChatMessageHistory
     public function conversationAsString(
         string $humanPrefix = 'Human',
         string $aiPrefix = 'AI'
-    ): string
-    {
+    ): string {
         $stringMessages = [];
 
         foreach ($this->messages as $m) {

@@ -13,8 +13,11 @@ use Mindwave\Mindwave\Memory\ConversationBufferMemory;
 class Mindwave
 {
     protected LLM $llm;
+
     protected Embeddings $embeddings;
+
     protected Vectorstore $vectorstore;
+
     protected Brain $brain;
 
     public function __construct(LLM $llm, Embeddings $embeddings, Vectorstore $vectorstore)

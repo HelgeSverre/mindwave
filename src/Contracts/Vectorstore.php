@@ -19,12 +19,12 @@ interface Vectorstore
     public function upsertVector(VectorStoreEntry $entry): void;
 
     /**
-     * @param VectorStoreEntry[] $entries
+     * @param  VectorStoreEntry[]  $entries
      */
     public function insertVectors(array $entries): void;
 
     /**
-     * @param VectorStoreEntry[] $entries
+     * @param  VectorStoreEntry[]  $entries
      */
     public function upsertVectors(array $entries): void;
 

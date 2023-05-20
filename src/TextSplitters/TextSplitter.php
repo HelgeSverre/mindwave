@@ -8,6 +8,7 @@ use Mindwave\Mindwave\Document\Data\Document;
 abstract class TextSplitter
 {
     protected int $chunkSize;
+
     protected int $chunkOverlap;
 
     public function __construct(int $chunkSize = 1000, int $chunkOverlap = 200)
@@ -29,8 +30,6 @@ abstract class TextSplitter
     abstract public function splitText(string $text): array;
 
     /**
-     * @param array $texts
-     * @param array|null $metadata
      * @return Document[]
      */
     public function createDocuments(array $texts, array $metadata = null): array
@@ -57,8 +56,8 @@ abstract class TextSplitter
     public function splitDocuments(array $documents): array
     {
         return $this->createDocuments(
-            texts: array_map(fn(Document $doc) => $doc->content(), $documents),
-            metadata: array_map(fn(Document $doc) => $doc->metadata(), $documents)
+            texts: array_map(fn (Document $doc) => $doc->content(), $documents),
+            metadata: array_map(fn (Document $doc) => $doc->metadata(), $documents)
         );
     }
 
@@ -123,5 +122,4 @@ abstract class TextSplitter
 
         return $documents;
     }
-
 }
