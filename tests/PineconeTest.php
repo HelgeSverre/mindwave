@@ -87,7 +87,7 @@ it('We can perform similarity search on documents in pinecone', function () {
         new VectorStoreEntry('mindwave-demo-id-4', $result[3]),
     ]);
 
-    $fetched = Vectorstore::similaritySearchByVector(Embeddings::embedQuery('banan'), 2);
+    $fetched = Vectorstore::similaritySearchByVector(Embeddings::embedQuery('banana'), 2);
 
     expect($fetched)->toBeArray();
     expect($fetched)->toHaveCount(2);
