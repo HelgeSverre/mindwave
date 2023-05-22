@@ -36,7 +36,8 @@ class VectorstoreManager extends Manager
             new Client(
                 apiKey: $this->config->get('mindwave-vectorstore.vectorstores.pinecone.api_key'),
                 environment: $this->config->get('mindwave-vectorstore.vectorstores.pinecone.environment'),
-            )
+            ),
+            index: $this->config->get('mindwave-vectorstore.vectorstores.pinecone.index')
         );
     }
 
