@@ -31,14 +31,14 @@ return [
         'pinecone' => [
             'api_key' => env('MINDWAVE_PINECONE_API_KEY'),
             'environment' => env('MINDWAVE_PINECONE_ENVIRONMENT'),
-            'index' => 'items', // TODO(18 May 2023) ~ Helge: this concept needs to be implemented in vectorstore
+            'index' => env('MINDWAVE_PINECONE_INDEX'), // TODO(18 May 2023) ~ Helge: this concept needs to be implemented in vectorstore
         ],
 
         'weaviate' => [
             'api_url' => env('MINDWAVE_WEAVIATE_URL'),
             'api_token' => env('MINDWAVE_WEAVIATE_API_TOKEN'),
+            'index' => env('MINDWAVE_WEAVIATE_INDEX'), // TODO(18 May 2023) ~ Helge: this concept needs to be implemented in vectorstore
             'additional_headers' => [],
-            'index' => 'items', // TODO(18 May 2023) ~ Helge: this concept needs to be implemented in vectorstore
         ],
     ],
 
