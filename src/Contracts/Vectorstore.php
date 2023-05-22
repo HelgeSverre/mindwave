@@ -16,12 +16,15 @@ interface Vectorstore
 
     public function insertVector(VectorStoreEntry $entry): void;
 
+    // TODO(22 May 2023) ~ Helge: REMOVE
     public function upsertVector(VectorStoreEntry $entry): void;
 
     /**
      * @param  VectorStoreEntry[]  $entries
      */
     public function insertVectors(array $entries): void;
+
+    // TODO(22 May 2023) ~ Helge: REMOVE
 
     /**
      * @param  VectorStoreEntry[]  $entries
