@@ -7,6 +7,7 @@ use Mindwave\Mindwave\Contracts\Embeddings;
 use Mindwave\Mindwave\Contracts\Vectorstore;
 use Mindwave\Mindwave\Document\Data\Document;
 use Mindwave\Mindwave\TextSplitters\RecursiveCharacterTextSplitter;
+use Mindwave\Mindwave\TextSplitters\TextSplitter;
 use Mindwave\Mindwave\Vectorstore\Data\VectorStoreEntry;
 
 class Brain
@@ -15,10 +16,13 @@ class Brain
 
     protected Embeddings $embeddings;
 
-    public function __construct(Vectorstore $vectorstore, Embeddings $embeddings)
+    protected TextSplitter $textsplitter;
+
+    public function __construct(Vectorstore $vectorstore, Embeddings $embeddings, ?TextSplitter $splitter = null)
     {
         $this->vectorstore = $vectorstore;
         $this->embeddings = $embeddings;
+        $this->textsplitter = $splitter ?? new RecursiveCharacterTextSplitter();
     }
 
     /**
@@ -32,23 +36,11 @@ class Brain
         );
 
         return $results;
-
-        // TODO(18 mai 2023) ~ Helge: unsure what we should do here yet...
-        $docs = [];
-
-        dump($results);
-        foreach ($results as $result) {
-
-        }
-
-        return $docs;
     }
 
     public function consume(Document $document): self
     {
-        $splitter = new RecursiveCharacterTextSplitter();
-
-        $docs = $splitter->splitDocument($document);
+        $docs = $this->textsplitter->splitDocument($document);
 
         $entries = [];
 
