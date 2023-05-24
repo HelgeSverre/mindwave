@@ -1,0 +1,35 @@
+version: '3'
+services:
+  weaviate-console:
+    image: semitechnologies/weaviate-console:latest
+    networks:
+      - mindwave
+    ports:
+      - '8081:80'
+    depends_on:
+      - weaviate
+  weaviate:
+    image: semitechnologies/weaviate:latest
+    networks:
+      - mindwave
+    ports:
+      - '8080:8080'
+      - "6060:6060"
+    restart: on-failure
+    volumes:
+      - 'mindwave-weaviate:/var/lib/weaviate'
+    environment:
+      QUERY_DEFAULTS_LIMIT: 25
+      AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: 'true'
+      AUTHENTICATION_APIKEY_ENABLED: "true"
+      AUTHENTICATION_APIKEY_ALLOWED_KEYS: "password"
+      AUTHENTICATION_APIKEY_USERS: "mindwave"
+      PERSISTENCE_DATA_PATH: '/var/lib/weaviate'
+      DEFAULT_VECTORIZER_MODULE: 'none'
+      CLUSTER_HOSTNAME: 'mindwave'
+networks:
+  mindwave:
+    driver: bridge
+volumes:
+  mindwave-weaviate:
+    driver: local
