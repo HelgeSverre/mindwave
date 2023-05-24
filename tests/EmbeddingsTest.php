@@ -8,7 +8,7 @@ use Mindwave\Mindwave\Facades\Embeddings;
 
 it('can resolve the embeddings from the container', function () {
 
-    $result = Embeddings::embedQuery('This is a test query.');
+    $result = Embeddings::embedText('This is a test query.');
 
     expect($result)->toBeInstanceOf(EmbeddingVector::class);
     expect($result->values)->toBeArray();
@@ -19,7 +19,7 @@ it('embeds a query using OpenAI API', function () {
     $client = OpenAI::client(env('OPENAI_API_KEY'));
     $embeddings = new OpenAIEmbeddings($client);
 
-    $result = $embeddings->embedQuery('This is a test query.');
+    $result = $embeddings->embedText('This is a test query.');
 
     expect($result)->toBeInstanceOf(EmbeddingVector::class);
     expect($result->values)->toBeArray();
@@ -30,7 +30,7 @@ it('embeds a collection of knowledge items using OpenAI API', function () {
     $client = OpenAI::client(env('OPENAI_API_KEY'));
     $embeddings = new OpenAIEmbeddings($client);
 
-    $result = $embeddings->embedMultiple([
+    $result = $embeddings->embedDocuments([
         new Document('hello'),
         new Document('world'),
     ]);
@@ -49,7 +49,7 @@ it('can embed knowledge that exceed the max token length of the embedding model.
     $client = OpenAI::client(env('OPENAI_API_KEY'));
     $embeddings = new OpenAIEmbeddings($client);
 
-    $result = $embeddings->embedMultiple([
+    $result = $embeddings->embedDocuments([
         new Document(Str::random(90000)),
     ]);
 

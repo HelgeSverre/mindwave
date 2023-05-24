@@ -8,12 +8,17 @@ use Mindwave\Mindwave\Embeddings\Data\EmbeddingVector;
 
 interface Embeddings
 {
-    public function embed(Document $document): EmbeddingVector;
+    public function embedText(string $text): EmbeddingVector;
 
     /**
      * @return EmbeddingVector[]
      */
-    public function embedMultiple(array|Collection $items): array;
+    public function embedTexts(array $texts): array;
 
-    public function embedQuery(string $text): EmbeddingVector;
+    public function embedDocument(Document $document): EmbeddingVector;
+
+    /**
+     * @return EmbeddingVector[]
+     */
+    public function embedDocuments(array|Collection $items): array;
 }

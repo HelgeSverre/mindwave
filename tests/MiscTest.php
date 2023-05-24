@@ -9,14 +9,14 @@ it('Calculates similarity correctly', function () {
     $embeddings = new OpenAIEmbeddings($client);
 
     $similarityValue = Similarity::cosine(
-        vectorA: $embeddings->embedQuery('This is a test query.'),
-        vectorB: $embeddings->embedQuery('This is another test query.')
+        vectorA: $embeddings->embedText('This is a test query.'),
+        vectorB: $embeddings->embedText('This is another test query.')
     );
     dump('Cosine Similarity: '.$similarityValue);
 
     $similarityValue = Similarity::cosine(
-        vectorA: $embeddings->embedQuery('panda'),
-        vectorB: $embeddings->embedQuery('php programming language')
+        vectorA: $embeddings->embedText('panda'),
+        vectorB: $embeddings->embedText('php programming language')
     );
     dump('Cosine Similarity: '.$similarityValue);
 });

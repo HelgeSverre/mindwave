@@ -22,33 +22,16 @@ class OpenAIEmbeddings implements Embeddings
         $this->model = $model;
     }
 
-    public function embed(Document $document): EmbeddingVector
+    public function embedText(string $text): EmbeddingVector
     {
-        return Arr::first($this->embedInternal([$document->content()]));
+        return Arr::first($this->embedTexts([$text]));
     }
 
-    public function embedMultiple(array|Collection $items): array
-    {
-        return collect($items)
-            ->map(fn (Document $document) => $document->content())
-            ->pipe(fn (Collection $collection) => $this->embedInternal($collection->toArray()));
-    }
-
-    public function embedQuery(string $text): EmbeddingVector
-    {
-        return Arr::first($this->embedInternal([$text]));
-    }
-
-    /**
-     * @param  array<string>  $inputs
-     * @return array<EmbeddingVector[]>
-     */
-    protected function embedInternal(array $inputs): array
+    public function embedTexts(array $texts): array
     {
         $response = $this->client->embeddings()->create([
             'model' => $this->model,
-            'input' => $inputs,
-            // TODO(14 mai 2023) ~ Helge: add "user" key, that can be set globally using config
+            'input' => $texts,
         ]);
 
         $embeddings = [];
@@ -59,5 +42,17 @@ class OpenAIEmbeddings implements Embeddings
         }
 
         return $embeddings;
+    }
+
+    public function embedDocument(Document $document): EmbeddingVector
+    {
+        return Arr::first($this->embedTexts([$document->content()]));
+    }
+
+    public function embedDocuments(array|Collection $items): array
+    {
+        return collect($items)
+            ->map(fn (Document $document) => $document->content())
+            ->pipe(fn (Collection $collection) => $this->embedTexts($collection->toArray()));
     }
 }

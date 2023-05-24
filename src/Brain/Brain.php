@@ -31,7 +31,7 @@ class Brain
     public function search(string $query, int $count = 5): array
     {
         $results = $this->vectorstore->similaritySearchByVector(
-            embedding: $this->embeddings->embedQuery($query),
+            embedding: $this->embeddings->embedText($query),
             count: $count,
         );
 
@@ -48,7 +48,7 @@ class Brain
 
             $entries[] = new VectorStoreEntry(
                 id: $doc->getMetaValue('id', Str::uuid()),
-                vector: $this->embeddings->embed($doc),
+                vector: $this->embeddings->embedDocument($doc),
                 metadata: [
                     '_mindwave_content' => $doc->content(),
                     '_mindwave_chunk_index' => $chunkIndex,

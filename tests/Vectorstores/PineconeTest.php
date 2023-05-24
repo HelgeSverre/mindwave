@@ -13,7 +13,7 @@ it('We can insert a document in pinecone', function () {
     Config::set('mindwave-vectorstore.vectorstores.pinecone.index', env('MINDWAVE_PINECONE_INDEX'));
     Config::set('mindwave-embeddings.embeddings.openai.api_key', env('MINDWAVE_OPENAI_API_KEY'));
 
-    $result = Embeddings::embed(Document::make('I am a test document'));
+    $result = Embeddings::embedDocument(Document::make('I am a test document'));
 
     $id = 'mindwave-test-id';
 
@@ -38,7 +38,7 @@ it('We can insert multiple documents in pinecone', function () {
     Config::set('mindwave-vectorstore.vectorstores.pinecone.index', env('MINDWAVE_PINECONE_INDEX'));
     Config::set('mindwave-embeddings.embeddings.openai.api_key', env('MINDWAVE_OPENAI_API_KEY'));
 
-    $result = Embeddings::embedMultiple([
+    $result = Embeddings::embedDocuments([
         Document::make('test 1'),
         Document::make('test 2'),
         Document::make('test 3'),
@@ -73,7 +73,7 @@ it('We can perform similarity search on documents in pinecone', function () {
     Config::set('mindwave-vectorstore.vectorstores.pinecone.index', env('MINDWAVE_PINECONE_INDEX'));
     Config::set('mindwave-embeddings.embeddings.openai.api_key', env('MINDWAVE_OPENAI_API_KEY'));
 
-    $result = Embeddings::embedMultiple([
+    $result = Embeddings::embedDocuments([
         Document::make('fruit flies'),
         Document::make('There are, however, two exceptions to this: If the King is in residence at Stiftsgården in Trondheim or is on board the Royal Yacht Norge (and in Norwegian waters) neither the Royal Standard nor any other flag is flown over the Royal Palace. The flag pole at the Palace remains bare. The reason for this is that on these occasions the Royal Standard is hoisted either at Stiftsgården or on the Royal Yacht and as a main rule the Royal Standard is not flown in two places at once.'),
         Document::make('It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.'),
@@ -87,7 +87,7 @@ it('We can perform similarity search on documents in pinecone', function () {
         new VectorStoreEntry('mindwave-demo-id-4', $result[3]),
     ]);
 
-    $fetched = Vectorstore::similaritySearchByVector(Embeddings::embedQuery('banana'), 2);
+    $fetched = Vectorstore::similaritySearchByVector(Embeddings::embedText('banana'), 2);
 
     expect($fetched)->toBeArray();
     expect($fetched)->toHaveCount(2);
@@ -105,7 +105,7 @@ it('When inserting a vector, its metadata is also inserted', function () {
     Config::set('mindwave-vectorstore.vectorstores.pinecone.index', env('MINDWAVE_PINECONE_INDEX'));
     Config::set('mindwave-embeddings.embeddings.openai.api_key', env('MINDWAVE_OPENAI_API_KEY'));
 
-    $embedding = Embeddings::embedQuery('test');
+    $embedding = Embeddings::embedText('test');
 
     $id = 'mindwave-test-id';
 
@@ -141,7 +141,7 @@ it('We can serialize and unserialize array of numbers in pinecone ', function ()
     ];
 
     $id = 'mindwave-test-id';
-    Vectorstore::insertVector(new VectorStoreEntry($id, Embeddings::embedQuery('test'), $metadata));
+    Vectorstore::insertVector(new VectorStoreEntry($id, Embeddings::embedText('test'), $metadata));
     $fetched = Vectorstore::fetchById($id);
 
     expect($fetched->metadata)->toEqual($metadata);

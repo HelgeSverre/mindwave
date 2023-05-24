@@ -13,7 +13,7 @@ it('We can connect to weaviate in the docker container', function () {
     Config::set('mindwave-vectorstore.vectorstores.weaviate.index', 'MindwaveItems');
     Config::set('mindwave-embeddings.embeddings.openai.api_key', env('MINDWAVE_OPENAI_API_KEY'));
 
-    $result = Embeddings::embed(Document::make('I am a test document'));
+    $result = Embeddings::embedDocument(Document::make('I am a test document'));
 
     $id = 'mindwave-test-id';
 
