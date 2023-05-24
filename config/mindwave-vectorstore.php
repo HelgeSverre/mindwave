@@ -35,9 +35,10 @@ return [
         ],
 
         'weaviate' => [
-            'api_url' => env('MINDWAVE_WEAVIATE_URL'),
-            'api_token' => env('MINDWAVE_WEAVIATE_API_TOKEN'),
-            'index' => env('MINDWAVE_WEAVIATE_INDEX'), // TODO(18 May 2023) ~ Helge: this concept needs to be implemented in vectorstore
+            'api_url' => env('MINDWAVE_WEAVIATE_URL', 'http://localhost:8080/v1'),
+            'api_token' => env('MINDWAVE_WEAVIATE_API_TOKEN', 'password'),
+            // TODO: this is called "class" in weaviate
+            'index' => env('MINDWAVE_WEAVIATE_INDEX', 'items'),
             'additional_headers' => [],
         ],
     ],

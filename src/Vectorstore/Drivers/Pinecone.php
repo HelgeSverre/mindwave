@@ -26,7 +26,7 @@ class Pinecone implements Vectorstore
     {
         $result = $this->client->index($this->index)->vectors()->fetch([$id])->collect('vectors')->first();
 
-        if (!$result) {
+        if (! $result) {
             return null;
         }
 
@@ -58,7 +58,7 @@ class Pinecone implements Vectorstore
             ->get("https://{$host}/vectors/fetch?{$params}")
             ->collect('vectors')
             ->values()
-            ->map(fn($result) => new VectorStoreEntry(
+            ->map(fn ($result) => new VectorStoreEntry(
                 id: $result['id'],
                 vector: new EmbeddingVector($result['values']),
                 metadata: $result['metadata'] ?? []
@@ -94,13 +94,13 @@ class Pinecone implements Vectorstore
     }
 
     /**
-     * @param VectorStoreEntry[] $entries
+     * @param  VectorStoreEntry[]  $entries
      *
      * @throws MissingNameException
      */
     public function insertVectors(array $entries): void
     {
-        $vectors = collect($entries)->map(fn(VectorStoreEntry $entry) => array_filter([
+        $vectors = collect($entries)->map(fn (VectorStoreEntry $entry) => array_filter([
             'id' => $entry->id,
             'values' => $entry->vector->values,
             'metadata' => $entry->metadata,
@@ -110,7 +110,7 @@ class Pinecone implements Vectorstore
     }
 
     /**
-     * @param VectorStoreEntry[] $entries
+     * @param  VectorStoreEntry[]  $entries
      *
      * @throws MissingNameException
      */
@@ -129,7 +129,7 @@ class Pinecone implements Vectorstore
             topK: $count,
             includeMetadata: true,
             includeVector: true,
-        )->collect('results')->map(fn($result) => new VectorStoreEntry(
+        )->collect('results')->map(fn ($result) => new VectorStoreEntry(
             id: $result['id'],
             vector: new EmbeddingVector($result['values']),
             metadata: $result['metadata'] ?? [],

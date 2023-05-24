@@ -48,7 +48,8 @@ class VectorstoreManager extends Manager
                 apiUrl: $this->config->get('mindwave-vectorstore.vectorstores.weaviate.api_url'),
                 apiToken: $this->config->get('mindwave-vectorstore.vectorstores.weaviate.api_token'),
                 additionalHeaders: $this->config->get('mindwave-vectorstore.vectorstores.weaviate.additional_headers', []),
-            )
+            ),
+            className: $this->config->get('mindwave-vectorstore.vectorstores.weaviate.index')
         );
     }
 }
