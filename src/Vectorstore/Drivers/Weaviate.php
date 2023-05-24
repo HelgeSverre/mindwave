@@ -57,11 +57,11 @@ class Weaviate implements Vectorstore
         }
 
         $found = $this->client->schema()->get()->getClasses()->first(
-            callback: fn(ClassModel $classModel) => $classModel->getClass() === $this->className,
+            callback: fn (ClassModel $classModel) => $classModel->getClass() === $this->className,
             default: false
         );
 
-        if (!$found) {
+        if (! $found) {
             throw new \Exception("Could not create Class '{$this->className}' in Weaviate");
         }
 
@@ -76,15 +76,14 @@ class Weaviate implements Vectorstore
     public function insertVector(VectorStoreEntry $entry): void
     {
         $this->client->objects()->create([
-            "id" => Str::uuid()->toString(),
-            "class" => $this->className,
-            "vector" => $entry->vector->values,
-            "properties" => [
-                "mindwaveDocumentId" => $entry->id,
+            'id' => Str::uuid()->toString(),
+            'class' => $this->className,
+            'vector' => $entry->vector->values,
+            'properties' => [
+                'mindwaveDocumentId' => $entry->id,
                 // TODO(24 May 2023) ~ Helge: metadata from $entry
-            ]
+            ],
         ]);
-
 
         // TODO: Implement insertVector() method.
     }
