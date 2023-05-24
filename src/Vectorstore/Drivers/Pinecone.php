@@ -80,14 +80,11 @@ class Pinecone implements Vectorstore
 
     public function insertVector(VectorStoreEntry $entry): void
     {
-        $vectors = [
+        $vectors = array_filter([
             'id' => $entry->id ?? Str::uuid(),
             'values' => $entry->vector->values,
-        ];
-
-        if ($entry->metadata) {
-            $vectors['metadata'] = $entry->metadata;
-        }
+            'metadata' => $entry->metadata,
+        ]);
 
         $this->client->index($this->index)->vectors()->upsert($vectors);
     }
