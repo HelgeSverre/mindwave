@@ -93,8 +93,8 @@ it('We can perform similarity search on documents in pinecone', function () {
     expect($fetched)->toHaveCount(2);
 
     // I assume this makes sense
-    expect($fetched[0]->id)->toEqual('mindwave-demo-id-1');
-    expect($fetched[1]->id)->toEqual('mindwave-demo-id-4');
+    expect($fetched[0]->id)->toEqual('mindwave-demo-id-4');
+    expect($fetched[1]->id)->toEqual('mindwave-demo-id-1');
 
 });
 

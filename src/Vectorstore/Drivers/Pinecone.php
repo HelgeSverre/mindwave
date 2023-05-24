@@ -4,6 +4,7 @@ namespace Mindwave\Mindwave\Vectorstore\Drivers;
 
 use GuzzleHttp\Psr7\Query;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
 use Mindwave\Mindwave\Contracts\Vectorstore;
 use Mindwave\Mindwave\Embeddings\Data\EmbeddingVector;
 use Mindwave\Mindwave\Vectorstore\Data\VectorStoreEntry;
@@ -79,11 +80,14 @@ class Pinecone implements Vectorstore
 
     public function insertVector(VectorStoreEntry $entry): void
     {
-        $vectors = array_filter([
-            'id' => $entry->id,
+        $vectors = [
+            'id' => $entry->id ?? Str::uuid(),
             'values' => $entry->vector->values,
-            'metadata' => $entry->metadata,
-        ]);
+        ];
+
+        if ($entry->metadata) {
+            $vectors['metadata'] = $entry->metadata;
+        }
 
         $this->client->index($this->index)->vectors()->upsert($vectors);
     }
@@ -101,7 +105,7 @@ class Pinecone implements Vectorstore
     public function insertVectors(array $entries): void
     {
         $vectors = collect($entries)->map(fn (VectorStoreEntry $entry) => array_filter([
-            'id' => $entry->id,
+            'id' => $entry->id ?? Str::uuid(),
             'values' => $entry->vector->values,
             'metadata' => $entry->metadata,
         ]))->toArray();
@@ -129,11 +133,11 @@ class Pinecone implements Vectorstore
             topK: $count,
             includeMetadata: true,
             includeVector: true,
-        )->collect('results')->map(fn ($result) => new VectorStoreEntry(
-            id: $result['id'],
-            vector: new EmbeddingVector($result['values']),
-            metadata: $result['metadata'] ?? [],
-            score: $result['score'],
+        )->collect('matches')->map(fn ($match) => new VectorStoreEntry(
+            id: $match['id'],
+            vector: new EmbeddingVector($match['values']),
+            metadata: $match['metadata'] ?? [],
+            score: $match['score'],
         ))->toArray();
     }
 }
