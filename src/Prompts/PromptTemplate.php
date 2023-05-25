@@ -31,7 +31,7 @@ class PromptTemplate
         return new self(file_get_contents($filepath), $outputParser);
     }
 
-    public function formatVariable($variable): string
+    public function formatPlaceholder($variable): string
     {
         if ($this->placeholderFormatter) {
             return call_user_func($this->placeholderFormatter, $variable);
@@ -44,7 +44,7 @@ class PromptTemplate
     {
         $formattedVariables = [];
         foreach ($inputVariables as $key => $value) {
-            $formattedVariables[$this->formatVariable($key)] = $value;
+            $formattedVariables[$this->formatPlaceholder($key)] = $value;
         }
 
         return Str::of($this->template)
