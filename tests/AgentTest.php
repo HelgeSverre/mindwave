@@ -50,7 +50,7 @@ it('We can use an agent to ask questions about the contents of a text file', fun
 
     $brain->consume(
         Document::make(
-            content: file_get_contents(__DIR__.'/data/flags-royal-palace-norway-en.txt'),
+            content: file_get_contents(__DIR__.'/data/samples/flags-royal-palace-norway-en.txt'),
             meta: ['name' => 'Flag Procedures at the Norwegian Royal Palace'],
         )
     );
