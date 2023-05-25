@@ -11,8 +11,8 @@ class TextOutputParser implements OutputParser
         return '';
     }
 
-    public function parse(string $response): string
+    public function parse(string $text): string
     {
-        return $response;
+        return $text;
     }
 }

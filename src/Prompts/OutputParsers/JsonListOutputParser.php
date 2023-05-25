@@ -22,8 +22,8 @@ Remember to respond with a JSON blob with a single key, and NOTHING else.
 TEXT;
     }
 
-    public function parse(string $response): array
+    public function parse(string $text): array
     {
-        return Arr::get(parent::parse($response), 'data', []);
+        return Arr::get(parent::parse($text), 'data', []);
     }
 }

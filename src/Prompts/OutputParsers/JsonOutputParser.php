@@ -24,9 +24,9 @@ Remember to respond with a JSON blob, and NOTHING else.
 TEXT;
     }
 
-    public function parse(string $response): array
+    public function parse(string $text): array
     {
-        $cleaned = Str::of($response)->between('```json', '```')->trim();
+        $cleaned = Str::of($text)->between('```json', '```')->trim();
 
         if (! $cleaned->isJson()) {
             throw new InvalidArgumentException('Could not parse response');

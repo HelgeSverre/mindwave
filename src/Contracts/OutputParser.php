@@ -12,5 +12,5 @@ interface OutputParser
     /**
      * Parse the language model response and return the structured result.
      */
-    public function parse(string $response): mixed;
+    public function parse(string $text): mixed;
 }
