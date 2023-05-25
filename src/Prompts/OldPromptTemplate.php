@@ -4,6 +4,11 @@ namespace Mindwave\Mindwave\Prompts;
 
 use Illuminate\Support\Str;
 
+/**
+ * @deprecated
+ *
+ * @todo remove this
+ */
 class OldPromptTemplate
 {
     public string $content;
