@@ -1,16 +1,95 @@
 <?php
 
+use Mindwave\Mindwave\Prompts\OutputParsers\JsonListOutputParser;
+use Mindwave\Mindwave\Prompts\OutputParsers\JsonOutputParser;
 use Mindwave\Mindwave\Prompts\PromptTemplate;
 
-it('It can perform variable replacements', function () {
-    $template = new PromptTemplate('This is a [REPLACE]');
-    expect($template->format(['[REPLACE]' => 'test']))->toEqual('This is a test');
+it('can create a new prompt template', function () {
+    $template = 'This is a {variable} template.';
+
+    $promptTemplate = PromptTemplate::create($template);
+
+    expect($promptTemplate)->toBeInstanceOf(PromptTemplate::class);
 });
 
-it('It can perform multiple variable replacements', function () {
-    $template = new PromptTemplate('This is a [REPLACE] [ME]');
-    expect($template->format([
-        '[REPLACE]' => 'simple',
-        '[ME]' => 'test',
-    ]))->toEqual('This is a simple test');
+it('can format a template with input variables', function () {
+    $template = 'This is a {variable} template.';
+
+    $prompt = PromptTemplate::create($template)->format(['variable' => 'test']);
+
+    expect($prompt)
+        ->toBe('This is a test template.');
+});
+
+it('can append an output parser to a template', function () {
+
+    $prompt = PromptTemplate::create('This is a test template.');
+
+    expect($prompt->format())->toBe('This is a test template.');
+});
+
+it('can parse a response', function () {
+    $prompt = PromptTemplate::create('Test prompt', new JsonOutputParser())
+        ->parse('```json { "hello": "world", "nice":["mindwave", "package"] } ```');
+
+    expect($prompt)
+        ->toBeArray()
+        ->and($prompt)
+        ->toHaveKey('hello', 'world')
+        ->toHaveKey('nice', ['mindwave', 'package']);
+});
+
+it('can convert a template to a string', function () {
+    $prompt = PromptTemplate::create('This is a {variable} template. ')
+        ->format(['variable' => 'test']);
+
+    expect($prompt)->toBe('This is a test template.');
+});
+
+it('json list output parser generates a list from constructor', function () {
+    $outputParser = new JsonListOutputParser();
+    $prompt = PromptTemplate::create(
+        template: 'Generate 10 keywords for {topic}',
+        outputParser: $outputParser
+    )->format([
+        'topic' => 'Mindwave',
+    ]);
+
+    expect($prompt)->toContain('Generate 10 keywords for Mindwave');
+    expect($prompt)->toContain($outputParser->getFormatInstructions());
+});
+
+it('json list output parser generates a list from method', function () {
+    $outputParser = new JsonListOutputParser();
+
+    $prompt = PromptTemplate::create(
+        template: 'Generate 10 keywords for {topic}',
+    )->withOutputParser($outputParser)->format([
+        'topic' => 'Laravel',
+    ]);
+
+    expect($prompt)->toContain('Generate 10 keywords for Laravel');
+    expect($prompt)->toContain($outputParser->getFormatInstructions());
+});
+
+it('formats the template with input variables', function () {
+    expect(
+        PromptTemplate::create('Hello, {name}! Your {product} is ready.')
+            ->format([
+                'name' => 'John',
+                'product' => 'Mindwave',
+            ])
+    )->toBe('Hello, John! Your Mindwave is ready.');
+});
+
+it('overrides the variable formatter', function () {
+
+    $formattedString = PromptTemplate::create('Hello, [name]! Your [product] is ready.')
+        ->withPlaceholderFormatter(fn ($variable) => '['.$variable.']')
+        ->format([
+            'name' => 'John',
+            'product' => 'Mindwave',
+        ]);
+
+    expect($formattedString)->toBe('Hello, John! Your Mindwave is ready.');
 });

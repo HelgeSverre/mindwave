@@ -9,7 +9,7 @@ use Mindwave\Mindwave\Brain\Brain;
 use Mindwave\Mindwave\Contracts\LLM;
 use Mindwave\Mindwave\Contracts\Tool;
 use Mindwave\Mindwave\Memory\ConversationBufferMemory;
-use Mindwave\Mindwave\Prompts\PromptTemplate;
+use Mindwave\Mindwave\Prompts\OldPromptTemplate;
 use Mindwave\Mindwave\Vectorstore\Data\VectorStoreEntry;
 
 class Agent
@@ -69,21 +69,21 @@ class Agent
         $relevantDocuments = $this->brain->search($input, count: 3);
 
         // TODO(18 mai 2023) ~ Helge: Abstract away
-        $initialPrompt = PromptTemplate::combine([
+        $initialPrompt = OldPromptTemplate::combine([
             file_get_contents(__DIR__.'/../Prompts/Templates/prefix.txt'),
             $this->tools->isEmpty()
-                ? PromptTemplate::from(__DIR__.'/../Prompts/Templates/no_tools.txt')->format()
-                : PromptTemplate::from(__DIR__.'/../Prompts/Templates/tools.txt')->format([
+                ? OldPromptTemplate::from(__DIR__.'/../Prompts/Templates/no_tools.txt')->format()
+                : OldPromptTemplate::from(__DIR__.'/../Prompts/Templates/tools.txt')->format([
                     '[TOOL_DESCRIPTIONS]' => $this->tools->map(fn ($t) => sprintf('> %s: %s', $t->name(), $t->description()))->join("\n"),
                     '[TOOL_LIST]' => $this->tools->map(fn (Tool $tool) => $tool->name())->join(', '),
                 ]),
-            PromptTemplate::from(__DIR__.'/../Prompts/Templates/relevant_documents.txt')->format([
+            OldPromptTemplate::from(__DIR__.'/../Prompts/Templates/relevant_documents.txt')->format([
                 '[DOCUMENTS]' => collect($relevantDocuments)->map(fn (VectorStoreEntry $entry, $i) => "[$i] - ".$entry->metadata['_mindwave_content'])->join("\n"),
             ]),
-            PromptTemplate::from(__DIR__.'/../Prompts/Templates/history.txt')->format([
+            OldPromptTemplate::from(__DIR__.'/../Prompts/Templates/history.txt')->format([
                 '[HISTORY]' => $this->messageHistory->conversationAsString('Human', 'Mindwave'),
             ]),
-            PromptTemplate::from(__DIR__.'/../Prompts/Templates/input.txt')->format([
+            OldPromptTemplate::from(__DIR__.'/../Prompts/Templates/input.txt')->format([
                 '[INPUT]' => $input,
             ]),
         ]);
@@ -108,9 +108,9 @@ class Agent
         // TODO(18 mai 2023) ~ Helge: Put this in a loop until final answer found or max attempts is exhausted
         // ======================================================================================================
 
-        $finalPrompt = PromptTemplate::combine([
+        $finalPrompt = OldPromptTemplate::combine([
             $initialPrompt,
-            PromptTemplate::from(__DIR__.'/../Prompts/Templates/tool_response.txt')->format([
+            OldPromptTemplate::from(__DIR__.'/../Prompts/Templates/tool_response.txt')->format([
                 '[TOOL_RESPONSE]' => $this->runTool($parsed),
             ]),
         ]);
