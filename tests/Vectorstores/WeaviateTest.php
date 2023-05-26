@@ -40,11 +40,10 @@ it('We can connect search weaviate', function () {
     $id = 'mindwave-test-id';
 
     Vectorstore::insertVector(new VectorStoreEntry($id, $result, [
-        "_mindwave_content" => "testing",
-        "_mindwave_chunk_index" => "1",
+        '_mindwave_content' => 'testing',
+        '_mindwave_chunk_index' => '1',
     ]));
 
     $fetched = Vectorstore::similaritySearchByVector($result, 1);
-
 
 });

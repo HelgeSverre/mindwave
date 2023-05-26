@@ -58,11 +58,11 @@ class Weaviate implements Vectorstore
         }
 
         $found = $this->client->schema()->get()->getClasses()->first(
-            callback: fn(ClassModel $classModel) => $classModel->getClass() === $this->className,
+            callback: fn (ClassModel $classModel) => $classModel->getClass() === $this->className,
             default: false
         );
 
-        if (!$found) {
+        if (! $found) {
             throw new \Exception("Could not create Class '{$this->className}' in Weaviate");
         }
 
@@ -82,8 +82,8 @@ class Weaviate implements Vectorstore
             'vector' => $entry->vector->values,
             'properties' => [
                 'mindwaveDocumentId' => $entry->id,
-                'mindwaveDocumentChunk' => $entry->metadata["_mindwave_content"],
-                'mindwaveDocumentContent' => $entry->metadata["_mindwave_chunk_index"],
+                'mindwaveDocumentChunk' => $entry->metadata['_mindwave_content'],
+                'mindwaveDocumentContent' => $entry->metadata['_mindwave_chunk_index'],
             ],
         ]);
     }
@@ -124,7 +124,7 @@ class Weaviate implements Vectorstore
     }
 }
 GRAPHQL;
-//        dd($query);
+        //        dd($query);
 
         $data = $this->client->graphql()->get($query);
 
@@ -133,7 +133,7 @@ GRAPHQL;
         $results = [];
         foreach ($items as $item) {
             $results[] = new VectorStoreEntry(
-                id: $item["mindwaveDocumentId"],
+                id: $item['mindwaveDocumentId'],
             );
         }
         // TODO: Implement similaritySearchByVector() method.
