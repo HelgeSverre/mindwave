@@ -18,6 +18,33 @@ it('loads content from a PDFs', function ($file) {
     __DIR__.'/data/samples/sample-2-pages.pdf',
 ]);
 
+it('loads content from a DOCX file', function ($file) {
+    $content = file_get_contents($file);
+
+    expect($content)->not()->toBeNull();
+
+    $knowledge = DocumentLoader::fromDocx($content);
+
+    expect($knowledge)->toBeInstanceOf(Document::class);
+    expect($knowledge->content())->toContain('Sample Docx');
+})->with([
+    __DIR__.'/data/samples/sample-1-page.docx',
+    __DIR__.'/data/samples/sample-2-pages.docx',
+]);
+
+it('loads content from a DOC file', function ($file) {
+    $content = file_get_contents($file);
+
+    expect($content)->not()->toBeNull();
+
+    $knowledge = DocumentLoader::fromDocx($content);
+
+    expect($knowledge)->toBeInstanceOf(Document::class);
+    expect($knowledge->content())->toContain('This is a regular paragraph');
+})->with([
+    __DIR__.'/data/samples/SampleDOCFile_200kb.doc',
+]);
+
 // TODO(14 mai 2023) ~ Helge: Should null be returned, or an Error Object (functional optional/some pattern)?
 it('If PDF is invalid, exception is thrown.', function () {
     expect(fn () => DocumentLoader::fromPdf('Not a valid PDF'))->toThrow(Exception::class);
@@ -51,14 +78,10 @@ it('loads content from text', function () {
 });
 
 it('can auto detect which content is in the file', function ($file) {
-
-    dump($file);
-
     $document = DocumentLoader::load(file_get_contents($file));
-    // TODO(20 mai 2023) ~ Helge: finish this test
 
-    //    expect($document)->toBeInstanceOf(Document::class, "Failed to parse: {$file}");
-    //    expect($document->content())->toBeString("Failed to get text from {$file}");
+    expect($document)->toBeInstanceOf(Document::class, "Failed to parse: {$file}");
+    expect($document->content())->toBeString();
 })->with([
     __DIR__.'/data/samples/flags-royal-palace-norway-en.txt',
     __DIR__.'/data/samples/file-sample_100kB.odt',
@@ -72,4 +95,4 @@ it('can auto detect which content is in the file', function ($file) {
     __DIR__.'/data/samples/sample-2-pages.docx',
     __DIR__.'/data/samples/sample-2-pages.pdf',
     __DIR__.'/data/samples/samplepptx.pptx',
-]);
+])->skip('Not implemented yet');

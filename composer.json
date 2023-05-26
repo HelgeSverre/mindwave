@@ -18,6 +18,7 @@
   ],
   "require": {
     "php": "^8.1",
+    "ext-zip": "*",
     "guzzlehttp/guzzle": "^7.5",
     "illuminate/contracts": "^10.0",
     "openai-php/client": "^0.4.2",

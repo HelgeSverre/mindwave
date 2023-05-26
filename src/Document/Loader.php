@@ -6,6 +6,7 @@ use Mindwave\Mindwave\Document\Data\Document;
 use Mindwave\Mindwave\Document\Loaders\HtmlLoader;
 use Mindwave\Mindwave\Document\Loaders\PdfLoader;
 use Mindwave\Mindwave\Document\Loaders\WebLoader;
+use Mindwave\Mindwave\Document\Loaders\WordLoader;
 use Smalot\PdfParser\Parser;
 use wapmorgan\FileTypeDetector\Detector;
 
@@ -25,6 +26,7 @@ class Loader
             'pdf' => new PdfLoader(new Parser()),
             'html' => new HtmlLoader(),
             'url' => new WebLoader(),
+            'docx' => new WordLoader(),
         ];
     }
 
@@ -55,6 +57,11 @@ class Loader
     public function fromUrl($url, ?array $meta = []): ?Document
     {
         return $this->loader('url', $url, $meta);
+    }
+
+    public function fromDocx($data, ?array $meta = []): ?Document
+    {
+        return $this->loader('docx', $data, $meta);
     }
 
     public function load($data, ?array $meta = []): ?Document

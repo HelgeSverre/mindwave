@@ -4,6 +4,7 @@ namespace Mindwave\Mindwave\Document\Loaders;
 
 use Mindwave\Mindwave\Contracts\DocumentLoader;
 use Mindwave\Mindwave\Document\Data\Document;
+use Mindwave\Mindwave\Support\TextUtils;
 use Smalot\PdfParser\Parser;
 
 class PdfLoader implements DocumentLoader
@@ -18,7 +19,9 @@ class PdfLoader implements DocumentLoader
     public function load(mixed $data, array $meta = []): ?Document
     {
         return new Document(
-            content: $this->parser->parseContent($data)->getText(),
+            content: TextUtils::normalizeWhitespace(
+                $this->parser->parseContent($data)->getText()
+            ),
             metadata: $meta,
         );
     }
