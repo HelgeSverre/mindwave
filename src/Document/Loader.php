@@ -26,7 +26,7 @@ class Loader
             'pdf' => new PdfLoader(new Parser()),
             'html' => new HtmlLoader(),
             'url' => new WebLoader(),
-            'docx' => new WordLoader(),
+            'word' => new WordLoader(),
         ];
     }
 
@@ -59,9 +59,9 @@ class Loader
         return $this->loader('url', $url, $meta);
     }
 
-    public function fromDocx($data, ?array $meta = []): ?Document
+    public function fromWord($data, ?array $meta = []): ?Document
     {
-        return $this->loader('docx', $data, $meta);
+        return $this->loader('word', $data, $meta);
     }
 
     public function load($data, ?array $meta = []): ?Document
