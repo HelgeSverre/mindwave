@@ -2,6 +2,7 @@
 
 namespace Mindwave\Mindwave\Vectorstore\Drivers;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Mindwave\Mindwave\Contracts\Vectorstore;
 use Mindwave\Mindwave\Embeddings\Data\EmbeddingVector;
@@ -57,11 +58,11 @@ class Weaviate implements Vectorstore
         }
 
         $found = $this->client->schema()->get()->getClasses()->first(
-            callback: fn (ClassModel $classModel) => $classModel->getClass() === $this->className,
+            callback: fn(ClassModel $classModel) => $classModel->getClass() === $this->className,
             default: false
         );
 
-        if (! $found) {
+        if (!$found) {
             throw new \Exception("Could not create Class '{$this->className}' in Weaviate");
         }
 
@@ -81,11 +82,10 @@ class Weaviate implements Vectorstore
             'vector' => $entry->vector->values,
             'properties' => [
                 'mindwaveDocumentId' => $entry->id,
-                // TODO(24 May 2023) ~ Helge: metadata from $entry
+                'mindwaveDocumentChunk' => $entry->metadata["_mindwave_content"],
+                'mindwaveDocumentContent' => $entry->metadata["_mindwave_chunk_index"],
             ],
         ]);
-
-        // TODO: Implement insertVector() method.
     }
 
     public function upsertVector(VectorStoreEntry $entry): void
@@ -105,6 +105,37 @@ class Weaviate implements Vectorstore
 
     public function similaritySearchByVector(EmbeddingVector $embedding, int $count = 5): array
     {
+
+        $json = json_encode($embedding->toArray());
+
+        $query = <<<GRAPHQL
+{
+    Get {
+      {$this->className} (
+       limit: 2
+        nearVector: {
+            vector: {$json}
+        }
+      ) {
+        mindwaveDocumentId
+        mindwaveDocumentChunk
+        mindwaveDocumentContent
+      }
+    }
+}
+GRAPHQL;
+//        dd($query);
+
+        $data = $this->client->graphql()->get($query);
+
+        $items = Arr::get($data, "data.Get.{$this->className}");
+
+        $results = [];
+        foreach ($items as $item) {
+            $results[] = new VectorStoreEntry(
+                id: $item["mindwaveDocumentId"],
+            );
+        }
         // TODO: Implement similaritySearchByVector() method.
     }
 }
