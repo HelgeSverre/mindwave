@@ -85,7 +85,7 @@ $agent->ask("What is my name?");
 ## Demo Application
 
 To see a real world example of how the Mindwave package can be used, checkout the  
-[demo application here](https://gityhub.com/helgesverre/mindwave-demo).
+[demo application here](https://github.com/helgesverre/mindwave-demo).
 
 ## Changelog
 
