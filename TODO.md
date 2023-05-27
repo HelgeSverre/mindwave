@@ -46,7 +46,10 @@
   date, role, message, meta))
 - [ ] Write some simple tests that shows that an agent can answer a simple question based on the content of a text file.
   the model in natural language or as a CSV
+- [ ] Callbacks implemented as Events (base the names
+  on [these](https://python.langchain.com/en/latest/modules/callbacks/getting_started.html) )
 
 ## Notes & thoughts
 
-- Is a `Brain` a tool, does it make sense to implement it as a tool? (langchain has cconcept of retrievers, which is similar to brains)
+- Is a `Brain` a tool, does it make sense to implement it as a tool? (langchain has cconcept of retrievers, which is
+  similar to brains)
