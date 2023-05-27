@@ -34,9 +34,7 @@ answering (Q&A) functionality into your application.
 With Mindwave, you can incorporate the power of OpenAI's state-of-the-art language models, Pinecone's vector search
 capabilities and your own custom "tools" to create intelligent software applications.
 
-## Example
-
-![Code Example](./art/code.png)
+## Code Example
 
 ```php
 <?php
