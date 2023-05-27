@@ -16,13 +16,13 @@ class Brain
 
     protected Embeddings $embeddings;
 
-    protected TextSplitter $textsplitter;
+    protected TextSplitter $textSplitter;
 
-    public function __construct(Vectorstore $vectorstore, Embeddings $embeddings, ?TextSplitter $splitter = null)
+    public function __construct(Vectorstore $vectorstore, Embeddings $embeddings, ?TextSplitter $textSplitter = null)
     {
         $this->vectorstore = $vectorstore;
         $this->embeddings = $embeddings;
-        $this->textsplitter = $splitter ?? new RecursiveCharacterTextSplitter();
+        $this->textSplitter = $textSplitter ?? new RecursiveCharacterTextSplitter();
     }
 
     /**
@@ -35,21 +35,25 @@ class Brain
             count: $count,
         );
 
+        // TODO(27 May 2023) ~ Helge: Convert back to documents
+
         return $results;
     }
 
     public function consume(Document $document): self
     {
-        $docs = $this->textsplitter->splitDocument($document);
+        $docs = $this->textSplitter->splitDocument($document);
 
         $entries = [];
 
         foreach ($docs as $chunkIndex => $doc) {
 
             $entries[] = new VectorStoreEntry(
-                id: $doc->getMetaValue('id', Str::uuid()),
+                id: $doc->getMetaValue('id', Str::uuid()), // TODO(27 May 2023) ~ Helge: Should we provide the ID, or defer that to the vectorstore driver?
                 vector: $this->embeddings->embedDocument($doc),
+                // TODO(27 May 2023) ~ Helge: Should it just have the Document object inside?
                 metadata: [
+                    // TODO(27 May 2023) ~ Helge: Standardize how this is done.
                     '_mindwave_content' => $doc->content(),
                     '_mindwave_chunk_index' => $chunkIndex,
                     'metadata' => $doc->metadata(),
