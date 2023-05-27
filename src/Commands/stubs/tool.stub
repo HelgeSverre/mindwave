@@ -5,7 +5,7 @@ namespace {{ namespace }};
 
 use Mindwave\Mindwave\Contracts\Tool;
 
-class {{ class }} extends Tool
+class {{ class }} implements Tool
 {
     public function name(): string
     {
