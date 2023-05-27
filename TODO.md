@@ -42,6 +42,11 @@
   text, with converters for other filetypes (ex: pdf -> text))
 - [ ] Port the different "agent types" from LangChain, but simplify them.
 - [ ] Add Memory interface
-- [ ] Add eloquent backend ChatHistoryMemory (migration, model, config file (use mindwave.php) -> chat_history (id, date, role, message, meta))
+- [ ] Add eloquent backend ChatHistoryMemory (migration, model, config file (use mindwave.php) -> chat_history (id,
+  date, role, message, meta))
 - [ ] Write some simple tests that shows that an agent can answer a simple question based on the content of a text file.
   the model in natural language or as a CSV
+
+## Notes & thoughts
+
+- Is a `Brain` a tool, does it make sense to implement it as a tool? (langchain has cconcept of retrievers, which is similar to brains)
