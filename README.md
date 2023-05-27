@@ -7,19 +7,17 @@
 
 # Mindwave: AI Chatbots, Agents & Document Q&A in Laravel Simplified.
 
+## <span style="color:red;">WARNING: This package is NOT ready to be used yet!</span>
+
+Please follow [@helgesverre](https://twitter.com/helgesverre) for updates, and keep an eye on [TODO.md(/todo.md)] to
+track progress.
+
 ## Installation
 
 You can install the package via composer:
 
 ```bash
 composer require mindwave/mindwave
-```
-
-You can publish and run the migrations with:
-
-```bash
-php artisan vendor:publish --tag="mindwave-migrations"
-php artisan migrate
 ```
 
 You can publish the config file with:
