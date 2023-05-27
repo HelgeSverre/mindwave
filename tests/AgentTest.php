@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Config;
 use Mindwave\Mindwave\Document\Data\Document;
 use Mindwave\Mindwave\Facades\Mindwave;
+use Mindwave\Mindwave\Memory\ConversationBufferMemory;
 use Mindwave\Mindwave\Tools\SimpleTool;
 
 it('can correctly list the colors from a file', function () {
@@ -26,6 +27,32 @@ it('can correctly list the colors from a file', function () {
         ->toContain('red')
         ->toContain('purple')
         ->not()->toContain('banana');
+});
+
+it('can remember previous conversations', function () {
+
+    Config::set('mindwave-vectorstore.default', 'array');
+    Config::set('mindwave-embeddings.embeddings.openai.api_key', env('MINDWAVE_OPENAI_API_KEY'));
+    Config::set('mindwave-llm.llms.openai_chat.api_key', env('MINDWAVE_OPENAI_API_KEY'));
+
+    $agent = Mindwave::agent(
+        memory: ConversationBufferMemory::fromMessages([
+            ['role' => 'user', 'content' => 'remember the word "banana"'],
+            ['role' => 'ai', 'content' => 'ok'],
+
+            ['role' => 'user', 'content' => 'whats your name?'],
+            ['role' => 'ai', 'content' => 'mindwave'],
+
+            ['role' => 'user', 'content' => 'in one word, what is "green"?'],
+            ['role' => 'ai', 'content' => 'color'],
+        ])
+    );
+
+    $finalAnswer = $agent->ask('Which word did i tel you to remember?');
+
+    dump($finalAnswer);
+
+    expect($finalAnswer)->toBeString()->toContain('banana');
 });
 
 it('We can use an agent to ask questions about the contents of a text file', function () {
