@@ -24,6 +24,7 @@
 ## Vectorstore Drivers
 
 - [x] Pinecone vectorstore driver ( index = collection, meta = meta) + tests
+- [x] "File" vectorstore driver (Stores everything as JSON file, very stupid and naive solution, for local dev and testing)
 - [ ] Weaviate vectorstore driver ( collection = collection, properties = meta) + tests
 - [ ] Qdrant vectorstore driver ( collection = collection, properties = meta) + tests
 - [ ] Milvus vectorstore driver ( collection = collection, properties = meta) + tests
