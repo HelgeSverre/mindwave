@@ -7,7 +7,7 @@
 
 # Mindwave: AI Chatbots, Agents & Document Q&A in Laravel Simplified.
 
-## <span style="color:red;">WARNING: This package is NOT ready to be used yet!</span>
+## WARNING: This package is NOT ready to be used yet!
 
 Please follow [@helgesverre](https://twitter.com/helgesverre) for updates, and keep an eye on [TODO.md(/todo.md)] to
 track progress.
