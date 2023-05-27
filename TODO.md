@@ -24,20 +24,20 @@
 ## Vectorstore Drivers
 
 - [x] Pinecone vectorstore driver ( index = collection, meta = meta) + tests
-- [] Weaviate vectorstore driver ( collection = collection, properties = meta) + tests
-- [] Qdrant vectorstore driver ( collection = collection, properties = meta) + tests
-- [] Milvus vectorstore driver ( collection = collection, properties = meta) + tests
-- [] PGVector vectorstore driver
+- [ ] Weaviate vectorstore driver ( collection = collection, properties = meta) + tests
+- [ ] Qdrant vectorstore driver ( collection = collection, properties = meta) + tests
+- [ ] Milvus vectorstore driver ( collection = collection, properties = meta) + tests
+- [ ] PGVector vectorstore driver
 
 ## TODO
 
-- [] expand LLM interface, add some other common llms to dogfood a suitable interface on.
-- [] Sketch out a simple QA Retrieval Agent that uses a dummy brain to dogfood the LLM and Brain implementation
-- [] Add "dummy brain" (stores everything as an array) for testing
-- [] Sketch out Brain class that is an abstraction around vectorstores that operate on Documents
-- [] Laravel Scout-ish feature where you can modify your Model to make it indexable, and toPrompt() method to describe
+- [ ] expand LLM interface, add some other common llms to dogfood a suitable interface on.
+- [ ] Sketch out a simple QA Retrieval Agent that uses a dummy brain to dogfood the LLM and Brain implementation
+- [ ] Add "dummy brain" (stores everything as an array) for testing
+- [ ] Sketch out Brain class that is an abstraction around vectorstores that operate on Documents
+- [ ] Laravel Scout-ish feature where you can modify your Model to make it indexable, and toPrompt() method to describe
   text, with converters for other filetypes (ex: pdf -> text))
-- [] Port the different "agent types" from LangChain, but simplify them.
-- [] Write some simple tests that shows that an agent can answer a simple question based on the content of a text file.
+- [ ] Port the different "agent types" from LangChain, but simplify them.
+- [ ] Write some simple tests that shows that an agent can answer a simple question based on the content of a text file.
   the model in natural language or as a CSV
-- [] Command to generate a Tool class (php artisan make:tool)
+- [ ] Command to generate a Tool class (php artisan make:tool)
