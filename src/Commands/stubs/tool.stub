@@ -9,7 +9,7 @@ class {{ class }} extends Tool
 {
     public function name(): string
     {
-        return "{{ name }}";
+        return "{{ class }}";
     }
 
     public function description(): string

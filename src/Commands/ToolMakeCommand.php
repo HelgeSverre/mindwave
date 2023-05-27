@@ -65,7 +65,6 @@ class ToolMakeCommand extends GeneratorCommand
     protected function buildClass($name)
     {
         $replace = [
-            '{{ name }}' => $name,
             '{{ description }}' => $this->option('description') ?? '',
         ];
 
