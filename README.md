@@ -9,7 +9,7 @@
 
 ## WARNING: This package is NOT ready to be used yet!
 
-Please follow [@helgesverre](https://twitter.com/helgesverre) for updates, and keep an eye on [TODO.md(/todo.md)] to
+Please follow [@helgesverre](https://twitter.com/helgesverre) for updates, and keep an eye on [TODO.md](/TODO.md) to
 track progress.
 
 ## Installation
