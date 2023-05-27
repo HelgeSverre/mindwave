@@ -57,8 +57,8 @@ Mindwave::brain()
     )
     ->consume(
         DocumentLoader::fromUrl(
-            data: "https://docs.langchain.com/docs/",
-            meta: ["name" => "Langchain introduction"],
+            data: "https://mindwave.no/",
+            meta: ["name" => "Mindwave Documentation"],
         )
     )
     ->consume(
@@ -66,9 +66,9 @@ Mindwave::brain()
     );
 
 
-$agent->ask("When was our latest article published?");
-
-$agent->ask("When is the next board meeting scheduled?");
+$agent->ask("List the top 3 most important things in 'important document'");
+$agent->ask("What is mindwave?");
+$agent->ask("What is my name?");
 
 ```
 
