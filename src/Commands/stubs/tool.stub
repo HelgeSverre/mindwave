@@ -1,0 +1,23 @@
+
+<?php
+
+namespace {{ namespace }};
+
+use Mindwave\Mindwave\Contracts\Tool;
+
+class {{ class }} extends Tool
+{
+    public function name(): string
+    {
+        return "{{ name }}";
+    }
+
+    public function description(): string
+    {
+        return "{{ description }}";
+    }
+
+    public function run($input): string
+    {
+    }
+}

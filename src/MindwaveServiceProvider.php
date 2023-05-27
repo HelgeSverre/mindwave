@@ -2,6 +2,7 @@
 
 namespace Mindwave\Mindwave;
 
+use Mindwave\Mindwave\Commands\ToolMakeCommand;
 use Mindwave\Mindwave\Contracts\Embeddings;
 use Mindwave\Mindwave\Contracts\LLM;
 use Mindwave\Mindwave\Document\Loader;
@@ -28,10 +29,12 @@ class MindwaveServiceProvider extends PackageServiceProvider
                 'mindwave-embeddings',
                 'mindwave-llm',
                 'mindwave-vectorstore',
+            ])
+            ->hasCommands([
+                ToolMakeCommand::class,
             ]);
         // ->hasViews()
         // ->hasMigration('create_mindwave_table')
-        // ->hasCommand(MindwaveCommand::class)
     }
 
     public function registeringPackage()

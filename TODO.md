@@ -1,6 +1,6 @@
 # TODO
 
-## Done
+## Done-ish
 
 - [x] Update all namespaces
 - [x] Sketch out Knowledge class, it is essentially an abstraction around splitting, embedding and indexing a piece of
@@ -20,12 +20,13 @@
             - meta (array)
             - vector (EmbeddingVector)
 - [x] InMemory (array) vectorstore driver for testing and "throwaway use"
+- [x] expand LLM interface, add some other common llms to dogfood a suitable interface on.
+- [x] Pinecone vectorstore driver ( index = collection, meta = meta) + tests
+- [x] "File" vectorstore driver (Stores everything as JSON file, very stupid and naive solution, for local dev and
+  te sting)
 
 ## Vectorstore Drivers
 
-- [x] Pinecone vectorstore driver ( index = collection, meta = meta) + tests
-- [x] "File" vectorstore driver (Stores everything as JSON file, very stupid and naive solution, for local dev and
-  testing)
 - [ ] Weaviate vectorstore driver ( collection = collection, properties = meta) + tests
 - [ ] Qdrant vectorstore driver ( collection = collection, properties = meta) + tests
 - [ ] Milvus vectorstore driver ( collection = collection, properties = meta) + tests
@@ -34,8 +35,7 @@
 ## TODO
 
 - Move `probots-io/pinecone-php` and `timkley/weaviate-php` to "suggests" instead of dependancies, since you technically
-  dont need to use those drivers, add this to the docs.
-- [ ] expand LLM interface, add some other common llms to dogfood a suitable interface on.
+  don't need to use those drivers, add this to the docs.
 - [ ] Sketch out a simple QA Retrieval Agent that uses a dummy brain to dogfood the LLM and Brain implementation
 - [ ] Add "dummy brain" (stores everything as an array) for testing
 - [ ] Sketch out Brain class that is an abstraction around vectorstores that operate on Documents
@@ -44,4 +44,4 @@
 - [ ] Port the different "agent types" from LangChain, but simplify them.
 - [ ] Write some simple tests that shows that an agent can answer a simple question based on the content of a text file.
   the model in natural language or as a CSV
-- [ ] Command to generate a Tool class (php artisan make:tool)
+- [ ] Command to generate a Tool class (php artisan mindwave:tool)
