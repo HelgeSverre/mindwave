@@ -23,7 +23,7 @@ it('loads content from a DOCX file', function ($file) {
 
     expect($content)->not()->toBeNull();
 
-    $knowledge = DocumentLoader::fromDocx($content);
+    $knowledge = DocumentLoader::fromWord($content);
 
     expect($knowledge)->toBeInstanceOf(Document::class);
     expect($knowledge->content())->toContain('Sample Docx');
@@ -37,7 +37,7 @@ it('loads content from a DOC file', function ($file) {
 
     expect($content)->not()->toBeNull();
 
-    $knowledge = DocumentLoader::fromDocx($content);
+    $knowledge = DocumentLoader::fromWord($content);
 
     expect($knowledge)->toBeInstanceOf(Document::class);
     expect($knowledge->content())->toContain('This is a regular paragraph');

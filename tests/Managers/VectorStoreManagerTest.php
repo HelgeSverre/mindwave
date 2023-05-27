@@ -35,6 +35,10 @@ it('creates the Pinecone driver', function () {
         ->with('mindwave-vectorstore.vectorstores.pinecone.environment')
         ->andReturn('your_pinecone_environment');
 
+    Config::shouldReceive('get')
+        ->with('mindwave-vectorstore.vectorstores.pinecone.index')
+        ->andReturn('dummy_items');
+
     $manager = new VectorstoreManager($this->app);
 
     $driver = $manager->createPineconeDriver();
@@ -52,6 +56,10 @@ it('creates the Weaviate driver', function () {
     Config::shouldReceive('get')
         ->with('mindwave-vectorstore.vectorstores.weaviate.api_token')
         ->andReturn('your_weaviate_api_token');
+
+    Config::shouldReceive('get')
+        ->with('mindwave-vectorstore.vectorstores.weaviate.index')
+        ->andReturn('dummy_index');
 
     Config::shouldReceive('get')
         ->with('mindwave-vectorstore.vectorstores.weaviate.additional_headers', [])

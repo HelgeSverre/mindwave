@@ -20,8 +20,6 @@ class Weaviate implements Vectorstore
     {
         $this->client = $client;
         $this->className = $className;
-
-        $this->ensureClassExists();
     }
 
     public function fetchById(string $id): ?VectorStoreEntry
@@ -76,6 +74,8 @@ class Weaviate implements Vectorstore
 
     public function insertVector(VectorStoreEntry $entry): void
     {
+        $this->ensureClassExists();
+
         $this->client->objects()->create([
             'id' => Str::uuid()->toString(),
             'class' => $this->className,

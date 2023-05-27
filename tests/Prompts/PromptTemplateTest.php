@@ -1,5 +1,7 @@
 <?php
 
+use Mindwave\Mindwave\Contracts\OutputParser;
+use Mindwave\Mindwave\Prompts\OutputParsers\CommaSeparatedListOutputParser;
 use Mindwave\Mindwave\Prompts\OutputParsers\JsonListOutputParser;
 use Mindwave\Mindwave\Prompts\OutputParsers\JsonOutputParser;
 use Mindwave\Mindwave\Prompts\PromptTemplate;
@@ -23,9 +25,44 @@ it('can format a template with input variables', function () {
 
 it('can append an output parser to a template', function () {
 
-    $prompt = PromptTemplate::create('This is a test template.');
+    $prompt = PromptTemplate::create('This is a test template.', new class implements OutputParser
+    {
+        public function getFormatInstructions(): string
+        {
+            return 'TESTING';
+        }
 
-    expect($prompt->format())->toBe('This is a test template.');
+        public function parse(string $text): mixed
+        {
+            return $text;
+        }
+    });
+
+    expect($prompt->format())->toEndWith('TESTING');
+});
+
+it('can parse comma separated output', function () {
+
+    $parser = new CommaSeparatedListOutputParser();
+
+    expect($parser->parse('monsters, bananas, flies, sausages'))->toEqual([
+        'monsters',
+        'bananas',
+        'flies',
+        'sausages',
+    ]);
+});
+
+it('can parse json array as array', function () {
+
+    $parser = new JsonListOutputParser();
+
+    expect($parser->parse('```json{"data": ["monsters", "bananas", "flies", "sausages"]}```'))->toEqual([
+        'monsters',
+        'bananas',
+        'flies',
+        'sausages',
+    ]);
 });
 
 it('can parse a response', function () {
