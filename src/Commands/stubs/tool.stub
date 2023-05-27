@@ -19,5 +19,7 @@ class {{ class }} implements Tool
 
     public function run($input): string
     {
+        // TODO: implement
+        return "";
     }
 }
