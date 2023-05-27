@@ -24,6 +24,7 @@
 - [x] Pinecone vectorstore driver ( index = collection, meta = meta) + tests
 - [x] "File" vectorstore driver (Stores everything as JSON file, very stupid and naive solution, for local dev and
   te sting)
+- [x] Command to generate a Tool class (php artisan mindwave:tool)
 
 ## Vectorstore Drivers
 
@@ -34,8 +35,6 @@
 
 ## TODO
 
-- Move `probots-io/pinecone-php` and `timkley/weaviate-php` to "suggests" instead of dependancies, since you technically
-  don't need to use those drivers, add this to the docs.
 - [ ] Sketch out a simple QA Retrieval Agent that uses a dummy brain to dogfood the LLM and Brain implementation
 - [ ] Add "dummy brain" (stores everything as an array) for testing
 - [ ] Sketch out Brain class that is an abstraction around vectorstores that operate on Documents
@@ -44,4 +43,3 @@
 - [ ] Port the different "agent types" from LangChain, but simplify them.
 - [ ] Write some simple tests that shows that an agent can answer a simple question based on the content of a text file.
   the model in natural language or as a CSV
-- [ ] Command to generate a Tool class (php artisan mindwave:tool)
