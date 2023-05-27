@@ -99,6 +99,7 @@ Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed re
 - [PGVector team](https://github.com/pgvector/pgvector-php/graphs/contributors) for
   the [PGVector PHP package](https://github.com/pgvector/pgvector-php)
 - [Yethee](https://github.com/yethee) for the [Tiktoken PHP Package](https://github.com/yethee/tiktoken-php)
+- [LangChain](https://github.com/hwchase17/langchain/) for serving as the inspiration
 - [All Contributors](../../contributors)
 
 ## License
