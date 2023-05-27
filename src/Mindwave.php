@@ -6,6 +6,7 @@ use Mindwave\Mindwave\Agents\Agent;
 use Mindwave\Mindwave\Brain\Brain;
 use Mindwave\Mindwave\Contracts\Embeddings;
 use Mindwave\Mindwave\Contracts\LLM;
+use Mindwave\Mindwave\Contracts\Toolkit;
 use Mindwave\Mindwave\Contracts\Vectorstore;
 use Mindwave\Mindwave\Memory\BaseChatMessageHistory;
 use Mindwave\Mindwave\Memory\ConversationBufferMemory;
@@ -31,6 +32,7 @@ class Mindwave
         );
     }
 
+    // TODO(27 May 2023) ~ Helge: Allow passing custom memory
     public function agent(?BaseChatMessageHistory $memory = null): Agent
     {
         return new Agent(
@@ -40,6 +42,7 @@ class Mindwave
         );
     }
 
+    // TODO(27 May 2023) ~ Helge: Allow passing custom memory
     public function agentWithTools(array $tools): Agent
     {
         return new Agent(
@@ -47,6 +50,17 @@ class Mindwave
             messageHistory: ConversationBufferMemory::fromMessages([]),
             brain: $this->brain,
             tools: $tools
+        );
+    }
+
+    // TODO(27 May 2023) ~ Helge: Allow passing custom memory
+    public function agentWithToolkit(Toolkit $toolkit): Agent
+    {
+        return new Agent(
+            llm: $this->llm,
+            messageHistory: ConversationBufferMemory::fromMessages([]),
+            brain: $this->brain,
+            tools: $toolkit->tools(),
         );
     }
 
