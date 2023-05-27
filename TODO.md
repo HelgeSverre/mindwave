@@ -24,7 +24,8 @@
 ## Vectorstore Drivers
 
 - [x] Pinecone vectorstore driver ( index = collection, meta = meta) + tests
-- [x] "File" vectorstore driver (Stores everything as JSON file, very stupid and naive solution, for local dev and testing)
+- [x] "File" vectorstore driver (Stores everything as JSON file, very stupid and naive solution, for local dev and
+  testing)
 - [ ] Weaviate vectorstore driver ( collection = collection, properties = meta) + tests
 - [ ] Qdrant vectorstore driver ( collection = collection, properties = meta) + tests
 - [ ] Milvus vectorstore driver ( collection = collection, properties = meta) + tests
@@ -32,6 +33,8 @@
 
 ## TODO
 
+- Move `probots-io/pinecone-php` and `timkley/weaviate-php` to "suggests" instead of dependancies, since you technically
+  dont need to use those drivers, add this to the docs.
 - [ ] expand LLM interface, add some other common llms to dogfood a suitable interface on.
 - [ ] Sketch out a simple QA Retrieval Agent that uses a dummy brain to dogfood the LLM and Brain implementation
 - [ ] Add "dummy brain" (stores everything as an array) for testing
