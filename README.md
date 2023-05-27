@@ -94,8 +94,8 @@ Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed re
 ## Credits
 
 - [Helge Sverre](https://twitter.com/helgesverre)
-- [Probots.io](https://github.com/probots-io) for the [Pinecone PHP Client](https://github.com/probots-io/pinecone-php)
-- [Tim Kleyersburg](https://github.com/timkley) for the [Weaviate PHP Client](https://github.com/timkley/weaviate-php)
+- [Probots.io](https://github.com/probots-io) for the [Pinecone PHP Package](https://github.com/probots-io/pinecone-php)
+- [Tim Kleyersburg](https://github.com/timkley) for the [Weaviate PHP Package](https://github.com/timkley/weaviate-php)
 - [PGVector team](https://github.com/pgvector/pgvector-php/graphs/contributors) for
   the [PGVector PHP package](https://github.com/pgvector/pgvector-php)
 - [Yethee](https://github.com/yethee) for the [Tiktoken PHP Package](https://github.com/yethee/tiktoken-php)
