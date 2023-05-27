@@ -44,19 +44,19 @@ class Loader
         return null; // or throw an exception for unregistered loaders
     }
 
-    public function fromPdf($pdf, ?array $meta = []): ?Document
+    public function fromPdf($data, ?array $meta = []): ?Document
     {
-        return $this->loader('pdf', $pdf, $meta);
+        return $this->loader('pdf', $data, $meta);
     }
 
-    public function fromHtml($html, ?array $meta = []): ?Document
+    public function fromHtml($data, ?array $meta = []): ?Document
     {
-        return $this->loader('html', $html, $meta);
+        return $this->loader('html', $data, $meta);
     }
 
-    public function fromUrl($url, ?array $meta = []): ?Document
+    public function fromUrl($data, ?array $meta = []): ?Document
     {
-        return $this->loader('url', $url, $meta);
+        return $this->loader('url', $data, $meta);
     }
 
     public function fromWord($data, ?array $meta = []): ?Document
