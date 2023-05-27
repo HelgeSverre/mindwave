@@ -23,7 +23,7 @@
 - [x] expand LLM interface, add some other common llms to dogfood a suitable interface on.
 - [x] Pinecone vectorstore driver ( index = collection, meta = meta) + tests
 - [x] "File" vectorstore driver (Stores everything as JSON file, very stupid and naive solution, for local dev and
-  te sting)
+  testing)
 - [x] Command to generate a Tool class (php artisan mindwave:tool)
 
 ## Vectorstore Drivers
