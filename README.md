@@ -82,6 +82,11 @@ $agent->ask("What is my name?");
 
 [Full documentation can be found here](https://mindwave.no).
 
+## Demo Application
+
+To see a real world example of how the Mindwave package can be used, checkout the  
+[demo application here](https://gityhub.com/helgesverre/mindwave-demo).
+
 ## Changelog
 
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
