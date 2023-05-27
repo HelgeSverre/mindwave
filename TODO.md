@@ -46,6 +46,10 @@
 - [ ] Laravel Scout-ish feature where you can modify your Model to make it indexable, and toPrompt() method to describe
   text, with converters for other filetypes (ex: pdf -> text))
 - [ ] Port the different "agent types" from LangChain, but simplify them.
+- [ ] Chain: QA With sources (
+  inspiration: https://github.com/hwchase17/langchain/blob/master/langchain/chains/qa_with_sources/stuff_prompt.py)
+- [ ] Chain: Related to above ^: QA With Source and Eloquent Model: Combine embedding search, model references and
+  retrieve the llm answer along with a model instance as result
 - [ ] Add eloquent backend ChatHistoryMemory (migration, model, config file (use mindwave.php) -> chat_history (id,
   role, message, meta, created_at, updated_at))
   the model in natural language or as a CSV
