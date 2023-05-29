@@ -44,11 +44,13 @@ class Document
         return new self($content, $meta);
     }
 
+    // TODO(29 May 2023) ~ Helge: remove
     public function getMetaValue(string $key, $fallback = null): mixed
     {
         return Arr::get($this->meta, $key, $fallback);
     }
 
+    // TODO(29 May 2023) ~ Helge: remove
     public function toArray(): array
     {
         return [
