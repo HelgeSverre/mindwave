@@ -14,7 +14,7 @@ class Weaviate implements Vectorstore
 {
     protected WeaviateClient $client;
 
-    private string $className;
+    protected string $className;
 
     public function __construct(WeaviateClient $client, string $className)
     {
