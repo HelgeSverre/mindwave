@@ -2,6 +2,7 @@
 
 namespace Mindwave\Mindwave\Brain;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Mindwave\Mindwave\Contracts\Embeddings;
 use Mindwave\Mindwave\Contracts\Vectorstore;
@@ -35,9 +36,22 @@ class Brain
             count: $count,
         );
 
-        // TODO(27 May 2023) ~ Helge: Convert back to documents
+        $documents = [];
+        foreach ($results as $result) {
+            // TODO(29 May 2023) ~ Helge: method Document::fromVectorStoreEntry($entry) ?
+            $documents[] = new Document(
+                content: $result->metadata['_mindwave_content'],
+                metadata: [
+                    '_mindwave_source_id' => $result->metadata['_mindwave_source_id'],
+                    '_mindwave_source_type' => $result->metadata['_mindwave_source_type'],
+                    '_mindwave_content' => $result->metadata['_mindwave_content'],
+                    '_mindwave_chunk_index' => $result->metadata['_mindwave_chunk_index'],
+                    '_mindwave_metadata' => $result->metadata['_mindwave_metadata'],
+                ]
+            );
+        }
 
-        return $results;
+        return $documents;
     }
 
     public function consume(Document $document): self
@@ -54,6 +68,7 @@ class Brain
                 metadata: [
                     '_mindwave_source_id' => Arr::get($doc->metadata(), '_mindwave_source_id'),
                     '_mindwave_source_type' => Arr::get($doc->metadata(), '_mindwave_source_type'),
+                    '_mindwave_content' => Arr::get($doc->metadata(), '_mindwave_content'),
                     '_mindwave_chunk_index' => $chunkIndex,
                     '_mindwave_metadata' => $doc->metadata(),
                 ],
