@@ -33,6 +33,7 @@
 - [ ] Weaviate vectorstore driver ( collection = collection, properties = meta) + tests
 - [ ] Qdrant vectorstore driver ( collection = collection, properties = meta) + tests
 - [ ] Milvus vectorstore driver ( collection = collection, properties = meta) + tests
+- [ ] Redis vectorstore driver (https://redis.io/docs/stack/search/indexing_json/)
 - [ ] PGVector vectorstore driver
 
 ## TODO
