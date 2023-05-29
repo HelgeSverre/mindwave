@@ -2,7 +2,6 @@
 
 namespace Mindwave\Mindwave\Document\Data;
 
-use Illuminate\Support\Arr;
 use Illuminate\Support\Traits\Macroable;
 
 class Document
@@ -11,12 +10,17 @@ class Document
 
     protected string $content;
 
-    protected array $meta = [];
+    protected array $metadata = [];
 
     public function __construct(string $content, array $metadata = [])
     {
         $this->content = $content;
-        $this->meta = $metadata;
+        $this->metadata = $metadata;
+    }
+
+    public static function make(string $content, array $meta = []): self
+    {
+        return new self($content, $meta);
     }
 
     public function content(): string
@@ -36,26 +40,6 @@ class Document
 
     public function metadata(): array
     {
-        return $this->meta;
-    }
-
-    public static function make(string $content, array $meta = []): self
-    {
-        return new self($content, $meta);
-    }
-
-    // TODO(29 May 2023) ~ Helge: remove
-    public function getMetaValue(string $key, $fallback = null): mixed
-    {
-        return Arr::get($this->meta, $key, $fallback);
-    }
-
-    // TODO(29 May 2023) ~ Helge: remove
-    public function toArray(): array
-    {
-        return [
-            '_mindwave_content' => $this->content,
-            ...$this->meta,
-        ];
+        return $this->metadata;
     }
 }
