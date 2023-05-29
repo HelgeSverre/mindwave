@@ -59,5 +59,5 @@
 
 ## Notes & thoughts
 
-- Is a `Brain` a tool, does it make sense to implement it as a tool? (langchain has cconcept of retrievers, which is
+- Is a `Brain` a tool, does it make sense to implement it as a tool? (langchain has the concept of retrievers, which is
   similar to brains)
