@@ -49,19 +49,18 @@ class Brain
         foreach ($docs as $chunkIndex => $doc) {
 
             $entries[] = new VectorStoreEntry(
-                id: $doc->getMetaValue('id', Str::uuid()), // TODO(27 May 2023) ~ Helge: Should we provide the ID, or defer that to the vectorstore driver?
+                id: Str::uuid()->toString(),
                 vector: $this->embeddings->embedDocument($doc),
-                // TODO(27 May 2023) ~ Helge: Should it just have the Document object inside?
                 metadata: [
-                    // TODO(27 May 2023) ~ Helge: Standardize how this is done.
-                    '_mindwave_content' => $doc->content(),
+                    '_mindwave_source_id' => Arr::get($doc->metadata(), '_mindwave_source_id'),
+                    '_mindwave_source_type' => Arr::get($doc->metadata(), '_mindwave_source_type'),
                     '_mindwave_chunk_index' => $chunkIndex,
-                    'metadata' => $doc->metadata(),
+                    '_mindwave_metadata' => $doc->metadata(),
                 ],
             );
         }
 
-        $this->vectorstore->upsertVectors($entries);
+        $this->vectorstore->insertVectors($entries);
 
         return $this;
     }
