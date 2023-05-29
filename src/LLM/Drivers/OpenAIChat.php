@@ -3,6 +3,7 @@
 namespace Mindwave\Mindwave\LLM\Drivers;
 
 use Mindwave\Mindwave\Contracts\LLM;
+use Mindwave\Mindwave\Prompts\PromptTemplate;
 use OpenAI\Client;
 use OpenAI\Responses\Chat\CreateResponseMessage;
 
@@ -47,5 +48,14 @@ class OpenAIChat implements LLM
         $message = $response->choices[0]->message;
 
         return $message->content;
+    }
+
+    public function run(PromptTemplate $promptTemplate, array $inputs = []): mixed
+    {
+        $formatted = $promptTemplate->format($inputs);
+
+        $response = $this->predict($formatted);
+
+        return $promptTemplate->parse($response);
     }
 }

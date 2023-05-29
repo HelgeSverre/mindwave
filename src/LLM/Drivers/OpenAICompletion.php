@@ -3,6 +3,7 @@
 namespace Mindwave\Mindwave\LLM\Drivers;
 
 use Mindwave\Mindwave\Contracts\LLM;
+use Mindwave\Mindwave\Prompts\PromptTemplate;
 use OpenAI\Client;
 
 class OpenAICompletion implements LLM
@@ -37,5 +38,14 @@ class OpenAICompletion implements LLM
         ]);
 
         return $response->choices[0]?->text;
+    }
+
+    public function run(PromptTemplate $promptTemplate, array $inputs = []): mixed
+    {
+        $formatted = $promptTemplate->format($inputs);
+
+        $response = $this->predict($formatted);
+
+        return $promptTemplate->parse($response);
     }
 }
