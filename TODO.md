@@ -35,6 +35,7 @@
 - [ ] Milvus vectorstore driver ( collection = collection, properties = meta) + tests
 - [ ] Redis vectorstore driver (https://redis.io/docs/stack/search/indexing_json/)
 - [ ] PGVector vectorstore driver
+- [ ] Chroma vectorstore driver (https://github.com/chroma-core/chroma)
 
 ## TODO
 
