@@ -2,9 +2,11 @@
 
 namespace Mindwave\Mindwave\Vectorstore\Drivers;
 
+use Exception;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Mindwave\Mindwave\Contracts\Vectorstore;
+use Mindwave\Mindwave\Document\Data\Document;
 use Mindwave\Mindwave\Embeddings\Data\EmbeddingVector;
 use Mindwave\Mindwave\Vectorstore\Data\VectorStoreEntry;
 use Weaviate\Model\ClassModel;
@@ -37,20 +39,11 @@ class Weaviate implements Vectorstore
                 'description' => 'Created by Mindwave',
                 'vectorizer' => 'none',
                 'properties' => [
-                    [
-                        'dataType' => ['string'],
-                        'description' => 'Mindwave Document ID',
-                        'name' => 'mindwaveDocumentId',
-                    ],
-                    [
-                        'dataType' => ['string'],
-                        'description' => 'Mindwave Document Chunk',
-                        'name' => 'mindwaveDocumentChunk',
-                    ], [
-                        'dataType' => ['text'],
-                        'description' => 'Mindwave Document Content',
-                        'name' => 'mindwaveDocumentContent',
-                    ],
+                    ['dataType' => ['string'], 'name' => '_mindwave_doc_source_id'],
+                    ['dataType' => ['string'], 'name' => '_mindwave_doc_source_type'],
+                    ['dataType' => ['string'], 'name' => '_mindwave_doc_chunk_index'],
+                    ['dataType' => ['text'], 'name' => '_mindwave_doc_content'],
+                    ['dataType' => ['text'], 'name' => '_mindwave_doc_metadata'],
                 ],
             ]);
         }
@@ -61,18 +54,12 @@ class Weaviate implements Vectorstore
         );
 
         if (! $found) {
-            throw new \Exception("Could not create Class '{$this->className}' in Weaviate");
+            throw new Exception("Could not create Class '{$this->className}' in Weaviate");
         }
 
-        // TODO(24 May 2023) ~ Helge: return true?
     }
 
-    public function fetchByIds(array $ids): array
-    {
-        // TODO: Implement fetchByIds() method.
-    }
-
-    public function insertVector(VectorStoreEntry $entry): void
+    public function insert(VectorStoreEntry $entry): void
     {
         $this->ensureClassExists();
 
@@ -80,27 +67,13 @@ class Weaviate implements Vectorstore
             'id' => Str::uuid()->toString(),
             'class' => $this->className,
             'vector' => $entry->vector->values,
-            'properties' => [
-                'mindwaveDocumentId' => $entry->id,
-                'mindwaveDocumentChunk' => $entry->metadata['_mindwave_content'],
-                'mindwaveDocumentContent' => $entry->metadata['_mindwave_chunk_index'],
-            ],
+            'properties' => $entry->meta(),
         ]);
     }
 
-    public function upsertVector(VectorStoreEntry $entry): void
+    public function insertMany(array $entries): void
     {
-        // TODO: Implement upsertVector() method.
-    }
-
-    public function insertVectors(array $entries): void
-    {
-        // TODO: Implement insertVectors() method.
-    }
-
-    public function upsertVectors(array $entries): void
-    {
-        // TODO: Implement upsertVectors() method.
+        // TODO: Implement insertMany() method.
     }
 
     public function similaritySearchByVector(EmbeddingVector $embedding, int $count = 5): array
@@ -110,21 +83,25 @@ class Weaviate implements Vectorstore
 
         $query = <<<GRAPHQL
 {
-    Get {
-      {$this->className} (
-       limit: 2
-        nearVector: {
-            vector: {$json}
-        }
-      ) {
-        mindwaveDocumentId
-        mindwaveDocumentChunk
-        mindwaveDocumentContent
+  Get {
+    MindwaveItems(
+      limit: {$count}
+      nearVector: {vector: {$json}}
+    ) {
+      _additional {
+        vector
+        score
       }
+      _mindwave_doc_source_id
+      _mindwave_doc_source_type
+      _mindwave_doc_chunk_index
+      _mindwave_doc_content
+      _mindwave_doc_metadata
     }
+  }
 }
+
 GRAPHQL;
-        //        dd($query);
 
         $data = $this->client->graphql()->get($query);
 
@@ -132,10 +109,37 @@ GRAPHQL;
 
         $results = [];
         foreach ($items as $item) {
+            $meta = json_decode($item['_mindwave_doc_metadata'], true);
+
             $results[] = new VectorStoreEntry(
-                id: $item['mindwaveDocumentId'],
+                vector: new EmbeddingVector($item['_additional']['vector']),
+                document: new Document(
+                    content: $item['_mindwave_doc_content'],
+                    metadata: array_merge($meta, [
+                        '_mindwave_doc_source_id' => $item['_mindwave_doc_source_id'],
+                        '_mindwave_doc_source_type' => $item['_mindwave_doc_source_type'],
+                        '_mindwave_doc_chunk_index' => $item['_mindwave_doc_chunk_index'],
+
+                    ])
+                ),
+                score: $item['_additional']['score']
             );
         }
-        // TODO: Implement similaritySearchByVector() method.
+
+        return $results;
+    }
+
+    public function truncate(): void
+    {
+        // No way to bulk delete, simply delete the entire schema and rebuild it.
+        $this->client->schema()->delete($this->className);
+        $this->ensureClassExists();
+    }
+
+    public function itemCount(): int
+    {
+        $data = $this->client->graphql()->get(" { Aggregate { {$this->className}  { meta { count } } } }");
+
+        return Arr::get($data, 'data.Aggregate.'.$this->className.'.0.meta.count');
     }
 }

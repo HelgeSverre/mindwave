@@ -2,7 +2,9 @@
 
 namespace Mindwave\Mindwave\Vectorstore\Drivers;
 
+use Illuminate\Support\Str;
 use Mindwave\Mindwave\Contracts\Vectorstore;
+use Mindwave\Mindwave\Document\Data\Document;
 use Mindwave\Mindwave\Embeddings\Data\EmbeddingVector;
 use Mindwave\Mindwave\Support\Similarity;
 use Mindwave\Mindwave\Vectorstore\Data\VectorStoreEntry;
@@ -29,18 +31,25 @@ class File implements Vectorstore
             $this->items = [];
 
             foreach ($data as $id => $item) {
+
+                $meta = json_decode($item['metadata']['_mindwave_doc_metadata'], true);
+
                 $this->items[$id] = new VectorStoreEntry(
-                    id: $id,
                     vector: new EmbeddingVector($item['vector']),
-                    metadata: $item['metadata'] ?? null
-                );
+                    document: new Document(
+                        content: $item['metadata']['_mindwave_doc_content'],
+                        metadata: array_merge($meta, [
+                            '_mindwave_doc_source_id' => $item['metadata']['_mindwave_doc_source_id'],
+                            '_mindwave_doc_source_type' => $item['metadata']['_mindwave_doc_source_type'],
+                            '_mindwave_doc_chunk_index' => $item['metadata']['_mindwave_doc_chunk_index'],
+                        ])
+                    ));
             }
         } else {
             $this->items = [];
         }
     }
 
-    // TODO(20 mai 2023) ~ Helge: do this in destructor?
     protected function saveToFile(): void
     {
         $data = [];
@@ -48,10 +57,9 @@ class File implements Vectorstore
         foreach ($this->items as $id => $entry) {
             /** @var VectorStoreEntry $entry */
             $data[$id] = [
-                'id' => $entry->id,
                 'vector' => $entry->vector->toArray(),
                 'score' => $entry->score,
-                'metadata' => $entry->metadata,
+                'metadata' => $entry->meta(),
             ];
         }
 
@@ -64,41 +72,19 @@ class File implements Vectorstore
         file_put_contents($this->path, json_encode($data));
     }
 
-    public function fetchById(string $id): ?VectorStoreEntry
+    public function insert(VectorStoreEntry $entry): void
     {
-        return $this->items[$id] ?? null;
-    }
+        $id = Str::uuid()->toString();
 
-    public function fetchByIds(array $ids): array
-    {
-        return collect($ids)
-            ->map(fn ($id) => $this->fetchById($id))
-            ->filter()
-            ->values()
-            ->all();
-    }
-
-    public function insertVector(VectorStoreEntry $entry): void
-    {
-        $this->items[$entry->id] = clone $entry;
+        $this->items[$id] = clone $entry;
         $this->saveToFile();
     }
 
-    public function upsertVector(VectorStoreEntry $entry): void
-    {
-        $this->insertVector($entry);
-    }
-
-    public function insertVectors(array $entries): void
+    public function insertMany(array $entries): void
     {
         foreach ($entries as $entry) {
-            $this->insertVector($entry);
+            $this->insert($entry);
         }
-    }
-
-    public function upsertVectors(array $entries): void
-    {
-        $this->insertVectors($entries);
     }
 
     public function similaritySearchByVector(EmbeddingVector $embedding, int $count = 5): array
@@ -114,5 +100,16 @@ class File implements Vectorstore
             ->take($count)
             ->values()
             ->all();
+    }
+
+    public function itemCount(): int
+    {
+        return count($this->items);
+    }
+
+    public function truncate(): void
+    {
+        $this->items = [];
+        $this->saveToFile();
     }
 }

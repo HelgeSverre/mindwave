@@ -14,40 +14,21 @@ class InMemory implements Vectorstore
      */
     protected array $items = [];
 
-    public function fetchById(string $id): ?VectorStoreEntry
+    public function insert(VectorStoreEntry $entry): void
     {
-        return $this->items[$id] ?? null;
-    }
-
-    public function fetchByIds(array $ids): array
-    {
-        return collect($ids)
-            ->map(fn ($id) => $this->fetchById($id))
-            ->filter()
-            ->values()
-            ->all();
-    }
-
-    public function insertVector(VectorStoreEntry $entry): void
-    {
-        $this->items[$entry->id] = clone $entry;
+        $this->items[] = clone $entry;
     }
 
     public function upsertVector(VectorStoreEntry $entry): void
     {
-        $this->insertVector($entry);
+        $this->insert($entry);
     }
 
-    public function insertVectors(array $entries): void
+    public function insertMany(array $entries): void
     {
         foreach ($entries as $entry) {
-            $this->insertVector($entry);
+            $this->insert($entry);
         }
-    }
-
-    public function upsertVectors(array $entries): void
-    {
-        $this->insertVectors($entries);
     }
 
     public function similaritySearchByVector(EmbeddingVector $embedding, int $count = 5): array
@@ -60,5 +41,15 @@ class InMemory implements Vectorstore
             ->take($count)
             ->values()
             ->all();
+    }
+
+    public function itemCount(): int
+    {
+        return count($this->items);
+    }
+
+    public function truncate(): void
+    {
+        $this->items = [];
     }
 }

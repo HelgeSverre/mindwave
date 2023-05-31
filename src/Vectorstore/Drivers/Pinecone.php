@@ -2,14 +2,12 @@
 
 namespace Mindwave\Mindwave\Vectorstore\Drivers;
 
-use GuzzleHttp\Psr7\Query;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use Mindwave\Mindwave\Contracts\Vectorstore;
+use Mindwave\Mindwave\Document\Data\Document;
 use Mindwave\Mindwave\Embeddings\Data\EmbeddingVector;
 use Mindwave\Mindwave\Vectorstore\Data\VectorStoreEntry;
 use Probots\Pinecone\Client as PineconeClient;
-use Probots\Pinecone\Requests\Exceptions\MissingNameException;
 
 class Pinecone implements Vectorstore
 {
@@ -23,106 +21,31 @@ class Pinecone implements Vectorstore
         $this->index = $index;
     }
 
-    public function fetchById(string $id): ?VectorStoreEntry
+    public function insert(VectorStoreEntry $entry): void
     {
-        $result = $this->client->index($this->index)->vectors()->fetch([$id])->collect('vectors')->first();
+        $id = Str::uuid();
 
-        if (! $result) {
-            return null;
-        }
-
-        return new VectorStoreEntry(
-            id: $result['id'],
-            vector: new EmbeddingVector($result['values']),
-            metadata: $result['metadata'] ?? []
-        );
-
-    }
-
-    public function fetchByIds(array $ids): array
-    {
-
-        $host = $this->client->index($this->index)->describe()->json('status.host');
-
-        $params = Query::build(['ids' => $ids]);
-
-        /**
-         * @todo remove this when issue in pinecone-php has been fixed
-         *
-         * @see https://github.com/probots-io/pinecone-php/issues/3
-         */
-        return Http::withHeaders([
-            'Api-Key' => $this->client->apiKey,
-        ])
-            ->acceptJson()
-            ->asJson()
-            ->get("https://{$host}/vectors/fetch?{$params}")
-            ->collect('vectors')
-            ->values()
-            ->map(fn ($result) => new VectorStoreEntry(
-                id: $result['id'],
-                vector: new EmbeddingVector($result['values']),
-                metadata: $result['metadata'] ?? []
-            ))
-            ->toArray();
-
-        // TODO(22 May 2023) ~ Helge: Replace with this
-        // return $this->client->index($this->index)->vectors()
-        //     ->fetch($ids)
-        //     ->collect('vectors')
-        //     ->map(fn($result) => new VectorStoreEntry(
-        //         id: $result['id'],
-        //         vector: new EmbeddingVector($result['values']),
-        //         metadata: $result['metadata'] ?? []
-        //     ))
-        //     ->toArray();
-    }
-
-    public function insertVector(VectorStoreEntry $entry): void
-    {
         $vectors = array_filter([
-            'id' => $entry->id ?? Str::uuid(),
+            'id' => $id,
             'values' => $entry->vector->values,
-            'metadata' => $entry->metadata,
+            'metadata' => $entry->document->metadata(),
         ]);
 
         $this->client->index($this->index)->vectors()->upsert($vectors);
     }
 
-    public function upsertVector(VectorStoreEntry $entry): void
+    public function insertMany(array $entries): void
     {
-        $this->insertVector($entry);
-    }
-
-    /**
-     * @param  VectorStoreEntry[]  $entries
-     *
-     * @throws MissingNameException
-     */
-    public function insertVectors(array $entries): void
-    {
-        $vectors = collect($entries)->map(fn (VectorStoreEntry $entry) => array_filter([
-            'id' => $entry->id ?? Str::uuid(),
+        $vectors = collect($entries)->map(fn (VectorStoreEntry $entry) => [
+            'id' => Str::uuid()->toString(),
             'values' => $entry->vector->values,
-            'metadata' => $entry->metadata,
-        ]))->toArray();
+            // Pinecone does not allow "null" values, so we have to filter them out
+            'metadata' => array_filter($entry->meta()),
+        ])->toArray();
 
         $this->client->index($this->index)->vectors()->upsert($vectors);
     }
 
-    /**
-     * @param  VectorStoreEntry[]  $entries
-     *
-     * @throws MissingNameException
-     */
-    public function upsertVectors(array $entries): void
-    {
-        $this->insertVectors($entries);
-    }
-
-    /**
-     * @return VectorStoreEntry[] $entries
-     */
     public function similaritySearchByVector(EmbeddingVector $embedding, int $count = 5): array
     {
         return $this->client->index($this->index)->vectors()->query(
@@ -130,11 +53,32 @@ class Pinecone implements Vectorstore
             topK: $count,
             includeMetadata: true,
             includeVector: true,
-        )->collect('matches')->map(fn ($match) => new VectorStoreEntry(
-            id: $match['id'],
-            vector: new EmbeddingVector($match['values']),
-            metadata: $match['metadata'] ?? [],
-            score: $match['score'],
-        ))->toArray();
+        )->collect('matches')->map(function ($match) {
+
+            $meta = json_decode($match['metadata']['_mindwave_doc_metadata'] ?? '[]', true);
+
+            return new VectorStoreEntry(
+                vector: new EmbeddingVector($match['values']),
+                document: new Document(
+                    content: $match['metadata']['_mindwave_doc_content'],
+                    metadata: array_merge($meta, [
+                        '_mindwave_doc_source_id' => $match['metadata']['_mindwave_doc_source_id'] ?? null,
+                        '_mindwave_doc_source_type' => $match['metadata']['_mindwave_doc_source_type'] ?? null,
+                        '_mindwave_doc_chunk_index' => $match['metadata']['_mindwave_doc_chunk_index'] ?? null,
+                    ]),
+                ),
+                score: $match['score'],
+            );
+        })->toArray();
+    }
+
+    public function truncate(): void
+    {
+        $this->client->index($this->index)->vectors()->delete(deleteAll: true);
+    }
+
+    public function itemCount(): int
+    {
+        return $this->client->index($this->index)->vectors()->stats()->json('totalVectorCount');
     }
 }

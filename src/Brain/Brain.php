@@ -2,8 +2,6 @@
 
 namespace Mindwave\Mindwave\Brain;
 
-use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
 use Mindwave\Mindwave\Contracts\Embeddings;
 use Mindwave\Mindwave\Contracts\Vectorstore;
 use Mindwave\Mindwave\Document\Data\Document;
@@ -38,17 +36,7 @@ class Brain
 
         $documents = [];
         foreach ($results as $result) {
-            // TODO(29 May 2023) ~ Helge: method Document::fromVectorStoreEntry($entry) ?
-            $documents[] = new Document(
-                content: $result->metadata['_mindwave_content'],
-                metadata: [
-                    '_mindwave_source_id' => $result->metadata['_mindwave_source_id'],
-                    '_mindwave_source_type' => $result->metadata['_mindwave_source_type'],
-                    '_mindwave_content' => $result->metadata['_mindwave_content'],
-                    '_mindwave_chunk_index' => $result->metadata['_mindwave_chunk_index'],
-                    '_mindwave_metadata' => $result->metadata['_mindwave_metadata'],
-                ]
-            );
+            $documents[] = $result->document;
         }
 
         return $documents;
@@ -63,19 +51,16 @@ class Brain
         foreach ($docs as $chunkIndex => $doc) {
 
             $entries[] = new VectorStoreEntry(
-                id: Str::uuid()->toString(),
+
                 vector: $this->embeddings->embedDocument($doc),
-                metadata: [
-                    '_mindwave_source_id' => Arr::get($doc->metadata(), '_mindwave_source_id'),
-                    '_mindwave_source_type' => Arr::get($doc->metadata(), '_mindwave_source_type'),
-                    '_mindwave_content' => Arr::get($doc->metadata(), '_mindwave_content'),
-                    '_mindwave_chunk_index' => $chunkIndex,
-                    '_mindwave_metadata' => $doc->metadata(),
-                ],
+                document: new Document(
+                    content: $doc->content(),
+                    metadata: array_merge($doc->metadata(), ['_mindwave_doc_chunk_index' => $chunkIndex])
+                )
             );
         }
 
-        $this->vectorstore->insertVectors($entries);
+        $this->vectorstore->insertMany($entries);
 
         return $this;
     }

@@ -3,10 +3,11 @@
 use Mindwave\Mindwave\Document\Data\Document;
 use Mindwave\Mindwave\Embeddings\Data\EmbeddingVector;
 use Mindwave\Mindwave\Vectorstore\Data\VectorStoreEntry;
-use Mindwave\Mindwave\Vectorstore\Drivers\InMemory;
+use Mindwave\Mindwave\Vectorstore\Drivers\File;
 
 it('can put things into the vectorstore', function () {
-    $vectorstore = new InMemory();
+    unlink(__DIR__.'/../data/dummy.json');
+    $vectorstore = new File(__DIR__.'/../data/dummy.json');
 
     $entry = new VectorStoreEntry(
         vector: new EmbeddingVector([1, 2, 3]),
@@ -21,8 +22,8 @@ it('can put things into the vectorstore', function () {
 });
 
 it('can put multiple things into the vectorstore', function () {
-
-    $vectorstore = new InMemory();
+    unlink(__DIR__.'/../data/dummy.json');
+    $vectorstore = new File(__DIR__.'/../data/dummy.json');
 
     $entryA = new VectorStoreEntry(
         vector: new EmbeddingVector([1, 2, 3]),
@@ -40,8 +41,8 @@ it('can put multiple things into the vectorstore', function () {
 });
 
 it('can search by similarity', function () {
-
-    $vectorstore = new InMemory();
+    unlink(__DIR__.'/../data/dummy.json');
+    $vectorstore = new File(__DIR__.'/../data/dummy.json');
 
     $vectorstore->insertMany([
         new VectorStoreEntry(
@@ -76,8 +77,8 @@ it('can search by similarity', function () {
 });
 
 it('can wipe entire vectorstore', function () {
-
-    $vectorstore = new InMemory();
+    unlink(__DIR__.'/../data/dummy.json');
+    $vectorstore = new File(__DIR__.'/../data/dummy.json');
 
     $vectorstore->insertMany([
         new VectorStoreEntry(
