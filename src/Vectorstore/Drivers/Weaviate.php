@@ -24,13 +24,6 @@ class Weaviate implements Vectorstore
         $this->className = $className;
     }
 
-    public function fetchById(string $id): ?VectorStoreEntry
-    {
-        // TODO: Implement fetchById() method.
-
-        return null;
-    }
-
     protected function ensureClassExists()
     {
         if ($this->client->schema()->get()->getClasses()->isEmpty()) {
@@ -56,7 +49,6 @@ class Weaviate implements Vectorstore
         if (! $found) {
             throw new Exception("Could not create Class '{$this->className}' in Weaviate");
         }
-
     }
 
     public function insert(VectorStoreEntry $entry): void
