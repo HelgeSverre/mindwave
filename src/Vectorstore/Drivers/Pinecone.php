@@ -28,7 +28,8 @@ class Pinecone implements Vectorstore
         $vectors = array_filter([
             'id' => $id,
             'values' => $entry->vector->values,
-            'metadata' => $entry->document->metadata(),
+            // Pinecone does not allow "null" values, so we have to filter them out
+            'metadata' => array_filter($entry->meta()),
         ]);
 
         $this->client->index($this->index)->vectors()->upsert($vectors);

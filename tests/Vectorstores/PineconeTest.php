@@ -30,6 +30,56 @@ it('can wipe the entire vectorstore', function () {
 
 });
 
+it('can insert one into pinecone', function () {
+
+    $vectorstore = new Pinecone(
+        new Client(
+            env('MINDWAVE_PINECONE_API_KEY'),
+            env('MINDWAVE_PINECONE_ENVIRONMENT')
+        ),
+        env('MINDWAVE_PINECONE_INDEX')
+    );
+
+    $vectorstore->truncate();
+
+    $vectorstore->insert(
+        new VectorStoreEntry(
+            vector: new EmbeddingVector(array_fill(0, 1536, 0.5)),
+            document: new Document('test 1')
+        ),
+    );
+
+    expect($vectorstore->itemCount())->toBe(1);
+    $vectorstore->truncate();
+    expect($vectorstore->itemCount())->toBe(0);
+
+});
+
+it('can insert multiple into pinecone', function () {
+
+    $vectorstore = new Pinecone(
+        new Client(
+            env('MINDWAVE_PINECONE_API_KEY'),
+            env('MINDWAVE_PINECONE_ENVIRONMENT')
+        ),
+        env('MINDWAVE_PINECONE_INDEX')
+    );
+
+    $vectorstore->truncate();
+
+    $vectorstore->insertMany([
+        new VectorStoreEntry(new EmbeddingVector(array_fill(0, 1536, 0.5)), new Document('test 1')),
+        new VectorStoreEntry(new EmbeddingVector(array_fill(0, 1536, 0.5)), new Document('test 2')),
+        new VectorStoreEntry(new EmbeddingVector(array_fill(0, 1536, 0.5)), new Document('test 3')),
+    ]);
+
+    expect($vectorstore->itemCount())->toBe(3);
+    $vectorstore->truncate();
+
+    expect($vectorstore->itemCount())->toBe(0);
+
+});
+
 it('We can perform similarity search on documents in pinecone', function () {
 
     Config::set('mindwave-embeddings.embeddings.openai.api_key', env('MINDWAVE_OPENAI_API_KEY'));
