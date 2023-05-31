@@ -49,9 +49,7 @@ class Brain
         $entries = [];
 
         foreach ($docs as $chunkIndex => $doc) {
-
             $entries[] = new VectorStoreEntry(
-
                 vector: $this->embeddings->embedDocument($doc),
                 document: new Document(
                     content: $doc->content(),

@@ -8,7 +8,6 @@ use Mindwave\Mindwave\Document\Loaders\PdfLoader;
 use Mindwave\Mindwave\Document\Loaders\WebLoader;
 use Mindwave\Mindwave\Document\Loaders\WordLoader;
 use Smalot\PdfParser\Parser;
-use wapmorgan\FileTypeDetector\Detector;
 
 class Loader
 {
@@ -62,21 +61,6 @@ class Loader
     public function fromWord($data, ?array $meta = []): ?Document
     {
         return $this->loader('word', $data, $meta);
-    }
-
-    public function load($data, ?array $meta = []): ?Document
-    {
-        $stream = fopen('php://memory', 'r+');
-        fwrite($stream, $data);
-        rewind($stream);
-
-        $type = Detector::detectByContent($stream);
-
-        fclose($stream);
-
-        dump($type);
-
-        return null;
     }
 
     public function fromText($text, ?array $meta = []): ?Document
