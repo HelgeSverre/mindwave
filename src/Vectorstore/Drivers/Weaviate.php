@@ -34,7 +34,7 @@ class Weaviate implements Vectorstore
                 'properties' => [
                     ['dataType' => ['string'], 'name' => '_mindwave_doc_source_id'],
                     ['dataType' => ['string'], 'name' => '_mindwave_doc_source_type'],
-                    ['dataType' => ['string'], 'name' => '_mindwave_doc_chunk_index'],
+                    ['dataType' => ['int'], 'name' => '_mindwave_doc_chunk_index'],
                     ['dataType' => ['text'], 'name' => '_mindwave_doc_content'],
                     ['dataType' => ['text'], 'name' => '_mindwave_doc_metadata'],
                 ],
