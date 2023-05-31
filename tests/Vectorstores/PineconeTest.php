@@ -132,9 +132,8 @@ it('We can perform similarity search on documents in pinecone', function () {
     $contents = collect($fetched)
         ->pluck('document')
         ->map(fn (Document $doc) => $doc->content())
-        ->sort()
         ->toArray();
 
     // this is crude, but it works
-    expect($contents)->toMatchArray(['banana', 'fruit flies']);
+    expect($contents)->toContain('banana', 'fruit flies');
 });
