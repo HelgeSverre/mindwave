@@ -8,9 +8,9 @@ use Illuminate\Support\Str;
 use Mindwave\Mindwave\Brain\Brain;
 use Mindwave\Mindwave\Contracts\LLM;
 use Mindwave\Mindwave\Contracts\Tool;
+use Mindwave\Mindwave\Document\Data\Document;
 use Mindwave\Mindwave\Memory\ConversationBufferMemory;
 use Mindwave\Mindwave\Prompts\OldPromptTemplate;
-use Mindwave\Mindwave\Vectorstore\Data\VectorStoreEntry;
 
 class Agent
 {
@@ -78,7 +78,7 @@ class Agent
                     '[TOOL_LIST]' => $this->tools->map(fn (Tool $tool) => $tool->name())->join(', '),
                 ]),
             OldPromptTemplate::from(__DIR__.'/../Prompts/Templates/relevant_documents.txt')->format([
-                '[DOCUMENTS]' => collect($relevantDocuments)->map(fn (VectorStoreEntry $entry, $i) => "[$i] - ".$entry->metadata['_mindwave_content'])->join("\n"),
+                '[DOCUMENTS]' => collect($relevantDocuments)->map(fn (Document $document, $i) => "[$i] - ".$document->content())->join("\n"),
             ]),
             OldPromptTemplate::from(__DIR__.'/../Prompts/Templates/history.txt')->format([
                 '[HISTORY]' => $this->messageHistory->conversationAsString('Human', 'Mindwave'),
