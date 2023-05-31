@@ -65,20 +65,26 @@ class Weaviate implements Vectorstore
 
     public function insertMany(array $entries): void
     {
-        // TODO: Implement insertMany() method.
+        $objects = collect($entries)->map(function (VectorStoreEntry $entry) {
+            return [
+                'id' => Str::uuid()->toString(),
+                'class' => $this->className,
+                'vector' => $entry->vector->values,
+                'properties' => $entry->meta(),
+            ];
+        })->toArray();
+
+        $this->client->batch()->create($objects);
     }
 
     public function similaritySearchByVector(EmbeddingVector $embedding, int $count = 5): array
     {
 
-        $json = json_encode($embedding->toArray());
-
-        $query = <<<GRAPHQL
-{
+        $data = $this->client->graphql()->get("{
   Get {
     MindwaveItems(
       limit: {$count}
-      nearVector: {vector: {$json}}
+      nearVector: {vector: {$embedding->toJson()}}
     ) {
       _additional {
         vector
@@ -91,11 +97,7 @@ class Weaviate implements Vectorstore
       _mindwave_doc_metadata
     }
   }
-}
-
-GRAPHQL;
-
-        $data = $this->client->graphql()->get($query);
+}");
 
         $items = Arr::get($data, "data.Get.{$this->className}");
 

@@ -6,11 +6,12 @@ use ArrayAccess;
 use ArrayIterator;
 use Countable;
 use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Contracts\Support\Jsonable;
 use IteratorAggregate;
 use RuntimeException;
 use Traversable;
 
-class EmbeddingVector implements ArrayAccess, Arrayable, Countable, IteratorAggregate
+class EmbeddingVector implements ArrayAccess, Arrayable, Countable, IteratorAggregate, Jsonable, \JsonSerializable
 {
     public readonly array $values;
 
@@ -57,5 +58,15 @@ class EmbeddingVector implements ArrayAccess, Arrayable, Countable, IteratorAggr
     public function getIterator(): Traversable
     {
         return new ArrayIterator($this->values);
+    }
+
+    public function toJson($options = 0): string
+    {
+        return json_encode($this->values, $options);
+    }
+
+    public function jsonSerialize(): mixed
+    {
+        return $this->toJson();
     }
 }

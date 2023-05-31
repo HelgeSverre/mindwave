@@ -102,3 +102,41 @@ it('We can connect search weaviate', function () {
         '_mindwave_doc_source_type',
     ]);
 });
+
+it('Can insert multiple in batch', function () {
+    Config::set('mindwave-embeddings.embeddings.openai.api_key', env('MINDWAVE_OPENAI_API_KEY'));
+
+    $vectorstore = new \Mindwave\Mindwave\Vectorstore\Drivers\Weaviate(
+        client: new Weaviate(
+            apiUrl: 'http://localhost:8080/v1',
+            apiToken: 'password',
+        ),
+        className: 'MindwaveItems'
+    );
+    $vectorstore->truncate();
+
+    $vectorstore->insertMany([
+        new VectorStoreEntry(
+            new EmbeddingVector(array_fill(0, 1536, 1)),
+            new Document('this is test 1')
+        ),
+        new VectorStoreEntry(
+            new EmbeddingVector(array_fill(0, 1536, 0)),
+            new Document('this is test 2')
+        ),
+        new VectorStoreEntry(
+            new EmbeddingVector(array_fill(0, 1536, 2.3)),
+            new Document('this is test 3')
+        ),
+        new VectorStoreEntry(
+            new EmbeddingVector(array_fill(0, 1536, 4.4)),
+            new Document('this is test 4')
+        ),
+        new VectorStoreEntry(
+            new EmbeddingVector(array_fill(0, 1536, 5.5)),
+            new Document('this is test 5')
+        ),
+    ]);
+
+    expect($vectorstore->itemCount())->toBe(5);
+});
