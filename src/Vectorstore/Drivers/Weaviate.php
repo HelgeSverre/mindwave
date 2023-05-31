@@ -42,11 +42,11 @@ class Weaviate implements Vectorstore
         }
 
         $found = $this->client->schema()->get()->getClasses()->first(
-            callback: fn (ClassModel $classModel) => $classModel->getClass() === $this->className,
+            callback: fn(ClassModel $classModel) => $classModel->getClass() === $this->className,
             default: false
         );
 
-        if (! $found) {
+        if (!$found) {
             throw new Exception("Could not create Class '{$this->className}' in Weaviate");
         }
     }
@@ -125,8 +125,12 @@ class Weaviate implements Vectorstore
 
     public function truncate(): void
     {
+        // Silly, but lets make sure it exists first.
+        $this->ensureClassExists();
+
         // No way to bulk delete, simply delete the entire schema and rebuild it.
         $this->client->schema()->delete($this->className);
+
         $this->ensureClassExists();
     }
 
@@ -134,6 +138,6 @@ class Weaviate implements Vectorstore
     {
         $data = $this->client->graphql()->get(" { Aggregate { {$this->className}  { meta { count } } } }");
 
-        return Arr::get($data, 'data.Aggregate.'.$this->className.'.0.meta.count');
+        return Arr::get($data, 'data.Aggregate.' . $this->className . '.0.meta.count');
     }
 }
