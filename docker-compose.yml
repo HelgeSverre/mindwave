@@ -1,5 +1,15 @@
 version: '3'
 services:
+
+  qdrant:
+    image: qdrant/qdrant:v0.10.1
+    ports:
+      - 6333:6333
+    volumes:
+      - 'mindwave-qdrant:/qdrant/storage'
+    networks:
+      - mindwave
+
   weaviate-console:
     image: semitechnologies/weaviate-console:latest
     networks:
@@ -32,4 +42,6 @@ networks:
     driver: bridge
 volumes:
   mindwave-weaviate:
+    driver: local
+  mindwave-qdrant:
     driver: local

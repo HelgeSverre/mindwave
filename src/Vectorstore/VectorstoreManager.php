@@ -7,6 +7,7 @@ use Mindwave\Mindwave\Contracts\Vectorstore;
 use Mindwave\Mindwave\Vectorstore\Drivers\File;
 use Mindwave\Mindwave\Vectorstore\Drivers\InMemory;
 use Mindwave\Mindwave\Vectorstore\Drivers\Pinecone;
+use Mindwave\Mindwave\Vectorstore\Drivers\Qdrant;
 use Mindwave\Mindwave\Vectorstore\Drivers\Weaviate;
 use Probots\Pinecone\Client;
 use Weaviate\Weaviate as WeaviateClient;
@@ -38,6 +39,16 @@ class VectorstoreManager extends Manager
                 environment: $this->config->get('mindwave-vectorstore.vectorstores.pinecone.environment'),
             ),
             index: $this->config->get('mindwave-vectorstore.vectorstores.pinecone.index')
+        );
+    }
+
+    public function createQdrantDriver(): Vectorstore
+    {
+        return new Qdrant(
+            apiKey: $this->config->get('mindwave-vectorstore.vectorstores.qdrant.api_key'),
+            collection: $this->config->get('mindwave-vectorstore.vectorstores.qdrant.collection'),
+            host: $this->config->get('mindwave-vectorstore.vectorstores.qdrant.host'),
+            port: $this->config->get('mindwave-vectorstore.vectorstores.qdrant.port'),
         );
     }
 
