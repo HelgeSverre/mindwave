@@ -73,6 +73,23 @@ it('can search by similarity', function () {
 
     expect($similar)->toHaveCount(5);
     expect($similar[0])->toBeInstanceOf(VectorStoreEntry::class);
+    expect($similar)->toHaveCount(5);
+    expect($similar[0])->toBeInstanceOf(VectorStoreEntry::class);
+    expect($similar[0]->score)->toBeNumeric();
+    expect($similar[0]->document)->toBeInstanceOf(Document::class);
+    expect($similar[0]->document->content())->toBeString();
+    expect($similar[0]->document->metadata())->toHaveKeys([
+        '_mindwave_doc_chunk_index',
+        '_mindwave_doc_source_id',
+        '_mindwave_doc_source_type',
+    ]);
+    expect($similar[0]->meta())->toHaveKeys([
+        '_mindwave_doc_chunk_index',
+        '_mindwave_doc_content',
+        '_mindwave_doc_metadata',
+        '_mindwave_doc_source_id',
+        '_mindwave_doc_source_type',
+    ]);
 });
 
 it('can wipe entire vectorstore', function () {

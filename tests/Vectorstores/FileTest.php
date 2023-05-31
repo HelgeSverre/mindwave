@@ -6,7 +6,9 @@ use Mindwave\Mindwave\Vectorstore\Data\VectorStoreEntry;
 use Mindwave\Mindwave\Vectorstore\Drivers\File;
 
 it('can put things into the vectorstore', function () {
-    unlink(__DIR__.'/../data/dummy.json');
+    if (file_exists(__DIR__.'/../data/dummy.json')) {
+        unlink(__DIR__.'/../data/dummy.json');
+    }
     $vectorstore = new File(__DIR__.'/../data/dummy.json');
 
     $entry = new VectorStoreEntry(
@@ -22,7 +24,9 @@ it('can put things into the vectorstore', function () {
 });
 
 it('can put multiple things into the vectorstore', function () {
-    unlink(__DIR__.'/../data/dummy.json');
+    if (file_exists(__DIR__.'/../data/dummy.json')) {
+        unlink(__DIR__.'/../data/dummy.json');
+    }
     $vectorstore = new File(__DIR__.'/../data/dummy.json');
 
     $entryA = new VectorStoreEntry(
@@ -41,7 +45,9 @@ it('can put multiple things into the vectorstore', function () {
 });
 
 it('can search by similarity', function () {
-    unlink(__DIR__.'/../data/dummy.json');
+    if (file_exists(__DIR__.'/../data/dummy.json')) {
+        unlink(__DIR__.'/../data/dummy.json');
+    }
     $vectorstore = new File(__DIR__.'/../data/dummy.json');
 
     $vectorstore->insertMany([
@@ -74,10 +80,27 @@ it('can search by similarity', function () {
 
     expect($similar)->toHaveCount(5);
     expect($similar[0])->toBeInstanceOf(VectorStoreEntry::class);
+    expect($similar[0]->score)->toBeNumeric();
+    expect($similar[0]->document)->toBeInstanceOf(Document::class);
+    expect($similar[0]->document->content())->toBeString();
+    expect($similar[0]->document->metadata())->toHaveKeys([
+        '_mindwave_doc_chunk_index',
+        '_mindwave_doc_source_id',
+        '_mindwave_doc_source_type',
+    ]);
+    expect($similar[0]->meta())->toHaveKeys([
+        '_mindwave_doc_chunk_index',
+        '_mindwave_doc_content',
+        '_mindwave_doc_metadata',
+        '_mindwave_doc_source_id',
+        '_mindwave_doc_source_type',
+    ]);
 });
 
 it('can wipe entire vectorstore', function () {
-    unlink(__DIR__.'/../data/dummy.json');
+    if (file_exists(__DIR__.'/../data/dummy.json')) {
+        unlink(__DIR__.'/../data/dummy.json');
+    }
     $vectorstore = new File(__DIR__.'/../data/dummy.json');
 
     $vectorstore->insertMany([

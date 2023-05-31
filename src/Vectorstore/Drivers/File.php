@@ -27,24 +27,7 @@ class File implements Vectorstore
     protected function loadFromFile(): void
     {
         if (file_exists($this->path)) {
-            $data = json_decode(file_get_contents($this->path), true);
-            $this->items = [];
-
-            foreach ($data as $id => $item) {
-
-                $meta = json_decode($item['metadata']['_mindwave_doc_metadata'], true);
-
-                $this->items[$id] = new VectorStoreEntry(
-                    vector: new EmbeddingVector($item['vector']),
-                    document: new Document(
-                        content: $item['metadata']['_mindwave_doc_content'],
-                        metadata: array_merge($meta, [
-                            '_mindwave_doc_source_id' => $item['metadata']['_mindwave_doc_source_id'],
-                            '_mindwave_doc_source_type' => $item['metadata']['_mindwave_doc_source_type'],
-                            '_mindwave_doc_chunk_index' => $item['metadata']['_mindwave_doc_chunk_index'],
-                        ])
-                    ));
-            }
+            $this->items = json_decode(file_get_contents($this->path), true);
         } else {
             $this->items = [];
         }
@@ -52,16 +35,6 @@ class File implements Vectorstore
 
     protected function saveToFile(): void
     {
-        $data = [];
-
-        foreach ($this->items as $id => $entry) {
-            /** @var VectorStoreEntry $entry */
-            $data[$id] = [
-                'vector' => $entry->vector->toArray(),
-                'score' => $entry->score,
-                'metadata' => $entry->meta(),
-            ];
-        }
 
         $directory = dirname($this->path);
 
@@ -69,14 +42,18 @@ class File implements Vectorstore
             mkdir($directory, 0777, true);
         }
 
-        file_put_contents($this->path, json_encode($data));
+        file_put_contents($this->path, json_encode($this->items));
     }
 
     public function insert(VectorStoreEntry $entry): void
     {
         $id = Str::uuid()->toString();
 
-        $this->items[$id] = clone $entry;
+        $this->items[$id] = [
+            'vector' => $entry->vector->toArray(),
+            'score' => $entry->score,
+            'metadata' => $entry->meta(),
+        ];
         $this->saveToFile();
     }
 
@@ -90,10 +67,18 @@ class File implements Vectorstore
     public function similaritySearchByVector(EmbeddingVector $embedding, int $count = 5): array
     {
         return collect($this->items)
-            ->map(function (VectorStoreEntry $entry) use ($embedding) {
-
-                return $entry->cloneWithScore(
-                    score: Similarity::cosine($entry->vector, $embedding)
+            ->map(function ($item) use ($embedding) {
+                return new VectorStoreEntry(
+                    vector: $vector = new EmbeddingVector($item['vector']),
+                    document: new Document(
+                        content: $item['metadata']['_mindwave_doc_content'],
+                        metadata: array_merge(json_decode($item['metadata']['_mindwave_doc_metadata'], true), [
+                            '_mindwave_doc_source_id' => $item['metadata']['_mindwave_doc_source_id'],
+                            '_mindwave_doc_source_type' => $item['metadata']['_mindwave_doc_source_type'],
+                            '_mindwave_doc_chunk_index' => $item['metadata']['_mindwave_doc_chunk_index'],
+                        ])
+                    ),
+                    score: Similarity::cosine($vector, $embedding)
                 );
             })
             ->sortByDesc(fn (VectorStoreEntry $entry) => $entry->score, SORT_NUMERIC)

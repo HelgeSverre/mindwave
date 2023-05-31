@@ -63,8 +63,21 @@ it('We can perform similarity search on documents in pinecone', function () {
 
     $fetched = $vectorstore->similaritySearchByVector(Embeddings::embedText('banana'), 2);
 
-    expect($fetched)->toBeArray();
-    expect($fetched)->toHaveCount(2);
+    expect($fetched[0]->score)->toBeNumeric();
+    expect($fetched[0]->document)->toBeInstanceOf(Document::class);
+    expect($fetched[0]->document->content())->toBeString();
+    expect($fetched[0]->document->metadata())->toHaveKeys([
+        '_mindwave_doc_chunk_index',
+        '_mindwave_doc_source_id',
+        '_mindwave_doc_source_type',
+    ]);
+    expect($fetched[0]->meta())->toHaveKeys([
+        '_mindwave_doc_chunk_index',
+        '_mindwave_doc_content',
+        '_mindwave_doc_metadata',
+        '_mindwave_doc_source_id',
+        '_mindwave_doc_source_type',
+    ]);
 
     $contents = collect($fetched)
         ->pluck('document')
