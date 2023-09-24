@@ -11,8 +11,8 @@ it('loads content from a PDFs', function ($file) {
 
     $knowledge = DocumentLoader::fromPdf($pdfContent);
 
-    expect($knowledge)->toBeInstanceOf(Document::class);
-    expect($knowledge->content())->toContain('Lorem ipsum');
+    expect($knowledge)->toBeInstanceOf(Document::class)
+        ->and($knowledge->content())->toContain('Lorem ipsum');
 })->with([
     __DIR__.'/data/samples/sample-1-page.pdf',
     __DIR__.'/data/samples/sample-2-pages.pdf',
@@ -25,8 +25,8 @@ it('loads content from a DOCX file', function ($file) {
 
     $knowledge = DocumentLoader::fromWord($content);
 
-    expect($knowledge)->toBeInstanceOf(Document::class);
-    expect($knowledge->content())->toContain('Sample Docx');
+    expect($knowledge)->toBeInstanceOf(Document::class)
+        ->and($knowledge->content())->toContain('Sample Docx');
 })->with([
     __DIR__.'/data/samples/sample-1-page.docx',
     __DIR__.'/data/samples/sample-2-pages.docx',
@@ -39,8 +39,8 @@ it('loads content from a DOC file', function ($file) {
 
     $knowledge = DocumentLoader::fromWord($content);
 
-    expect($knowledge)->toBeInstanceOf(Document::class);
-    expect($knowledge->content())->toContain('This is a regular paragraph');
+    expect($knowledge)->toBeInstanceOf(Document::class)
+        ->and($knowledge->content())->toContain('This is a regular paragraph');
 })->with([
     __DIR__.'/data/samples/SampleDOCFile_200kb.doc',
 ]);
@@ -57,15 +57,15 @@ it('loads content from a URL', function () {
 
     $knowledge = DocumentLoader::fromUrl('https://example.com');
 
-    expect($knowledge)->toBeInstanceOf(Document::class);
-    expect($knowledge->content())->toBe('It works!');
+    expect($knowledge)->toBeInstanceOf(Document::class)
+        ->and($knowledge->content())->toBe('It works!');
 });
 
 it('loads content from HTML', function () {
     $knowledge = DocumentLoader::fromHTML('<html><head><title>Ignored</title></head><body><h1>It works!</h1></body></html>');
 
-    expect($knowledge)->toBeInstanceOf(Document::class);
-    expect($knowledge->content())->toBe('It works!');
+    expect($knowledge)->toBeInstanceOf(Document::class)
+        ->and($knowledge->content())->toBe('It works!');
 });
 
 it('loads content from text', function () {
@@ -73,15 +73,15 @@ it('loads content from text', function () {
 
     $knowledge = DocumentLoader::fromText($textContent);
 
-    expect($knowledge)->toBeInstanceOf(Document::class);
-    expect($knowledge->content())->toBe($textContent);
+    expect($knowledge)->toBeInstanceOf(Document::class)
+        ->and($knowledge->content())->toBe($textContent);
 });
 
 it('can auto detect which content is in the file', function ($file) {
-    $document = DocumentLoader::load(file_get_contents($file));
+    $document = DocumentLoader::loadFromContent(file_get_contents($file));
 
-    expect($document)->toBeInstanceOf(Document::class, "Failed to parse: {$file}");
-    expect($document->content())->toBeString();
+    expect($document)->toBeInstanceOf(Document::class, "Failed to parse: {$file}")
+        ->and($document->content())->toBeString();
 })->with([
     __DIR__.'/data/samples/flags-royal-palace-norway-en.txt',
     __DIR__.'/data/samples/file-sample_100kB.odt',
@@ -95,4 +95,4 @@ it('can auto detect which content is in the file', function ($file) {
     __DIR__.'/data/samples/sample-2-pages.docx',
     __DIR__.'/data/samples/sample-2-pages.pdf',
     __DIR__.'/data/samples/samplepptx.pptx',
-])->skip('Not implemented yet');
+]);
