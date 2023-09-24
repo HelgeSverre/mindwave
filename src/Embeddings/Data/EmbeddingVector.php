@@ -11,7 +11,7 @@ use IteratorAggregate;
 use RuntimeException;
 use Traversable;
 
-class EmbeddingVector implements ArrayAccess, Arrayable, Countable, IteratorAggregate, Jsonable, \JsonSerializable
+class EmbeddingVector implements \JsonSerializable, Arrayable, ArrayAccess, Countable, IteratorAggregate, Jsonable
 {
     public readonly array $values;
 

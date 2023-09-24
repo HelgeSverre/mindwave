@@ -9,7 +9,7 @@ use Mindwave\Mindwave\Prompts\PromptTemplate;
 it('can use a structured output parser', function () {
     Config::set('mindwave-vectorstore.default', 'array');
     Config::set('mindwave-embeddings.embeddings.openai.api_key', env('MINDWAVE_OPENAI_API_KEY'));
-    Config::set('mindwave-llm.llms.openai_chat.api_key', env('MINDWAVE_OPENAI_API_KEY'));
+    Config::set('mindwave-llm.llms.openai.api_key', env('MINDWAVE_OPENAI_API_KEY'));
 
     class Person
     {
@@ -39,9 +39,9 @@ it('can use a structured output parser', function () {
 it('We can parse a small recipe into an object', function () {
     Config::set('mindwave-vectorstore.default', 'array');
     Config::set('mindwave-embeddings.embeddings.openai.api_key', env('MINDWAVE_OPENAI_API_KEY'));
-    Config::set('mindwave-llm.llms.openai_chat.api_key', env('MINDWAVE_OPENAI_API_KEY'));
-    Config::set('mindwave-llm.llms.openai_chat.max_tokens', 2500);
-    Config::set('mindwave-llm.llms.openai_chat.temperature', 0.2);
+    Config::set('mindwave-llm.llms.openai.api_key', env('MINDWAVE_OPENAI_API_KEY'));
+    Config::set('mindwave-llm.llms.openai.max_tokens', 2500);
+    Config::set('mindwave-llm.llms.openai.temperature', 0.2);
 
     class Recipe
     {

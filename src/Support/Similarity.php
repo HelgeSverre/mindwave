@@ -12,8 +12,6 @@ class Similarity
     {
         // Check if the vectors have the same length
         if (count($vectorA) !== count($vectorB)) {
-
-            dd($vectorA, $vectorB);
             throw new InvalidArgumentException(sprintf('Vectors must have the same length, got %s and %s', count($vectorA), count($vectorB)));
         }
 

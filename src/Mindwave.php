@@ -33,7 +33,7 @@ class Mindwave
     }
 
     // TODO(27 May 2023) ~ Helge: Allow passing custom memory
-    public function agent(?BaseChatMessageHistory $memory = null): Agent
+    public function agent(BaseChatMessageHistory $memory = null): Agent
     {
         return new Agent(
             llm: $this->llm,

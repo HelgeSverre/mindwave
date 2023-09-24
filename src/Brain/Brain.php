@@ -17,7 +17,7 @@ class Brain
 
     protected TextSplitter $textSplitter;
 
-    public function __construct(Vectorstore $vectorstore, Embeddings $embeddings, ?TextSplitter $textSplitter = null)
+    public function __construct(Vectorstore $vectorstore, Embeddings $embeddings, TextSplitter $textSplitter = null)
     {
         $this->vectorstore = $vectorstore;
         $this->embeddings = $embeddings;

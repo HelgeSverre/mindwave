@@ -3,7 +3,8 @@
 namespace Mindwave\Mindwave\LLM\Drivers;
 
 use Mindwave\Mindwave\Contracts\LLM;
-use Mindwave\Mindwave\LLM\Functions;
+use Mindwave\Mindwave\LLM\Functions\FunctionBuilder;
+use Mindwave\Mindwave\LLM\Functions\FunctionCall;
 use Mindwave\Mindwave\Prompts\PromptTemplate;
 use OpenAI\Client;
 use OpenAI\Responses\Chat\CreateResponse as ChatResponse;
@@ -28,10 +29,9 @@ class OpenAI implements LLM
     public function __construct(
         protected Client $client,
         protected string $model = 'gpt-3.5-turbo-16k',
-        protected int    $maxTokens = 800,
-        protected float  $temperature = 0.7,
-    )
-    {
+        protected int $maxTokens = 800,
+        protected float $temperature = 0.7,
+    ) {
     }
 
     public function model(int $model): self
@@ -64,9 +64,9 @@ class OpenAI implements LLM
         return $promptTemplate->parse($response);
     }
 
-    public function functionCall(string $prompt, array|Functions $functions): mixed
+    public function functionCall(string $prompt, array|FunctionBuilder $functions, ?string $functionCall = 'auto'): FunctionCall|string|null
     {
-
+        /** @var ChatResponse $response */
         $response = $this->client->chat()->create([
             'max_tokens' => $this->maxTokens,
             'temperature' => $this->temperature,
@@ -74,34 +74,25 @@ class OpenAI implements LLM
             'messages' => [
                 ['role' => 'system', 'content' => $prompt],
             ],
-            'functions' => $functions instanceof Functions ? $functions->toArray() : $functions,
-            '_functions' => [
-                [
-                    'name' => 'get_current_weather',
-                    'description' => 'Get the current weather in a given location',
-                    'parameters' => [
-                        'type' => 'object',
-                        'properties' => [
-                            'location' => [
-                                'type' => 'string',
-                                'description' => 'The city and state, e.g. San Francisco, CA',
-                            ],
-                            'unit' => [
-                                'type' => 'string',
-                                'enum' => ['celsius', 'fahrenheit']
-                            ],
-                        ],
-                        'required' => ['location'],
-                    ],
-                ]
-            ]
+            'functions' => $functions instanceof FunctionBuilder ? $functions->build() : $functions,
+            'function_call' => match ($functionCall) {
+                null, 'auto' => 'auto',
+                'none' => 'none',
+                default => ['name' => $functionCall],
+            },
         ]);
 
-        //    $result->message->functionCall->name; // 'get_current_weather'
-        //    $result->message->functionCall->arguments; // "{\n  \"location\": \"Boston, MA\"\n}"
-        //    $result->finishReason; // 'function_call'
+        $choice = $response->choices[0];
 
-        return $promptTemplate->parse($response);
+        if ($choice->finishReason === 'function_call') {
+            return new FunctionCall(
+                name: $choice->message->functionCall->name,
+                arguments: rescue(fn () => $choice->message->functionCall->arguments, report: false),
+                rawArguments: $choice->message->functionCall->arguments,
+            );
+        }
+
+        return $this->extractResponseText($response);
     }
 
     public function predict(string $prompt): ?string

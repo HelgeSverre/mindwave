@@ -14,21 +14,20 @@ use Mindwave\Mindwave\Prompts\OldPromptTemplate;
 
 class Agent
 {
-    protected LLM $llm;
-
-    /** @var Collection<Tool> */
-    protected Collection $tools;
-
-    protected ConversationBufferMemory $messageHistory;
-
-    protected Brain $brain;
-
-    public function __construct(LLM $llm, ConversationBufferMemory $messageHistory, Brain $brain, array $tools = [])
+    public function __construct(
+        readonly public LLM $llm,
+        readonly public ConversationBufferMemory $messageHistory,
+        readonly public Brain $brain,
+        readonly public array $tools = [])
     {
-        $this->llm = $llm;
-        $this->messageHistory = $messageHistory;
-        $this->tools = collect($tools);
-        $this->brain = $brain;
+    }
+
+    /**
+     * @return Collection<Tool>
+     */
+    protected function toolCollection(): Collection
+    {
+
     }
 
     public function parseActionResponse(string $text): ?array
@@ -53,7 +52,7 @@ class Agent
 
         // TODO(16 May 2023) ~ Helge: Cleanup this
         /** @var null|Tool $selectedTool */
-        $selectedTool = $this->tools->first(fn (Tool $tool) => $tool->name() === $toolName);
+        $selectedTool = $this->toolCollection()->first(fn (Tool $tool) => $tool->name() === $toolName);
 
         if ($selectedTool) {
             return $selectedTool->run($input);
@@ -71,11 +70,11 @@ class Agent
         // TODO(18 mai 2023) ~ Helge: Abstract away
         $initialPrompt = OldPromptTemplate::combine([
             file_get_contents(__DIR__.'/../Prompts/Templates/prefix.txt'),
-            $this->tools->isEmpty()
+            $this->toolCollection()->isEmpty()
                 ? OldPromptTemplate::from(__DIR__.'/../Prompts/Templates/no_tools.txt')->format()
                 : OldPromptTemplate::from(__DIR__.'/../Prompts/Templates/tools.txt')->format([
-                    '[TOOL_DESCRIPTIONS]' => $this->tools->map(fn ($t) => sprintf('> %s: %s', $t->name(), $t->description()))->join("\n"),
-                    '[TOOL_LIST]' => $this->tools->map(fn (Tool $tool) => $tool->name())->join(', '),
+                    '[TOOL_DESCRIPTIONS]' => $this->toolCollection()->map(fn ($t) => sprintf('> %s: %s', $t->name(), $t->description()))->join("\n"),
+                    '[TOOL_LIST]' => $this->toolCollection()->map(fn (Tool $tool) => $tool->name())->join(', '),
                 ]),
             OldPromptTemplate::from(__DIR__.'/../Prompts/Templates/relevant_documents.txt')->format([
                 '[DOCUMENTS]' => collect($relevantDocuments)->map(fn (Document $document, $i) => "[$i] - ".$document->content())->join("\n"),

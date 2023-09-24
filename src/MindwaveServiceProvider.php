@@ -6,10 +6,15 @@ use Mindwave\Mindwave\Commands\ToolMakeCommand;
 use Mindwave\Mindwave\Contracts\Embeddings;
 use Mindwave\Mindwave\Contracts\LLM;
 use Mindwave\Mindwave\Document\Loader;
+use Mindwave\Mindwave\Document\Loaders\HtmlLoader;
+use Mindwave\Mindwave\Document\Loaders\PdfLoader;
+use Mindwave\Mindwave\Document\Loaders\WebLoader;
+use Mindwave\Mindwave\Document\Loaders\WordLoader;
 use Mindwave\Mindwave\Embeddings\EmbeddingsManager;
 use Mindwave\Mindwave\Facades\Vectorstore;
 use Mindwave\Mindwave\LLM\LLMManager;
 use Mindwave\Mindwave\Vectorstore\VectorstoreManager;
+use Smalot\PdfParser\Parser;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -49,8 +54,13 @@ class MindwaveServiceProvider extends PackageServiceProvider
         $this->app->singleton(Vectorstore::class, fn ($app) => $app['mindwave.vectorstore.manager']->driver());
         $this->app->singleton(LLM::class, fn ($app) => $app['mindwave.llm.manager']->driver());
 
-        // Misc
-        $this->app->bind('mindwave.document.loader', fn () => new Loader());
+        // Document loader
+        $this->app->bind(Loader::class, fn () => new Loader([
+            'pdf' => new PdfLoader(new Parser()),
+            'html' => new HtmlLoader(),
+            'url' => new WebLoader(),
+            'word' => new WordLoader(),
+        ]));
 
         // Shortcut
         $this->app->singleton('mindwave', fn ($app) => new Mindwave(
