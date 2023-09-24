@@ -13,7 +13,7 @@ return [
     | LLM is set. You can customize this option by updating the 'MINDWAVE_LLM' environment variable.
     */
 
-    'default' => env('MINDWAVE_LLM', 'openai_chat'),
+    'default' => env('MINDWAVE_LLM', 'openai'),
 
     /*
     |--------------------------------------------------------------------------
@@ -26,18 +26,10 @@ return [
     */
 
     'llms' => [
-        'openai_chat' => [
+        'openai' => [
             'api_key' => env('MINDWAVE_OPENAI_API_KEY'),
             'org_id' => env('MINDWAVE_OPENAI_ORG_ID'),
-            'model' => env('MINDWAVE_OPENAI_MODEL', 'gpt-3.5-turbo'),
-            'max_tokens' => 1000,
-            'temperature' => 0.4,
-        ],
-
-        'openai_completion' => [
-            'api_key' => env('MINDWAVE_OPENAI_API_KEY'),
-            'org_id' => env('MINDWAVE_OPENAI_ORG_ID'),
-            'model' => env('MINDWAVE_OPENAI_MODEL', 'text-davinci-003'),
+            'model' => env('MINDWAVE_OPENAI_MODEL', 'gpt-3.5-turbo-16k'),
             'max_tokens' => 1000,
             'temperature' => 0.4,
         ],

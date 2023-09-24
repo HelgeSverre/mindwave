@@ -4,8 +4,7 @@ namespace Mindwave\Mindwave\LLM;
 
 use Illuminate\Support\Manager;
 use Mindwave\Mindwave\LLM\Drivers\Fake;
-use Mindwave\Mindwave\LLM\Drivers\OpenAIChat;
-use Mindwave\Mindwave\LLM\Drivers\OpenAICompletion;
+use Mindwave\Mindwave\LLM\Drivers\OpenAI as OpenAIDriver;
 use OpenAI;
 
 class LLMManager extends Manager
@@ -20,29 +19,16 @@ class LLMManager extends Manager
         return new Fake();
     }
 
-    public function createOpenAIChatDriver()
+    public function createOpenAIDriver()
     {
-        return new OpenAIChat(
+        return new OpenAIDriver(
             client: OpenAI::client(
-                apiKey: $this->config->get('mindwave-llm.llms.openai_chat.api_key'),
-                organization: $this->config->get('mindwave-llm.llms.openai_chat.org_id')
+                apiKey: $this->config->get('mindwave-llm.llms.openai.api_key'),
+                organization: $this->config->get('mindwave-llm.llms.openai.org_id')
             ),
-            model: $this->config->get('mindwave-llm.llms.openai_chat.model'),
-            maxTokens: $this->config->get('mindwave-llm.llms.openai_chat.max_tokens'),
-            temperature: $this->config->get('mindwave-llm.llms.openai_chat.temperature'),
-        );
-    }
-
-    public function createOpenAICompletionDriver()
-    {
-        return new OpenAICompletion(
-            client: OpenAI::client(
-                apiKey: $this->config->get('mindwave-llm.llms.openai_completion.api_key'),
-                organization: $this->config->get('mindwave-llm.llms.openai_completion.org_id')
-            ),
-            model: $this->config->get('mindwave-llm.llms.openai_completion.model'),
-            maxTokens: $this->config->get('mindwave-llm.llms.openai_completion.max_tokens'),
-            temperature: $this->config->get('mindwave-llm.llms.openai_completion.temperature'),
+            model: $this->config->get('mindwave-llm.llms.openai.model'),
+            maxTokens: $this->config->get('mindwave-llm.llms.openai.max_tokens'),
+            temperature: $this->config->get('mindwave-llm.llms.openai.temperature'),
         );
     }
 }
