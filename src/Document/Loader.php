@@ -22,7 +22,7 @@ class Loader
 
     public function loadDocument(string $loaderName, $input, ?array $meta = []): ?Document
     {
-        if (! isset($this->loaders[$loaderName])) {
+        if (!isset($this->loaders[$loaderName])) {
             throw new InvalidArgumentException("Loader $loaderName is not registered.");
         }
 
@@ -54,13 +54,18 @@ class Loader
         return Document::make($text, $meta);
     }
 
-    public static function loadFromContent($content)
+    /**
+     * @internal
+     */
+    public function loadFromContent($content): ?Document
     {
         $type = FileTypeDetector::detectByContent($content);
 
-        // TODO: implement
+        // TODO: not implemented
 
-        return $type;
-
+        return match ($type) {
+            'application/vnd.oasis.opendocument.text' => $this->fromWord($content),
+            default => $this->fromText($content),
+        };
     }
 }
