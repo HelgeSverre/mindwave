@@ -38,7 +38,7 @@ class PendingFunction
         array $enum = []
     ): self {
         $this->parameters[$name] = [
-            'role' => $type,
+            'type' => $type,
             'description' => $description,
         ];
         if ($enum) {
@@ -70,7 +70,7 @@ class PendingFunction
             }
 
             $this->parameters[$parameterName] = [
-                'role' => $this->getTypeFromParameter($parameter),
+                'type' => $this->getTypeFromParameter($parameter),
                 'description' => $description,
             ];
 
@@ -82,20 +82,21 @@ class PendingFunction
         return $this;
     }
 
-    private function getTypeFromParameter(ReflectionParameter $parameter): string
+    protected function getTypeFromParameter(ReflectionParameter $parameter): string
     {
         $type = $parameter->getType();
         if (! $type) {
-            return 'mixed'; // Return 'mixed' if the role is not available
+            return 'mixed'; // Return 'mixed' if the type is not available
         }
 
         $typeName = $type instanceof ReflectionNamedType ? $type->getName() : (string) $type;
 
-        if ($type->allowsNull()) {
-            return 'null|'.$typeName;
-        }
+        return match ($typeName) {
+            'int' => 'integer',
+            'float' => 'number',
+            default => $typeName
+        };
 
-        return $typeName;
     }
 
     public function build(): array
@@ -104,7 +105,7 @@ class PendingFunction
             'name' => $this->name,
             'description' => $this->description,
             'parameters' => [
-                'role' => 'object',
+                'type' => 'object',
                 'properties' => $this->parameters,
                 'required' => $this->required,
             ],

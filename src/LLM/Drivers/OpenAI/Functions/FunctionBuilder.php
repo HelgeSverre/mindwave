@@ -2,6 +2,7 @@
 
 namespace Mindwave\Mindwave\LLM\Drivers\OpenAI\Functions;
 
+use Closure;
 use Illuminate\Contracts\Support\Arrayable;
 
 class FunctionBuilder implements Arrayable
@@ -16,9 +17,14 @@ class FunctionBuilder implements Arrayable
         return new self();
     }
 
-    public function addFunction(string $name, string $description = null): PendingFunction
+    public function addFunction(string $name, string $description = null, Closure $closure = null): PendingFunction
     {
         $pendingFunction = new PendingFunction($name, $description);
+
+        if ($closure) {
+            $pendingFunction->fromClosure($closure);
+        }
+
         $this->functions[] = $pendingFunction;
 
         return $pendingFunction;
@@ -26,9 +32,7 @@ class FunctionBuilder implements Arrayable
 
     public function build(): array
     {
-        return array_map(function (PendingFunction $function) {
-            return $function->build();
-        }, $this->functions);
+        return array_map(fn (PendingFunction $function) => $function->build(), $this->functions);
     }
 
     public function toArray(): array

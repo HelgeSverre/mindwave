@@ -1,5 +1,6 @@
 <?php
 
+use Mindwave\Mindwave\Facades\Mindwave;
 use Mindwave\Mindwave\LLM\Drivers\OpenAI\Functions\FunctionBuilder;
 
 it('Can convert an anonymous function to a Function object', function () {
@@ -23,14 +24,14 @@ it('Can convert an anonymous function to a Function object', function () {
         ->and($result)->toBeArray();
 
     $expectedParameters = [
-        'role' => 'object',
+        'type' => 'object',
         'properties' => [
             'location' => [
-                'role' => 'string',
+                'type' => 'string',
                 'description' => 'The location to get the weather from',
             ],
             'unit' => [
-                'role' => 'string',
+                'type' => 'string',
                 'description' => 'The unit to return the temperature in',
             ],
         ],
@@ -55,14 +56,14 @@ it('can generate a schema from a closure', closure: function () {
         'name' => 'get_current_weather',
         'description' => 'Gets the current weather',
         'parameters' => [
-            'role' => 'object',
+            'type' => 'object',
             'properties' => [
                 'location' => [
-                    'role' => 'string',
+                    'type' => 'string',
                     'description' => '', // todo: Assuming "blank" if not defined, instead of being omitted for now
                 ],
                 'unit' => [
-                    'role' => 'string',
+                    'type' => 'string',
                     'description' => '', // todo Assuming "blank" if not defined, instead of being omitted for now
                 ],
             ],
@@ -88,10 +89,10 @@ it('Builds correct schema for get_current_weather function', function () {
     expect($schema)->toBeArray()->and($schema)->toHaveCount(1);
     expect($schema[0]['name'])->toEqual('get_current_weather');
     expect($schema[0]['description'])->toEqual('Get the current weather');
-    expect($schema[0]['parameters']['role'])->toEqual('object');
-    expect($schema[0]['parameters']['properties']['location']['role'])->toEqual('string');
+    expect($schema[0]['parameters']['type'])->toEqual('object');
+    expect($schema[0]['parameters']['properties']['location']['type'])->toEqual('string');
     expect($schema[0]['parameters']['properties']['location']['description'])->toEqual('The city and state, e.g. San Francisco, CA');
-    expect($schema[0]['parameters']['properties']['unit']['role'])->toEqual('string');
+    expect($schema[0]['parameters']['properties']['unit']['type'])->toEqual('string');
     expect($schema[0]['parameters']['properties']['unit']['enum'])->toEqual(['celsius', 'fahrenheit']);
     expect($schema[0]['parameters']['properties']['unit']['description'])->toEqual('The temperature unit to use. Infer this from the user\'s location.');
     expect($schema[0]['parameters']['required'])->toEqual(['location', 'unit']);
@@ -119,14 +120,14 @@ it('can generate the correct schema for functions', function () {
             'name' => 'get_current_weather',
             'description' => 'Get the current weather',
             'parameters' => [
-                'role' => 'object',
+                'type' => 'object',
                 'properties' => [
                     'location' => [
-                        'role' => 'string',
+                        'type' => 'string',
                         'description' => 'The city and state, e.g. San Francisco, CA',
                     ],
                     'format' => [
-                        'role' => 'string',
+                        'type' => 'string',
                         'enum' => ['celsius', 'fahrenheit'],
                         'description' => 'The temperature unit to use. Infer this from the users location.',
                     ],
@@ -138,19 +139,19 @@ it('can generate the correct schema for functions', function () {
             'name' => 'get_n_day_weather_forecast',
             'description' => 'Get an N-day weather forecast',
             'parameters' => [
-                'role' => 'object',
+                'type' => 'object',
                 'properties' => [
                     'location' => [
-                        'role' => 'string',
+                        'type' => 'string',
                         'description' => 'The city and state, e.g. San Francisco, CA',
                     ],
                     'format' => [
-                        'role' => 'string',
+                        'type' => 'string',
                         'enum' => ['celsius', 'fahrenheit'],
                         'description' => 'The temperature unit to use. Infer this from the users location.',
                     ],
                     'num_days' => [
-                        'role' => 'integer',
+                        'type' => 'integer',
                         'description' => 'The number of days to forecast',
                     ],
                 ],
@@ -174,5 +175,31 @@ it('Description is empty string by default', function () {
     expect($schema)->toBeArray()->and($schema)->toHaveCount(1);
     expect($schema[0]['name'])->toEqual('get_current_weather');
     expect($schema[0]['description'])->toEqual('');
+
+});
+
+it('wip can call function', closure: function () {
+    $builder = FunctionBuilder::make();
+    $builder->addFunction(
+        name: 'get_current_weather',
+        description: 'Gets the current weather',
+        closure: function (string $location, string $unit) {
+            return "$location $unit";
+        }
+    );
+
+    $builder->addFunction(
+        name: 'get_temperature',
+        description: 'Gets the latest news headlines',
+        closure: function (string $newsOrganization, int $count) {
+            return "Latest $count news headlines from $newsOrganization";
+        }
+    );
+
+    $response = Mindwave::llm()->functionCall('What is the weather in bergen, norway in celcius?', $builder);
+
+    expect($response->name)->toEqual('get_current_weather')
+        ->and($response->arguments)->toHaveKeys(['location', 'unit'])
+        ->and($response->arguments['location'])->toEqual('Bergen, Norway');
 
 });
