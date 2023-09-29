@@ -5,7 +5,7 @@ namespace Mindwave\Mindwave\Facades;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @see \Mindwave\Mindwave\Mindwave
+ * @mixin \Mindwave\Mindwave\Mindwave
  */
 class Mindwave extends Facade
 {
