@@ -5,7 +5,7 @@
 [![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/mindwave/mindwave/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/mindwave/mindwave/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/mindwave/mindwave.svg?style=flat-square)](https://packagist.org/packages/mindwave/mindwave)
 
-# Mindwave: AI Chatbots, Agents & Document Q&A in Laravel Simplified.
+# Mindwave: Toolbox for building AI functionality in your laravel application.
 
 ## WARNING: This package is NOT ready to be used yet!
 

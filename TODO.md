@@ -27,15 +27,12 @@
 - [x] Command to generate a Tool class (php artisan mindwave:tool)
 - [x] Sketch out Brain class that is an abstraction around vectorstores that operate on Documents
 - [x] Write some simple tests that shows that an agent can answer a simple question based on the content of a text file.
+- [x] Weaviate vectorstore driver ( collection = collection, properties = meta) + tests
+- [x] Qdrant vectorstore driver ( collection = collection, properties = meta) + tests
 
 ## Vectorstore Drivers
 
-- [ ] Weaviate vectorstore driver ( collection = collection, properties = meta) + tests
-- [ ] Qdrant vectorstore driver ( collection = collection, properties = meta) + tests
-- [ ] Milvus vectorstore driver ( collection = collection, properties = meta) + tests
 - [ ] Redis vectorstore driver (https://redis.io/docs/stack/search/indexing_json/)
-- [ ] PGVector vectorstore driver
-- [ ] Chroma vectorstore driver (https://github.com/chroma-core/chroma)
 
 ## TODO
 
@@ -47,16 +44,10 @@
   to do that in practice)
 - [ ] Laravel Scout-ish feature where you can modify your Model to make it indexable, and toPrompt() method to describe
   text, with converters for other filetypes (ex: pdf -> text))
-- [ ] Port the different "agent types" from LangChain, but simplify them.
-- [ ] Chain: QA With sources (
-  inspiration: https://github.com/hwchase17/langchain/blob/master/langchain/chains/qa_with_sources/stuff_prompt.py)
-- [ ] Chain: Related to above ^: QA With Source and Eloquent Model: Combine embedding search, model references and
-  retrieve the llm answer along with a model instance as result
+
 - [ ] Add eloquent backend ChatHistoryMemory (migration, model, config file (use mindwave.php) -> chat_history (id,
   role, message, meta, created_at, updated_at))
   the model in natural language or as a CSV
-- [ ] Callbacks implemented as Events (base the names
-  on [these](https://python.langchain.com/en/latest/modules/callbacks/getting_started.html) )
 
 ## Notes & thoughts
 

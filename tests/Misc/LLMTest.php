@@ -22,11 +22,9 @@ it('can use a structured output parser', function () {
         public ?Collection $tags;
     }
 
-    $model = Mindwave::llm();
-    $parser = new StructuredOutputParser(Person::class);
-
-    $result = $model->generate(PromptTemplate::create(
-        'Generate random details about a fictional person', $parser
+    $result = Mindwave::llm()->generate(PromptTemplate::create(
+        'Generate random details about a fictional person',
+        new StructuredOutputParser(Person::class)
     ));
 
     expect($result)->toBeInstanceOf(Person::class);
@@ -64,4 +62,4 @@ it('We can parse a small recipe into an object', function () {
 
     expect($result)->toBeInstanceOf(Recipe::class);
 
-});
+})->skip('Takes too long to run');
