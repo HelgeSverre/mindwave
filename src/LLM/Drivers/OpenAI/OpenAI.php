@@ -76,7 +76,7 @@ class OpenAI implements LLM
 
         $choice = $response->choices[0];
 
-        if ($choice->finishReason === 'function_call') {
+        if ($choice->message->functionCall) {
             return new FunctionCall(
                 name: $choice->message->functionCall->name,
                 arguments: rescue(fn () => json_decode($choice->message->functionCall->arguments, true), report: false),
