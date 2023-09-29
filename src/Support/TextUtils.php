@@ -17,6 +17,11 @@ class TextUtils
         return count($tokens);
     }
 
+    public static function combine($lines): string
+    {
+        return implode("\n", array_filter($lines));
+    }
+
     public static function normalizeWhitespace(string $text): string
     {
         return Str::of($text)->squish()->trim()->toString();

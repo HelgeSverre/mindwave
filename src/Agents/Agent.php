@@ -10,9 +10,16 @@ use Mindwave\Mindwave\Contracts\LLM;
 use Mindwave\Mindwave\Contracts\Tool;
 use Mindwave\Mindwave\Document\Data\Document;
 use Mindwave\Mindwave\Memory\ConversationMemory;
-use Mindwave\Mindwave\Prompts\OldPromptTemplate;
 use Mindwave\Mindwave\Prompts\PromptTemplate;
+use Mindwave\Mindwave\Support\TextUtils;
 
+/**
+ * @deprecated
+ *
+ * @experimental
+ *
+ * @todo remove this
+ */
 class Agent
 {
     public function __construct(
@@ -69,7 +76,7 @@ class Agent
         $relevantDocuments = $this->brain->search($input, count: 3);
 
         // TODO(18 mai 2023) ~ Helge: Abstract away
-        $initialPrompt = OldPromptTemplate::combine([
+        $initialPrompt = TextUtils::combine([
             file_get_contents(__DIR__.'/../Prompts/Templates/prefix.txt'),
             $this->toolCollection()->isEmpty()
                 ? PromptTemplate::fromPath(__DIR__.'/../Prompts/Templates/no_tools.txt')->format()
@@ -110,7 +117,7 @@ class Agent
         // TODO(18 mai 2023) ~ Helge: Put this in a loop until final answer found or max attempts is exhausted
         // ======================================================================================================
 
-        $finalPrompt = OldPromptTemplate::combine([
+        $finalPrompt = TextUtils::combine([
             $initialPrompt,
             PromptTemplate::fromPath(__DIR__.'/../Prompts/Templates/tool_response.txt')->format([
                 'TOOL_RESPONSE' => $this->runTool($parsed),
