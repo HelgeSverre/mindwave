@@ -8,10 +8,11 @@ use Countable;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
 use IteratorAggregate;
+use JsonSerializable;
 use RuntimeException;
 use Traversable;
 
-class EmbeddingVector implements \JsonSerializable, Arrayable, ArrayAccess, Countable, IteratorAggregate, Jsonable
+class EmbeddingVector implements Arrayable, ArrayAccess, Countable, IteratorAggregate, Jsonable, JsonSerializable
 {
     public readonly array $values;
 
