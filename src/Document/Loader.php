@@ -22,7 +22,7 @@ class Loader
 
     public function loadDocument(string $loaderName, $input, ?array $meta = []): ?Document
     {
-        if (!isset($this->loaders[$loaderName])) {
+        if (! isset($this->loaders[$loaderName])) {
             throw new InvalidArgumentException("Loader $loaderName is not registered.");
         }
 

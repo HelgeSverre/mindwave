@@ -49,13 +49,14 @@ class Mindwave
         );
     }
 
-    public function classify($input, $classes): ?string
+    public function classify($input, $classes)
     {
-
         if (is_array($classes)) {
             $values = $classes;
+            $isEnum = false;
         } elseif (enum_exists($classes)) {
             $values = array_column($classes::cases(), 'value');
+            $isEnum = true;
         } else {
             throw new InvalidArgumentException('classes provided is not an array, nor an enum.');
         }
@@ -80,7 +81,13 @@ class Mindwave
             requiredFunction: 'submit_classification'
         );
 
-        return $response->arguments['classification'] ?? null;
+        $classification = $response->arguments['classification'] ?? null;
+
+        if ($isEnum) {
+            return $classes::tryFrom($classification);
+        }
+
+        return $classification;
     }
 
     public function brain(): Brain
