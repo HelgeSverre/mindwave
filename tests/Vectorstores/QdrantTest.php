@@ -15,6 +15,7 @@ it('can insert one into qdrant', function () {
         host: 'localhost',
         port: '6333'
     );
+    $vectorstore->truncate();
 
     $vectorstore->insert(
         new VectorStoreEntry(
@@ -27,7 +28,7 @@ it('can insert one into qdrant', function () {
 
 });
 
-it('can insert multiple into pinecone', function () {
+it('can insert multiple into qdrant', function () {
 
     $vectorstore = new Qdrant(
         apiKey: '',
@@ -80,7 +81,7 @@ it('We can perform similarity search on documents in qdrant', function () {
     $vectorstore->truncate();
     $vectorstore->insertMany($vectors);
 
-    $fetched = $vectorstore->similaritySearchByVector(Embeddings::embedText('banana'), 2);
+    $fetched = $vectorstore->similaritySearch(Embeddings::embedText('banana'), 2);
 
     expect($fetched[0]->score)->toBeNumeric();
     expect($fetched[0]->document)->toBeInstanceOf(Document::class);

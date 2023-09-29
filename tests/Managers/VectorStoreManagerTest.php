@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Config;
 use Mindwave\Mindwave\Contracts\Vectorstore;
 use Mindwave\Mindwave\Vectorstore\Drivers\InMemory;
 use Mindwave\Mindwave\Vectorstore\Drivers\Pinecone;
+use Mindwave\Mindwave\Vectorstore\Drivers\Qdrant;
 use Mindwave\Mindwave\Vectorstore\Drivers\Weaviate;
 use Mindwave\Mindwave\Vectorstore\VectorstoreManager;
 
@@ -22,6 +23,14 @@ it('creates the Array driver', function () {
     $driver = $manager->createArrayDriver();
 
     expect($driver)->toBeInstanceOf(InMemory::class);
+    expect($driver)->toBeInstanceOf(Vectorstore::class);
+});
+
+it('creates the QDrant driver', function () {
+    $manager = new VectorstoreManager($this->app);
+    $driver = $manager->createQdrantDriver();
+
+    expect($driver)->toBeInstanceOf(Qdrant::class);
     expect($driver)->toBeInstanceOf(Vectorstore::class);
 });
 

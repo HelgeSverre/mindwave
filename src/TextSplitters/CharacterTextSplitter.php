@@ -15,9 +15,9 @@ class CharacterTextSplitter extends TextSplitter
 
     public function splitText(string $text): array
     {
-        // First we naively split the large input into a bunch of smaller ones.
-        $splits = $this->separator ? explode($this->separator, $text) : str_split($text);
-
-        return $this->mergeSplits($splits, $this->separator);
+        return $this->mergeSplits(
+            splits: $this->separator ? explode($this->separator, $text) : str_split($text),
+            separator: $this->separator
+        );
     }
 }

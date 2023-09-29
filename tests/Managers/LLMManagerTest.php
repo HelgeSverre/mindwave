@@ -2,7 +2,8 @@
 
 use Illuminate\Support\Facades\Config;
 use Mindwave\Mindwave\LLM\Drivers\Fake;
-use Mindwave\Mindwave\LLM\Drivers\OpenAI;
+use Mindwave\Mindwave\LLM\Drivers\OpenAI\Model;
+use Mindwave\Mindwave\LLM\Drivers\OpenAI\OpenAI;
 use Mindwave\Mindwave\LLM\LLMManager;
 
 it('returns the default driver', function () {
@@ -33,7 +34,7 @@ it('creates the OpenAI driver', function () {
 
     Config::shouldReceive('get')
         ->with('mindwave-llm.llms.openai.model')
-        ->andReturn('your_openai_model');
+        ->andReturn(Model::turbo16k);
 
     Config::shouldReceive('get')
         ->with('mindwave-llm.llms.openai.max_tokens')

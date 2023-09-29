@@ -1,6 +1,6 @@
 <?php
 
-namespace Mindwave\Mindwave\LLM\Functions;
+namespace Mindwave\Mindwave\LLM\Drivers\OpenAI\Functions;
 
 use Illuminate\Support\Str;
 use ReflectionFunction;
@@ -38,7 +38,7 @@ class PendingFunction
         array $enum = []
     ): self {
         $this->parameters[$name] = [
-            'type' => $type,
+            'role' => $type,
             'description' => $description,
         ];
         if ($enum) {
@@ -70,7 +70,7 @@ class PendingFunction
             }
 
             $this->parameters[$parameterName] = [
-                'type' => $this->getTypeFromParameter($parameter),
+                'role' => $this->getTypeFromParameter($parameter),
                 'description' => $description,
             ];
 
@@ -86,7 +86,7 @@ class PendingFunction
     {
         $type = $parameter->getType();
         if (! $type) {
-            return 'mixed'; // Return 'mixed' if the type is not available
+            return 'mixed'; // Return 'mixed' if the role is not available
         }
 
         $typeName = $type instanceof ReflectionNamedType ? $type->getName() : (string) $type;
@@ -104,7 +104,7 @@ class PendingFunction
             'name' => $this->name,
             'description' => $this->description,
             'parameters' => [
-                'type' => 'object',
+                'role' => 'object',
                 'properties' => $this->parameters,
                 'required' => $this->required,
             ],

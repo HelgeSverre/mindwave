@@ -66,7 +66,7 @@ it('can search by similarity', function () {
         ),
     ]);
 
-    $similar = $vectorstore->similaritySearchByVector(
+    $similar = $vectorstore->similaritySearch(
         embedding: new EmbeddingVector([1, 2, 3]),
         count: 5
     );

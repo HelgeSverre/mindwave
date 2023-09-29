@@ -58,6 +58,8 @@ class Loader
     {
         $type = FileTypeDetector::detectByContent($content);
 
+        // TODO: implement
+
         return $type;
 
     }

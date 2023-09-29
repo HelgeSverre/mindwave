@@ -2,22 +2,32 @@
 
 namespace Mindwave\Mindwave\TextSplitters;
 
+use Exception;
+
 class RecursiveCharacterTextSplitter extends TextSplitter
 {
     protected array $separators;
 
+    protected int $maxDepth;
+
     public function __construct(
         array $separators = ["\n\n", "\n", ' ', ''],
         int $chunkSize = 1000,
-        int $chunkOverlap = 200
+        int $chunkOverlap = 200,
+        int $maxDepth = 10,
     ) {
         parent::__construct($chunkSize, $chunkOverlap);
 
         $this->separators = $separators;
+        $this->maxDepth = $maxDepth;
     }
 
-    public function splitText(string $text): array
+    public function splitText(string $text, $depth = 0): array
     {
+        if ($depth > $this->maxDepth) {
+            throw new Exception('Maximum recursion depth exceeded');
+        }
+
         $finalChunks = [];
 
         // Get the appropriate separator to use
@@ -54,7 +64,7 @@ class RecursiveCharacterTextSplitter extends TextSplitter
                 }
 
                 // Recursively split the longer text and add the resulting chunks to the final chunks
-                $finalChunks = array_merge($finalChunks, $this->splitText($split));
+                $finalChunks = array_merge($finalChunks, $this->splitText($split, $depth + 1));
             }
         }
 

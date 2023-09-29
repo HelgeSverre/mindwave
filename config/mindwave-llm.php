@@ -1,5 +1,7 @@
 <?php
 
+use Mindwave\Mindwave\LLM\Drivers\OpenAI\Model;
+
 return [
 
     /*
@@ -29,7 +31,7 @@ return [
         'openai' => [
             'api_key' => env('MINDWAVE_OPENAI_API_KEY'),
             'org_id' => env('MINDWAVE_OPENAI_ORG_ID'),
-            'model' => env('MINDWAVE_OPENAI_MODEL', 'gpt-3.5-turbo-16k'),
+            'model' => env('MINDWAVE_OPENAI_MODEL', Model::turbo16k),
             'max_tokens' => 1000,
             'temperature' => 0.4,
         ],

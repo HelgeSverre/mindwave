@@ -28,6 +28,7 @@ class TestCase extends Orchestra
         ];
     }
 
+    /** @noinspection LaravelFunctionsInspection */
     public function getEnvironmentSetUp($app)
     {
         // Load .env.test into the environment.
@@ -36,6 +37,10 @@ class TestCase extends Orchestra
         }
 
         config()->set('database.default', 'testing');
+
+        config()->set('mindwave-vectorstore.default', 'array');
+        config()->set('mindwave-embeddings.embeddings.openai.api_key', env('MINDWAVE_OPENAI_API_KEY'));
+        config()->set('mindwave-llm.llms.openai.api_key', env('MINDWAVE_OPENAI_API_KEY'));
 
         $app->useEnvironmentPath(__DIR__.'/..');
         $app->bootstrapWith([LoadEnvironmentVariables::class]);

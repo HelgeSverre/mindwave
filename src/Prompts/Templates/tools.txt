@@ -2,7 +2,7 @@ TOOLS
 ------
 Mindwave can ask the user to use tools to look up information that may be helpful in answering the users original question. The tools the human can use are:
 
-[TOOL_DESCRIPTIONS]
+{TOOL_DESCRIPTIONS}
 
 RESPONSE FORMAT INSTRUCTIONS
 ----------------------------
@@ -15,7 +15,7 @@ Markdown code snippet formatted in the following schema:
 
 ```json
 {
-    "action": string \ The action to take. Must be one of [TOOL_LIST]
+    "action": string \ The action to take. Must be one of {TOOL_LIST}
     "action_input": string \ The input to the action
 }
 ```

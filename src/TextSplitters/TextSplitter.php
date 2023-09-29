@@ -84,7 +84,7 @@ abstract class TextSplitter
             $length = strlen($d);
             if ($total + $length + (count($currentDocument) > 0 ? $separatorLength : 0) > $this->chunkSize) {
                 if ($total > $this->chunkSize) {
-                    error_log(
+                    throw new Exception(
                         sprintf(
                             'Created a chunk of size %d, which is longer than the specified %d',
                             $total,

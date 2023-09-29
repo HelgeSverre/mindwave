@@ -7,6 +7,8 @@ use Mindwave\Mindwave\Vectorstore\Data\VectorStoreEntry;
 
 interface Vectorstore
 {
+    const OPENAI_EMBEDDING_LENGTH = 1536;
+
     public function truncate(): void;
 
     public function itemCount(): int;
@@ -21,5 +23,5 @@ interface Vectorstore
     /**
      * @return  VectorStoreEntry[]
      */
-    public function similaritySearchByVector(EmbeddingVector $embedding, int $count = 5): array;
+    public function similaritySearch(EmbeddingVector $embedding, int $count = 5): array;
 }

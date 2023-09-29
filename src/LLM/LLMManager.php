@@ -4,7 +4,7 @@ namespace Mindwave\Mindwave\LLM;
 
 use Illuminate\Support\Manager;
 use Mindwave\Mindwave\LLM\Drivers\Fake;
-use Mindwave\Mindwave\LLM\Drivers\OpenAI as OpenAIDriver;
+use Mindwave\Mindwave\LLM\Drivers\OpenAI\OpenAI as OpenAIDriver;
 use OpenAI;
 
 class LLMManager extends Manager

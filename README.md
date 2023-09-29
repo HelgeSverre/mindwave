@@ -42,10 +42,10 @@ capabilities and your own custom "tools" to create intelligent software applicat
 use Illuminate\Support\Facades\File;
 use Mindwave\Mindwave\Facades\DocumentLoader;
 use Mindwave\Mindwave\Facades\Mindwave;
-use Mindwave\Mindwave\Memory\ConversationBufferMemory;
+use Mindwave\Mindwave\Memory\ConversationMemory;
 
 $agent = Mindwave::agent(
-    memory: ConversationBufferMemory::fromMessages([])
+    memory: ConversationMemory::fromMessages([])
 );
 
 Mindwave::brain()

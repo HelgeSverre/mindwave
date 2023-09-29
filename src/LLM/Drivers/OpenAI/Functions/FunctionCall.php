@@ -1,6 +1,6 @@
 <?php
 
-namespace Mindwave\Mindwave\LLM\Functions;
+namespace Mindwave\Mindwave\LLM\Drivers\OpenAI\Functions;
 
 readonly class FunctionCall
 {

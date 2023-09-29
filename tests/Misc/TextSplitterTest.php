@@ -37,16 +37,31 @@ it('loads content from a PDFs', function ($file) {
         'source' => $file,
     ]);
 
-    $splitter = new RecursiveCharacterTextSplitter(["\t", "\n"], chunkSize: 180, chunkOverlap: 80);
+    $splitter = new RecursiveCharacterTextSplitter(["\t", "\n", ' '], chunkSize: 180, chunkOverlap: 10);
 
     $chunks = $splitter->splitDocument($document);
 
-    dump(count($chunks));
+    expect(count($chunks))->toBeGreaterThan(10);
     expect($document)->toBeInstanceOf(Document::class);
     expect($document->content())->toContain('Lorem ipsum');
 })->with([
-    __DIR__.'/data/samples/sample-1-page.pdf',
-    __DIR__.'/data/samples/sample-2-pages.pdf',
+    test_root('/data/samples/sample-1-page.pdf'),
+    test_root('/data/samples/sample-2-pages.pdf'),
+]);
+
+it('will throw exception if max depth reached', function ($file) {
+    $document = DocumentLoader::fromPdf(file_get_contents($file), [
+        'id' => 'test',
+        'source' => $file,
+    ]);
+
+    // Separators are not present in the document
+    $splitter = new RecursiveCharacterTextSplitter(["\t", "\n"], chunkSize: 180, chunkOverlap: 10);
+
+    expect(fn () => $splitter->splitDocument($document))->toThrow(Exception::class, 'Maximum recursion depth exceeded');
+})->with([
+    test_root('/data/samples/sample-1-page.pdf'),
+    test_root('/data/samples/sample-2-pages.pdf'),
 ]);
 
 it('splits the text using a custom separator')

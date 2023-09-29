@@ -8,6 +8,11 @@ use Mindwave\Mindwave\Vectorstore\Data\VectorStoreEntry;
 use Mindwave\Mindwave\Vectorstore\Drivers\Pinecone;
 use Probots\Pinecone\Client;
 
+beforeEach(fn () => null)->skip(
+    conditionOrMessage: fn () => ! env('MINDWAVE_PINECONE_API_KEY'),
+    message: 'Pinecone ENV not set, skipping'
+);
+
 it('can wipe the entire vectorstore', function () {
 
     $vectorstore = new Pinecone(
@@ -111,7 +116,7 @@ it('We can perform similarity search on documents in pinecone', function () {
     $vectorstore->truncate();
     $vectorstore->insertMany($vectors);
 
-    $fetched = $vectorstore->similaritySearchByVector(Embeddings::embedText('banana'), 2);
+    $fetched = $vectorstore->similaritySearch(Embeddings::embedText('banana'), 2);
 
     expect($fetched[0]->score)->toBeNumeric();
     expect($fetched[0]->document)->toBeInstanceOf(Document::class);

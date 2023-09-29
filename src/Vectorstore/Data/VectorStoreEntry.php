@@ -36,8 +36,8 @@ class VectorStoreEntry
             '_mindwave_doc_source_id' => Arr::get($this->document->metadata(), '_mindwave_doc_source_id'),
             '_mindwave_doc_source_type' => Arr::get($this->document->metadata(), '_mindwave_doc_source_type'),
             '_mindwave_doc_chunk_index' => Arr::get($this->document->metadata(), '_mindwave_doc_chunk_index'),
-            '_mindwave_doc_content' => $this->document->content(),
             '_mindwave_doc_metadata' => json_encode($this->document->metadata()),
+            '_mindwave_doc_content' => $this->document->content(),
         ];
     }
 }

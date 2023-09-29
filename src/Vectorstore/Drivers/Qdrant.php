@@ -23,44 +23,47 @@ class Qdrant implements Vectorstore
 
     protected string $collection;
 
-    protected string $vectorsName = 'items'; // TODO(01 Jun 2023) ~ Helge: make configurable
+    protected string $vectorsName = 'items';
 
     public function __construct(string $apiKey, string $collection, string $host, int $port = 6333)
     {
         $config = new Config($host, $port);
         $config->setApiKey($apiKey); // TODO(01 Jun 2023) ~ Helge: no way to set an api key in qdrant yet though...?
 
-        $client = new QdrantClient(new GuzzleClient($config));
-
-        $this->client = $client;
+        $this->client = new QdrantClient(new GuzzleClient($config));
         $this->collection = $collection;
     }
 
     public function truncate(): void
     {
         $this->ensureCollectionExists();
-        $this->client->collections()->delete($this->collection);
+        $this->client->collections($this->collection)->delete();
         $this->ensureCollectionExists();
     }
 
     protected function ensureCollectionExists()
     {
-        $wip = $this->client->collections()->info($this->collection);
+        $list = $this->client->collections()->list();
 
-        if (! Arr::get($wip, 'result')) {
-            $createCollection = new CreateCollection();
-            $createCollection->addVector(new VectorParams(1536, VectorParams::DISTANCE_COSINE), $this->vectorsName);
-            $this->client->collections()->create($this->collection, $createCollection);
-
-            // TODO(01 Jun 2023) ~ Helge: Handle failure
+        if (collect($list['result']['collections'])->pluck('name')->contains($this->collection)) {
+            return;
         }
+
+        $createCollection = new CreateCollection();
+        $createCollection->addVector(new VectorParams(
+            self::OPENAI_EMBEDDING_LENGTH,
+            VectorParams::DISTANCE_COSINE),
+            $this->vectorsName
+        );
+
+        $this->client->collections($this->collection)->create($createCollection);
     }
 
     public function itemCount(): int
     {
         $this->ensureCollectionExists();
 
-        $response = $this->client->collections()->info($this->collection);
+        $response = $this->client->collections($this->collection)->info();
 
         return Arr::get($response, 'result.vectors_count');
     }
@@ -107,7 +110,7 @@ class Qdrant implements Vectorstore
         $this->client->collections($this->collection)->points()->upsert($points);
     }
 
-    public function similaritySearchByVector(EmbeddingVector $embedding, int $count = 5): array
+    public function similaritySearch(EmbeddingVector $embedding, int $count = 5): array
     {
         $this->ensureCollectionExists();
 

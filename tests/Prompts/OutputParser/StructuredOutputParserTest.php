@@ -22,11 +22,11 @@ it('can convert a class into a schema for StructuredOutputParser', function () {
     expect($parser->getSchemaStructure())
         ->toBe([
             'properties' => [
-                'name' => ['type' => 'string'],
-                'age' => ['type' => 'int'],
-                'hasBusiness' => ['type' => 'bool'],
-                'interests' => ['type' => 'array'],
-                'tags' => ['type' => 'array'],
+                'name' => ['role' => 'string'],
+                'age' => ['role' => 'int'],
+                'hasBusiness' => ['role' => 'bool'],
+                'interests' => ['role' => 'array'],
+                'tags' => ['role' => 'array'],
             ],
             'required' => ['name'],
         ]);

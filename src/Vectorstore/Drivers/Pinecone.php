@@ -47,7 +47,7 @@ class Pinecone implements Vectorstore
         $this->client->index($this->index)->vectors()->upsert($vectors);
     }
 
-    public function similaritySearchByVector(EmbeddingVector $embedding, int $count = 5): array
+    public function similaritySearch(EmbeddingVector $embedding, int $count = 5): array
     {
         return $this->client->index($this->index)->vectors()->query(
             vector: $embedding->values,

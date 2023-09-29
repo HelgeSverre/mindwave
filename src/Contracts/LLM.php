@@ -2,13 +2,17 @@
 
 namespace Mindwave\Mindwave\Contracts;
 
+use Mindwave\Mindwave\LLM\Drivers\OpenAI\Functions\FunctionBuilder;
+use Mindwave\Mindwave\LLM\Drivers\OpenAI\Functions\FunctionCall;
 use Mindwave\Mindwave\Prompts\PromptTemplate;
 
 interface LLM
 {
-    // TODO(29 May 2023) ~ Helge: These methods names are vague, rename them to something better.
+    public function setSystemMessage(string $systemMessage);
 
-    public function predict(string $prompt): ?string;
+    public function generateText(string $prompt): ?string;
 
-    public function run(PromptTemplate $promptTemplate): mixed;
+    public function generate(PromptTemplate $promptTemplate): mixed;
+
+    public function functionCall(string $prompt, array|FunctionBuilder $functions, ?string $requiredFunction = 'auto'): FunctionCall|string|null;
 }

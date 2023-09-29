@@ -15,8 +15,8 @@ it('loads content from a PDFs', function ($file) {
     expect($knowledge)->toBeInstanceOf(Document::class)
         ->and($knowledge->content())->toContain('Lorem ipsum');
 })->with([
-    __DIR__.'/data/samples/sample-1-page.pdf',
-    __DIR__.'/data/samples/sample-2-pages.pdf',
+    __DIR__.'/../data/samples/sample-1-page.pdf',
+    __DIR__.'/../data/samples/sample-2-pages.pdf',
 ]);
 
 it('loads content from a DOCX file', function ($file) {
@@ -29,8 +29,8 @@ it('loads content from a DOCX file', function ($file) {
     expect($knowledge)->toBeInstanceOf(Document::class)
         ->and($knowledge->content())->toContain('Sample Docx');
 })->with([
-    __DIR__.'/data/samples/sample-1-page.docx',
-    __DIR__.'/data/samples/sample-2-pages.docx',
+    __DIR__.'/../data/samples/sample-1-page.docx',
+    __DIR__.'/../data/samples/sample-2-pages.docx',
 ]);
 
 it('loads content from a DOC file', function ($file) {
@@ -43,7 +43,7 @@ it('loads content from a DOC file', function ($file) {
     expect($knowledge)->toBeInstanceOf(Document::class)
         ->and($knowledge->content())->toContain('This is a regular paragraph');
 })->with([
-    __DIR__.'/data/samples/SampleDOCFile_200kb.doc',
+    __DIR__.'/../data/samples/SampleDOCFile_200kb.doc',
 ]);
 
 // TODO(14 mai 2023) ~ Helge: Should null be returned, or an Error Object (functional optional/some pattern)?
@@ -80,7 +80,7 @@ it('loads content from text', function () {
 
 it('can auto detect which content is in the file', function () {
 
-    $dir = __DIR__.'/data/samples';
+    $dir = test_root('/data/samples');
 
     dump('FILE: '.$dir.'/file-sample_100kB.odt');
     expect(FileTypeDetector::detectByContent(file_get_contents($dir.'/file-sample_100kB.odt')))

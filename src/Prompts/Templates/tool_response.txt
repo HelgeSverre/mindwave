@@ -1,6 +1,6 @@
 TOOL RESPONSE:
 ---------------------
-[TOOL_RESPONSE]
+{TOOL_RESPONSE}
 
 USER'S INPUT
 --------------------

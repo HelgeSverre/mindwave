@@ -11,17 +11,12 @@ use Mindwave\Mindwave\Vectorstore\Data\VectorStoreEntry;
 
 class Brain
 {
-    protected Vectorstore $vectorstore;
+    public function __construct(
+        protected Vectorstore $vectorstore,
+        protected Embeddings $embeddings,
+        protected TextSplitter $textSplitter = new RecursiveCharacterTextSplitter()
+    ) {
 
-    protected Embeddings $embeddings;
-
-    protected TextSplitter $textSplitter;
-
-    public function __construct(Vectorstore $vectorstore, Embeddings $embeddings, TextSplitter $textSplitter = null)
-    {
-        $this->vectorstore = $vectorstore;
-        $this->embeddings = $embeddings;
-        $this->textSplitter = $textSplitter ?? new RecursiveCharacterTextSplitter();
     }
 
     /**
@@ -29,7 +24,7 @@ class Brain
      */
     public function search(string $query, int $count = 5): array
     {
-        $results = $this->vectorstore->similaritySearchByVector(
+        $results = $this->vectorstore->similaritySearch(
             embedding: $this->embeddings->embedText($query),
             count: $count,
         );
@@ -40,6 +35,16 @@ class Brain
         }
 
         return $documents;
+    }
+
+    public function consumeAll(array $documents): self
+    {
+        // TODO: Horribly inefficient, use embedDocuments to speed up
+        foreach ($documents as $document) {
+            $this->consume($document);
+        }
+
+        return $this;
     }
 
     public function consume(Document $document): self
@@ -53,7 +58,10 @@ class Brain
                 vector: $this->embeddings->embedDocument($doc),
                 document: new Document(
                     content: $doc->content(),
-                    metadata: array_merge($doc->metadata(), ['_mindwave_doc_chunk_index' => $chunkIndex])
+                    metadata: array_merge(
+                        $doc->metadata(), [
+                            '_mindwave_doc_chunk_index' => $chunkIndex,
+                        ])
                 )
             );
         }

@@ -21,7 +21,7 @@
     "ext-zip": "*",
     "brandembassy/file-type-detector": "^2.3",
     "guzzlehttp/guzzle": "^7.5",
-    "hkulekci/qdrant": "^0.1.0",
+    "hkulekci/qdrant": "^0.4.1",
     "illuminate/contracts": "^10.0",
     "openai-php/client": "^0.7.2",
     "probots-io/pinecone-php": "^0.0.3",
@@ -45,14 +45,16 @@
   },
   "autoload": {
     "psr-4": {
-      "Mindwave\\Mindwave\\": "src/",
-      "Mindwave\\Mindwave\\Database\\Factories\\": "database/factories/"
+      "Mindwave\\Mindwave\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
       "Mindwave\\Mindwave\\Tests\\": "tests/"
-    }
+    },
+    "files": [
+      "tests/utils.php"
+    ]
   },
   "scripts": {
     "post-autoload-dump": "@php ./vendor/bin/testbench package:discover --ansi",

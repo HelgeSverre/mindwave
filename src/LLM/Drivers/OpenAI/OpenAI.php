@@ -1,10 +1,10 @@
 <?php
 
-namespace Mindwave\Mindwave\LLM\Drivers;
+namespace Mindwave\Mindwave\LLM\Drivers\OpenAI;
 
 use Mindwave\Mindwave\Contracts\LLM;
-use Mindwave\Mindwave\LLM\Functions\FunctionBuilder;
-use Mindwave\Mindwave\LLM\Functions\FunctionCall;
+use Mindwave\Mindwave\LLM\Drivers\OpenAI\Functions\FunctionBuilder;
+use Mindwave\Mindwave\LLM\Drivers\OpenAI\Functions\FunctionCall;
 use Mindwave\Mindwave\Prompts\PromptTemplate;
 use OpenAI\Client;
 use OpenAI\Responses\Chat\CreateResponse as ChatResponse;
@@ -12,31 +12,18 @@ use OpenAI\Responses\Completions\CreateResponse as CompletionResponse;
 
 class OpenAI implements LLM
 {
-    // Completion
-    const TEXT_DAVINCI_003 = 'text-davinci-003';
-
-    const TURBO_INSTRUCT = 'gpt-3.5-turbo-instruct';
-
-    // Chat
-    const TURBO = 'gpt-3.5-turbo';
-
-    const TURBO_16K = 'gpt-3.5-turbo-16k';
-
-    const GPT4 = 'gpt-4';
-
-    const GPT4_32K = 'gpt-4-32k';
-
     public function __construct(
         protected Client $client,
-        protected string $model = 'gpt-3.5-turbo-16k',
+        protected Model $model = Model::turbo16k,
+        protected ?string $systemMessage = null,
         protected int $maxTokens = 800,
         protected float $temperature = 0.7,
     ) {
     }
 
-    public function model(int $model): self
+    public function model(string|Model $model): self
     {
-        $this->model = $model;
+        $this->model = Model::tryFrom($model);
 
         return $this;
     }
@@ -55,30 +42,35 @@ class OpenAI implements LLM
         return $this;
     }
 
-    public function run(PromptTemplate $promptTemplate, array $inputs = []): mixed
+    public function setSystemMessage(string $systemMessage)
+    {
+        $this->systemMessage = $systemMessage;
+    }
+
+    public function generate(PromptTemplate $promptTemplate, array $inputs = []): mixed
     {
         $formatted = $promptTemplate->format($inputs);
 
-        $response = $this->predict($formatted);
+        $response = $this->generateText($formatted);
 
         return $promptTemplate->parse($response);
     }
 
-    public function functionCall(string $prompt, array|FunctionBuilder $functions, ?string $functionCall = 'auto'): FunctionCall|string|null
+    public function functionCall(string $prompt, array|FunctionBuilder $functions, ?string $requiredFunction = 'auto'): FunctionCall|string|null
     {
         /** @var ChatResponse $response */
         $response = $this->client->chat()->create([
             'max_tokens' => $this->maxTokens,
             'temperature' => $this->temperature,
-            'model' => $this->model,
+            'model' => $this->model->value,
             'messages' => [
                 ['role' => 'system', 'content' => $prompt],
             ],
             'functions' => $functions instanceof FunctionBuilder ? $functions->build() : $functions,
-            'function_call' => match ($functionCall) {
+            'function_call' => match ($requiredFunction) {
                 null, 'auto' => 'auto',
                 'none' => 'none',
-                default => ['name' => $functionCall],
+                default => ['name' => $requiredFunction],
             },
         ]);
 
@@ -87,7 +79,7 @@ class OpenAI implements LLM
         if ($choice->finishReason === 'function_call') {
             return new FunctionCall(
                 name: $choice->message->functionCall->name,
-                arguments: rescue(fn () => $choice->message->functionCall->arguments, report: false),
+                arguments: rescue(fn () => json_decode($choice->message->functionCall->arguments, true), report: false),
                 rawArguments: $choice->message->functionCall->arguments,
             );
         }
@@ -95,11 +87,11 @@ class OpenAI implements LLM
         return $this->extractResponseText($response);
     }
 
-    public function predict(string $prompt): ?string
+    public function generateText(string $prompt): ?string
     {
-        $isCompletion = in_array($this->model, [self::TEXT_DAVINCI_003, self::TURBO_INSTRUCT]);
-
-        $response = $isCompletion ? $this->completion($prompt) : $this->chat($prompt);
+        $response = $this->model?->isCompletionModel()
+            ? $this->completion($prompt)
+            : $this->chat($prompt);
 
         return $this->extractResponseText($response);
     }
@@ -116,19 +108,25 @@ class OpenAI implements LLM
         return $this->client->chat()->create([
             'max_tokens' => $this->maxTokens,
             'temperature' => $this->temperature,
-            'model' => $this->model,
-            'messages' => [
-                ['role' => 'system', 'content' => $prompt],
-            ],
+            'model' => $this->model->value,
+            'messages' => $this->systemMessage
+                ? [
+                    ['role' => 'system', 'content' => $this->systemMessage],
+                    ['role' => 'user', 'content' => $prompt],
+                ]
+                : [
+                    ['role' => 'system', 'content' => $prompt],
+                ],
         ]);
     }
 
     public function completion($prompt): CompletionResponse
     {
+
         return $this->client->completions()->create([
             'max_tokens' => $this->maxTokens,
             'temperature' => $this->temperature,
-            'model' => $this->model,
+            'model' => $this->model->value,
             'prompt' => $prompt,
         ]);
     }

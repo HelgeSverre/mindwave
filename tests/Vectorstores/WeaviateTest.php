@@ -84,7 +84,7 @@ it('We can connect search weaviate', function () {
         new Document('this is test 5')
     ));
 
-    $fetched = $vectorstore->similaritySearchByVector(new EmbeddingVector(array_fill(0, 1536, 1)), 1);
+    $fetched = $vectorstore->similaritySearch(new EmbeddingVector(array_fill(0, 1536, 1)), 1);
 
     expect($fetched[0]->score)->toBeNumeric();
     expect($fetched[0]->document)->toBeInstanceOf(Document::class);

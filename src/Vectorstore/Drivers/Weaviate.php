@@ -77,7 +77,7 @@ class Weaviate implements Vectorstore
         $this->client->batch()->create($objects);
     }
 
-    public function similaritySearchByVector(EmbeddingVector $embedding, int $count = 5): array
+    public function similaritySearch(EmbeddingVector $embedding, int $count = 5): array
     {
 
         $data = $this->client->graphql()->get("{

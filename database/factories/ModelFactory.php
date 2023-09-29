@@ -2,8 +2,6 @@
 
 namespace Mindwave\Mindwave\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-
 /*
 class ModelFactory extends Factory
 {

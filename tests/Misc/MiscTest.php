@@ -19,4 +19,4 @@ it('Calculates similarity correctly', function () {
         vectorB: $embeddings->embedText('php programming language')
     );
     dump('Cosine Similarity: '.$similarityValue);
-});
+})->doesNotPerformAssertions();

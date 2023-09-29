@@ -63,7 +63,7 @@ class MindwaveServiceProvider extends PackageServiceProvider
         ]));
 
         // Shortcut
-        $this->app->singleton('mindwave', fn ($app) => new Mindwave(
+        $this->app->singleton(Mindwave::class, fn ($app) => new Mindwave(
             llm: $app->make(LLM::class),
             embeddings: $app->make(Embeddings::class),
             vectorstore: $app->make(Vectorstore::class),
