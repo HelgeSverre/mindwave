@@ -14,7 +14,7 @@ enum Model: string
     case turbo16k = 'gpt-3.5-turbo-16k';
     case turbo = 'gpt-3.5-turbo';
     case gpt4 = 'gpt-4';
-    case gpt432k = 'gpt-4-32';
+    case gpt432k = 'gpt-4-32k';
 
     public function isCompletionModel(): bool
     {
