@@ -7,7 +7,7 @@ readonly class FunctionCall
     public function __construct(
         public string $name,
         public array $arguments,
-        public string $rawArguments
+        public string $rawArguments,
     ) {
 
     }

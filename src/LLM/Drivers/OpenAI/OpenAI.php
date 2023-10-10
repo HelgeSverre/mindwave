@@ -42,9 +42,11 @@ class OpenAI implements LLM
         return $this;
     }
 
-    public function setSystemMessage(string $systemMessage)
+    public function setSystemMessage(string $systemMessage): self
     {
         $this->systemMessage = $systemMessage;
+
+        return $this;
     }
 
     public function generate(PromptTemplate $promptTemplate, array $inputs = []): mixed
