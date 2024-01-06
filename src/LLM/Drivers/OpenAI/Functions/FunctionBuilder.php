@@ -17,7 +17,7 @@ class FunctionBuilder implements Arrayable
         return new self();
     }
 
-    public function addFunction(string $name, string $description = null, Closure $closure = null): PendingFunction
+    public function addFunction(string $name, ?string $description = null, ?Closure $closure = null): PendingFunction
     {
         $pendingFunction = new PendingFunction($name, $description);
 

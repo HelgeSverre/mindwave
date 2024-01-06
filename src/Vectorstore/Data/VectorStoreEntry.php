@@ -14,7 +14,7 @@ class VectorStoreEntry
 
     public readonly ?float $score;
 
-    public function __construct(EmbeddingVector $vector, Document $document, float $score = null)
+    public function __construct(EmbeddingVector $vector, Document $document, ?float $score = null)
     {
         $this->vector = $vector;
         $this->score = $score;

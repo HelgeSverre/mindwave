@@ -15,18 +15,18 @@ class PromptTemplate
 
     protected ?Closure $placeholderFormatter = null;
 
-    public function __construct(string $template, OutputParser $outputParser = null)
+    public function __construct(string $template, ?OutputParser $outputParser = null)
     {
         $this->template = $template;
         $this->outputParser = $outputParser ?? new TextOutputParser();
     }
 
-    public static function create(string $template, OutputParser $outputParser = null): self
+    public static function create(string $template, ?OutputParser $outputParser = null): self
     {
         return new self($template, $outputParser);
     }
 
-    public static function fromPath(string $filepath, OutputParser $outputParser = null): self
+    public static function fromPath(string $filepath, ?OutputParser $outputParser = null): self
     {
         return new self(file_get_contents($filepath), $outputParser);
     }

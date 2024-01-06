@@ -32,7 +32,7 @@ abstract class TextSplitter
     /**
      * @return Document[]
      */
-    public function createDocuments(array $texts, array $metadata = null): array
+    public function createDocuments(array $texts, ?array $metadata = null): array
     {
         $metadata = $metadata ?? array_fill(0, count($texts), []);
         $documents = [];

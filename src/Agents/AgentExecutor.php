@@ -15,7 +15,7 @@ class AgentExecutor
 
     private ?int $maxIterations;
 
-    public function __construct(AgentInterface $agent, Toolkit $toolkit, int $maxIterations = null)
+    public function __construct(AgentInterface $agent, Toolkit $toolkit, ?int $maxIterations = null)
     {
         // TODO(20 mai 2023) ~ Helge: Max iterations
         $this->agent = $agent;

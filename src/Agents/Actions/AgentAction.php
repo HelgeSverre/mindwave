@@ -8,7 +8,7 @@ class AgentAction
 
     public ?string $toolInput;
 
-    public function __construct(string $tool, string $toolInput = null)
+    public function __construct(string $tool, ?string $toolInput = null)
     {
         $this->tool = $tool;
         $this->toolInput = $toolInput;
