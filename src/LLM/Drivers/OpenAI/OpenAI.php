@@ -3,27 +3,27 @@
 namespace Mindwave\Mindwave\LLM\Drivers\OpenAI;
 
 use Mindwave\Mindwave\Contracts\LLM;
+use Mindwave\Mindwave\LLM\Drivers\BaseDriver;
 use Mindwave\Mindwave\LLM\Drivers\OpenAI\Functions\FunctionBuilder;
 use Mindwave\Mindwave\LLM\Drivers\OpenAI\Functions\FunctionCall;
-use Mindwave\Mindwave\Prompts\PromptTemplate;
 use OpenAI\Client;
 use OpenAI\Responses\Chat\CreateResponse as ChatResponse;
 use OpenAI\Responses\Completions\CreateResponse as CompletionResponse;
 
-class OpenAI implements LLM
+class OpenAI extends BaseDriver implements LLM
 {
     public function __construct(
         protected Client $client,
-        protected Model $model = Model::turbo16k,
+        protected string $model = ModelNames::GPT4_1106_PREVIEW,
         protected ?string $systemMessage = null,
         protected int $maxTokens = 800,
         protected float $temperature = 0.7,
     ) {
     }
 
-    public function model(string|Model $model): self
+    public function model(string $model): self
     {
-        $this->model = Model::tryFrom($model);
+        $this->model = $model;
 
         return $this;
     }
@@ -49,15 +49,6 @@ class OpenAI implements LLM
         return $this;
     }
 
-    public function generate(PromptTemplate $promptTemplate, array $inputs = []): mixed
-    {
-        $formatted = $promptTemplate->format($inputs);
-
-        $response = $this->generateText($formatted);
-
-        return $promptTemplate->parse($response);
-    }
-
     public function functionCall(string $prompt, array|FunctionBuilder $functions, ?string $requiredFunction = 'auto'): FunctionCall|string|null
     {
         /** @var ChatResponse $response */
@@ -66,7 +57,10 @@ class OpenAI implements LLM
             'temperature' => $this->temperature,
             'model' => $this->model->value,
             'messages' => [
-                ['role' => 'system', 'content' => $prompt],
+                [
+                    'role' => 'system',
+                    'content' => $prompt,
+                ],
             ],
             'functions' => $functions instanceof FunctionBuilder ? $functions->build() : $functions,
             'function_call' => match ($requiredFunction) {
@@ -91,7 +85,7 @@ class OpenAI implements LLM
 
     public function generateText(string $prompt): ?string
     {
-        $response = $this->model?->isCompletionModel()
+        $response = ModelNames::isCompletionModel($this->model)
             ? $this->completion($prompt)
             : $this->chat($prompt);
 
@@ -124,7 +118,6 @@ class OpenAI implements LLM
 
     public function completion($prompt): CompletionResponse
     {
-
         return $this->client->completions()->create([
             'max_tokens' => $this->maxTokens,
             'temperature' => $this->temperature,

@@ -31,4 +31,17 @@ class LLMManager extends Manager
             temperature: $this->config->get('mindwave-llm.llms.openai.temperature'),
         );
     }
+
+    public function createMistralDriver()
+    {
+        return new OpenAIDriver(
+            client: OpenAI::client(
+                apiKey: $this->config->get('mindwave-llm.llms.openai.api_key'),
+                organization: $this->config->get('mindwave-llm.llms.openai.org_id')
+            ),
+            model: $this->config->get('mindwave-llm.llms.openai.model'),
+            maxTokens: $this->config->get('mindwave-llm.llms.openai.max_tokens'),
+            temperature: $this->config->get('mindwave-llm.llms.openai.temperature'),
+        );
+    }
 }

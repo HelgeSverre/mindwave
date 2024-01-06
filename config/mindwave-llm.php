@@ -28,12 +28,23 @@ return [
     */
 
     'llms' => [
+
         'openai' => [
             'api_key' => env('MINDWAVE_OPENAI_API_KEY'),
             'org_id' => env('MINDWAVE_OPENAI_ORG_ID'),
-            'model' => env('MINDWAVE_OPENAI_MODEL', Model::turbo16k),
-            'max_tokens' => 1000,
-            'temperature' => 0.4,
+            'model' => env('MINDWAVE_OPENAI_MODEL', 'gpt-4-1106-preview'),
+            'max_tokens' => env('MINDWAVE_OPENAI_MAX_TOKENS', 1000),
+            'temperature' => env('MINDWAVE_OPENAI_TEMPERATURE', 0.4),
+        ],
+
+        'mistral' => [
+            'api_key' => env('MINDWAVE_MISTRAL_API_KEY'),
+            'model' => env('MINDWAVE_MISTRAL_MODEL', 'mistral-medium'),
+            'system_message' => env('MINDWAVE_MISTRAL_SYSTEM_MESSAGE'),
+            'max_tokens' => env('MINDWAVE_MISTRAL_MAX_TOKENS', 1000),
+            'temperature' => env('MINDWAVE_MISTRAL_TEMPERATURE', 0.4),
+            'safe_mode' => env('MINDWAVE_MISTRAL_SAFE_MODE', false),
+            'random_seed' => env('MINDWAVE_MISTRAL_RANDOM_SEED'),
         ],
     ],
 ];
