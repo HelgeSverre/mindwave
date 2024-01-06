@@ -10,3 +10,6 @@ vendor
 node_modules
 .env
 tests/data/dummy.json
+node_modules/
+yarn.lock
+package-lock.json

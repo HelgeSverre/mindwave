@@ -44,10 +44,5 @@ class TestCase extends Orchestra
 
         $app->useEnvironmentPath(__DIR__.'/..');
         $app->bootstrapWith([LoadEnvironmentVariables::class]);
-
-        /*
-        $migration = include __DIR__.'/../database/migrations/create_mindwave_table.php.stub';
-        $migration->up();
-        */
     }
 }
