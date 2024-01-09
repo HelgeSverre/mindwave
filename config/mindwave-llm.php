@@ -39,6 +39,7 @@ return [
 
         'mistral' => [
             'api_key' => env('MINDWAVE_MISTRAL_API_KEY'),
+            'base_url' => env('MINDWAVE_MISTRAL_BASE_URL'),
             'model' => env('MINDWAVE_MISTRAL_MODEL', 'mistral-medium'),
             'system_message' => env('MINDWAVE_MISTRAL_SYSTEM_MESSAGE'),
             'max_tokens' => env('MINDWAVE_MISTRAL_MAX_TOKENS', 1000),

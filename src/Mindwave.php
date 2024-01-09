@@ -97,6 +97,7 @@ class Mindwave
 
     public function embeddings(): Embeddings
     {
+        // TODO: accept driver, return driver
         return $this->embeddings;
     }
 

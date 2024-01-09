@@ -24,6 +24,7 @@
     "helgesverre/mistral": "^1.0",
     "hkulekci/qdrant": "^0.4.1",
     "illuminate/contracts": "^10.0",
+    "laravel/prompts": "^0.1.14",
     "openai-php/client": "^0.7.2",
     "probots-io/pinecone-php": "^0.0.3",
     "smalot/pdfparser": "^2.5",
