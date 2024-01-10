@@ -4,10 +4,10 @@ namespace Mindwave\Mindwave\Commands;
 
 use Illuminate\Console\Command;
 use Mindwave\Mindwave\Facades\LLM;
-use function Laravel\Prompts\intro;
-use function Laravel\Prompts\note;
-use function Laravel\Prompts\text;
+
 use function Laravel\Prompts\info;
+use function Laravel\Prompts\intro;
+use function Laravel\Prompts\text;
 
 class MindwaveCommand extends Command
 {
@@ -16,12 +16,11 @@ class MindwaveCommand extends Command
     public function handle(): int
     {
 
+        /** @var LLM $llm */
         $llm = LLM::driver($this->option('llm'));
 
         intro('Welcome to Mindwave Chat!');
-        info('Using: ' . $llm->);
-
-
+        info('Using: '.$this->option('llm'));
 
         $prompt = text('> ');
 

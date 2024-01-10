@@ -10,7 +10,7 @@ use Mindwave\Mindwave\Contracts\Embeddings;
 use Mindwave\Mindwave\Contracts\LLM;
 use Mindwave\Mindwave\Contracts\Memory;
 use Mindwave\Mindwave\Contracts\Vectorstore;
-use Mindwave\Mindwave\LLM\Drivers\OpenAI\Functions\FunctionBuilder;
+use Mindwave\Mindwave\LLM\FunctionCalling\FunctionBuilder;
 use Mindwave\Mindwave\Memory\ConversationMemory;
 
 class Mindwave

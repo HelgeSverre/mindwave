@@ -1,6 +1,6 @@
 <?php
 
-namespace Mindwave\Mindwave\LLM\Drivers\OpenAI\Functions;
+namespace Mindwave\Mindwave\LLM\FunctionCalling;
 
 use Closure;
 use Illuminate\Contracts\Support\Arrayable;
@@ -15,6 +15,13 @@ class FunctionBuilder implements Arrayable
     public static function make(): self
     {
         return new self();
+    }
+
+    public function add(string $name, Closure $param)
+    {
+        $this->functions[] = PendingFunction::makeFromClosure($name, $param);
+
+        return $this;
     }
 
     public function addFunction(string $name, ?string $description = null, ?Closure $closure = null): PendingFunction
@@ -44,4 +51,5 @@ class FunctionBuilder implements Arrayable
     {
         return json_encode($this->build(), JSON_PRETTY_PRINT);
     }
+
 }

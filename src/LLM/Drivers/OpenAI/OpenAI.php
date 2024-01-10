@@ -4,16 +4,16 @@ namespace Mindwave\Mindwave\LLM\Drivers\OpenAI;
 
 use Mindwave\Mindwave\Contracts\LLM;
 use Mindwave\Mindwave\LLM\Drivers\BaseDriver;
-use Mindwave\Mindwave\LLM\Drivers\OpenAI\Functions\FunctionBuilder;
-use Mindwave\Mindwave\LLM\Drivers\OpenAI\Functions\FunctionCall;
-use OpenAI\Client;
+use Mindwave\Mindwave\LLM\FunctionCalling\FunctionBuilder;
+use Mindwave\Mindwave\LLM\FunctionCalling\FunctionCall;
+use OpenAI\Contracts\ClientContract;
 use OpenAI\Responses\Chat\CreateResponse as ChatResponse;
 use OpenAI\Responses\Completions\CreateResponse as CompletionResponse;
 
 class OpenAI extends BaseDriver implements LLM
 {
     public function __construct(
-        protected Client $client,
+        protected ClientContract $client,
         protected string $model = ModelNames::GPT4_1106_PREVIEW,
         protected ?string $systemMessage = null,
         protected int $maxTokens = 800,
@@ -42,28 +42,21 @@ class OpenAI extends BaseDriver implements LLM
         return $this;
     }
 
-    public function setSystemMessage(string $systemMessage): self
-    {
-        $this->systemMessage = $systemMessage;
-
-        return $this;
-    }
-
     public function functionCall(string $prompt, array|FunctionBuilder $functions, ?string $requiredFunction = 'auto'): FunctionCall|string|null
     {
         /** @var ChatResponse $response */
         $response = $this->client->chat()->create([
             'max_tokens' => $this->maxTokens,
             'temperature' => $this->temperature,
-            'model' => $this->model->value,
+            'model' => $this->model,
             'messages' => [
                 [
                     'role' => 'system',
                     'content' => $prompt,
                 ],
             ],
-            'functions' => $functions instanceof FunctionBuilder ? $functions->build() : $functions,
-            'function_call' => match ($requiredFunction) {
+            'tools' => $functions instanceof FunctionBuilder ? $functions->build() : $functions,
+            'tool_choice' => match ($requiredFunction) {
                 null, 'auto' => 'auto',
                 'none' => 'none',
                 default => ['name' => $requiredFunction],
@@ -72,11 +65,11 @@ class OpenAI extends BaseDriver implements LLM
 
         $choice = $response->choices[0];
 
-        if ($choice->message->functionCall) {
+        if ($choice->message->toolCalls) {
             return new FunctionCall(
-                name: $choice->message->functionCall->name,
-                arguments: rescue(fn () => json_decode($choice->message->functionCall->arguments, true), report: false),
-                rawArguments: $choice->message->functionCall->arguments,
+                name: $choice->message->toolCalls[0]->function->name,
+                arguments: rescue(fn () => json_decode($choice->message->toolCalls[0]->function->arguments, true), report: false),
+                rawArguments: $choice->message->toolCalls[0]->function->arguments,
             );
         }
 

@@ -1,8 +1,10 @@
 <?php
 
-namespace Mindwave\Mindwave\LLM\Drivers\OpenAI\Functions;
+namespace Mindwave\Mindwave\LLM\FunctionCalling;
 
 use Illuminate\Support\Str;
+use Mindwave\Mindwave\LLM\FunctionCalling\Attributes\Description;
+use ReflectionException;
 use ReflectionFunction;
 use ReflectionNamedType;
 use ReflectionParameter;
@@ -23,11 +25,19 @@ class PendingFunction
         $this->description = $description ?: '';
     }
 
-    public function setDescription(string $description): self
+    public function setDescription(string $string)
     {
-        $this->description = $description;
+        $this->description = $string;
 
         return $this;
+    }
+
+    public static function makeFromClosure($name, $closure, $description = null)
+    {
+        $instance = new self($name, $description);
+        $instance->fromClosure($closure);
+
+        return $instance;
     }
 
     public function addParameter(
@@ -51,6 +61,9 @@ class PendingFunction
         return $this;
     }
 
+    /**
+     * @throws ReflectionException
+     */
     public function fromClosure(callable $func): self
     {
         $reflection = new ReflectionFunction($func);
@@ -69,6 +82,11 @@ class PendingFunction
                 $description = Str::of($docComment)->after("\$$parameterName")->before("\n")->trim()->toString();
             }
 
+            // Override the description if the parameter has a Description attribute
+            if ($override = $parameter->getAttributes(Description::class)) {
+                $description = $override[0]->newInstance()->description;
+            }
+
             $this->parameters[$parameterName] = [
                 'type' => $this->getTypeFromParameter($parameter),
                 'description' => $description,
@@ -82,9 +100,10 @@ class PendingFunction
         return $this;
     }
 
-    protected function getTypeFromParameter(ReflectionParameter $parameter): string
+    public static function getTypeFromParameter(ReflectionParameter $parameter): string
     {
         $type = $parameter->getType();
+
         if (! $type) {
             return 'mixed'; // Return 'mixed' if the type is not available
         }
@@ -102,13 +121,17 @@ class PendingFunction
     public function build(): array
     {
         return [
-            'name' => $this->name,
-            'description' => $this->description,
-            'parameters' => [
-                'type' => 'object',
-                'properties' => $this->parameters,
-                'required' => $this->required,
+            'type' => 'function',
+            'function' => [
+                'name' => $this->name,
+                'description' => $this->description,
+                'parameters' => [
+                    'type' => 'object',
+                    'properties' => $this->parameters,
+                    'required' => $this->required,
+                ],
             ],
         ];
     }
+
 }

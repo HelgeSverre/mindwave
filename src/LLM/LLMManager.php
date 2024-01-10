@@ -8,6 +8,7 @@ use Mindwave\Mindwave\LLM\Drivers\Fake;
 use Mindwave\Mindwave\LLM\Drivers\MistralDriver;
 use Mindwave\Mindwave\LLM\Drivers\OpenAI\OpenAI as OpenAIDriver;
 use OpenAI;
+use OpenAI\Contracts\ClientContract;
 
 class LLMManager extends Manager
 {
@@ -21,13 +22,15 @@ class LLMManager extends Manager
         return new Fake();
     }
 
-    public function createOpenAIDriver(): OpenAIDriver
+    public function createOpenAIDriver(?ClientContract $client = null): OpenAIDriver
     {
+        $client = $client ?? OpenAI::client(
+            apiKey: $this->config->get('mindwave-llm.llms.openai.api_key'),
+            organization: $this->config->get('mindwave-llm.llms.openai.org_id')
+        );
+
         return new OpenAIDriver(
-            client: OpenAI::client(
-                apiKey: $this->config->get('mindwave-llm.llms.openai.api_key'),
-                organization: $this->config->get('mindwave-llm.llms.openai.org_id')
-            ),
+            client: $client,
             model: $this->config->get('mindwave-llm.llms.openai.model'),
             maxTokens: $this->config->get('mindwave-llm.llms.openai.max_tokens'),
             temperature: $this->config->get('mindwave-llm.llms.openai.temperature'),
