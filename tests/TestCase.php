@@ -3,10 +3,12 @@
 namespace Mindwave\Mindwave\Tests;
 
 use Dotenv\Dotenv;
+use HelgeSverre\Telefonkatalog\TelefonkatalogServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Foundation\Bootstrap\LoadEnvironmentVariables;
 use Mindwave\Mindwave\MindwaveServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
+use Spatie\LaravelData\LaravelDataServiceProvider;
 
 class TestCase extends Orchestra
 {
@@ -25,6 +27,8 @@ class TestCase extends Orchestra
     {
         return [
             MindwaveServiceProvider::class,
+            TelefonkatalogServiceProvider::class,
+            LaravelDataServiceProvider::class,
         ];
     }
 

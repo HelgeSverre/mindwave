@@ -22,6 +22,7 @@
     "brandembassy/file-type-detector": "^2.3",
     "guzzlehttp/guzzle": "^7.5",
     "helgesverre/mistral": "^1.0",
+    "helgesverre/telefonkatalog": "^1.0",
     "hkulekci/qdrant": "^0.4.1",
     "illuminate/contracts": "^10.0",
     "laravel/prompts": "^0.1.14",
