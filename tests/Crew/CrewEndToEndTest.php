@@ -4,11 +4,46 @@ use Mindwave\Mindwave\Crew\Agent;
 use Mindwave\Mindwave\Crew\Crew;
 use Mindwave\Mindwave\Crew\Task;
 use Mindwave\Mindwave\Tools\PhonebookSearch;
+use Mindwave\Mindwave\Tools\SimpleTool;
 use Mindwave\Mindwave\Tools\WriteFile;
+
+it('an agent can read and modify file contents', function () {
+
+    $fileContents = "File contents: The secret word is 'banana'";
+
+    // Fake tool for reading a file
+    $fakeReadFileTool = new SimpleTool(
+        name: 'Read file',
+        description: 'Read file',
+        callback: fn ($input) => $fileContents
+    );
+    // Fake tool for reading a file
+    $fakeWriteFileTool = new SimpleTool(
+        name: 'Write file',
+        description: 'Write text to the file',
+        callback: function ($input) use (&$fileContents) {
+            $fileContents = $input;
+
+            return 'File saved successfully';
+        },
+    );
+
+    // Tool for writing to a file
+    $writeFileTool = new WriteFile(realpath(__DIR__.'/../data/write-file-tool-output.txt'));
+
+    // Define an Agent with a specific role and goal
+    $agent = new Agent(
+        role: 'a helpful assistant',
+        tools: [$fakeReadFileTool, $writeFileTool],
+    );
+
+    dump($agent->executeTask('Read the file, replace "banana" with "apple", and write the result'));
+
+});
 
 it('it can run a crew', function () {
     $searchTool = new PhonebookSearch();
-    $writeFileTool = new WriteFile(realpath(__DIR__ . '/../data/write-file-tool-output.txt'));
+    $writeFileTool = new WriteFile(realpath(__DIR__.'/../data/write-file-tool-output.txt'));
 
     // Define Agents with Specific Role Names and Backstories
     $searcherAgent = new Agent(
@@ -59,7 +94,6 @@ it('it can run a crew', function () {
 
     // Execute tasks
     $result = $crew->kickoff();
-
 
     dump($result);
 

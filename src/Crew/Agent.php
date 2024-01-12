@@ -6,6 +6,7 @@ use Mindwave\Mindwave\Agents\Actions\AgentAction;
 use Mindwave\Mindwave\Agents\Actions\AgentFinish;
 use Mindwave\Mindwave\Contracts\Tool;
 use Mindwave\Mindwave\Facades\Mindwave;
+use Mindwave\Mindwave\Prompts\PromptTemplate;
 use Spatie\Regex\Regex;
 
 class Agent
@@ -16,13 +17,49 @@ class Agent
      * @param Tool[] $tools
      */
     public function __construct(
-        protected string $role,
-        protected string $goal,
-        protected string $backstory,
-        protected array  $tools = [],
+        protected string         $role,
+        protected ?string        $goal = null,
+        protected ?string        $backstory = null,
+        protected readonly array $tools = [],
     )
     {
         $this->id = uniqid();
+    }
+
+    protected function buildRolePrompt(): string
+    {
+        $rolePrompt = "You are {$this->role}.\n";
+
+        if ($this->backstory) {
+            $rolePrompt .= "{$this->backstory}\n";
+        }
+
+        if ($this->goal) {
+            $rolePrompt .= "\nYour personal goal is: {$this->goal}\n";
+        }
+
+        return $rolePrompt;
+    }
+
+    protected function buildToolExecutionPrompt(array $tools = []): string
+    {
+        if (empty($tools)) {
+            return '';
+        }
+
+        $toolNames = collect($tools)->map(fn(Tool $tool) => $tool->name())->join(', ');
+        $toolDescriptions = collect($tools)->map(
+            fn(Tool $tool) => sprintf('%s: %s', $tool->name(), $tool->description())
+        )->join("\n");
+
+        $toolPrompt = PromptTemplate::fromPath(__DIR__ . '/../Prompts/Templates/crew/tool.txt')->format([
+            'tools' => $toolDescriptions,
+            'tool_names' => $toolNames,
+        ]);
+
+
+        return $toolPrompt;
+
     }
 
     public function executeTask(
@@ -32,33 +69,20 @@ class Agent
     ): string
     {
 
+        // TODO: Context should be inside Task
         if ($context) {
             $task .= "\nThis is the context you are working with: $context";
         }
 
-        $tools = $tools ?: $this->tools;
+        $combined = implode("\n", [
+            $this->buildRolePrompt(),
+            $this->buildToolExecutionPrompt($tools = $tools ?: $this->tools),
+            "Begin! This is VERY important to you, your job depends on it!\n",
+            "Current Task: {$task}",
+        ]);
 
-        $toolNames = collect($tools)->map(fn(Tool $tool) => $tool->name())->join(", ");
-        $toolDescriptions = collect($tools)->map(fn(Tool $tool) => sprintf("%s: %s", $tool->name(), $tool->description()))->join("\n");
-
-        $executionPrompt = "Begin! This is VERY important to you, your job depends on it!\n\nCurrent Task: {$task}";
-        // $memory = "This is the summary of your work so far:\n{chat_history}";
-        $rolePrompt = "You are {$this->role}.\n{$this->backstory}\n\nYour personal goal is: {$this->goal}";
-        $toolPrompt = "TOOLS:\n------\nYou have access to the following tools:\n\n{$toolDescriptions}\n\nTo use a tool, please use the exact following format:\n\n```\nThought: Do I need to use a tool? Yes\nAction: the action to take, should be one of [{$toolNames}], just the name.\nAction Input: the input to the action\nObservation: the result of the action\n```\n\nWhen you have a response for your task, or if you do not need to use a tool, you MUST use the format:\n\n```\nThought: Do I need to use a tool? No\nFinal Answer: [your response here]";
-
-        $prompt = [
-            $rolePrompt,
-            $toolPrompt,
-            $executionPrompt,
-//            "\n{agent_scratchpad}"
-        ];
-
-
-        $combined = implode("\n", $prompt);
-        dump($combined);
 
         $result = $this->planStep($combined);
-
 
         dd($result);
 
@@ -66,7 +90,6 @@ class Agent
 
             /** @var Tool $tool */
             $tool = collect($tools)->first(fn(Tool $tool) => $tool->name() === $result->tool);
-
 
             // TODO(20 mai 2023) ~ Helge: Handle tool missing
 
@@ -105,7 +128,6 @@ class Agent
     {
         $result = Mindwave::llm()->generateText($combined);
 
-
         $action = $this->parseToolOutput($result);
 
         // TODO: Parse result into AgentAction  or AgentFinish
@@ -115,7 +137,6 @@ class Agent
 
     protected function parseToolOutput($text)
     {
-
 
         // Regular expression for parsing 'Action' and 'Action Input'
         $actionRegex = '/Action\s*:\s*(?P<action>.*?)\s*Action\s*Input\s*:\s*(?P<actionInput>.*)/s';
@@ -131,7 +152,6 @@ class Agent
                 toolInput: trim($actionMatch->group('actionInput'), ' "')
             );
         }
-
 
         if ($finalAnswerMatch->hasMatch()) {
             return new AgentFinish(trim($finalAnswerMatch->group('finalAnswer')));

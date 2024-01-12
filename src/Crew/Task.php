@@ -6,7 +6,7 @@ use Exception;
 
 class Task
 {
-    public readonly string $output;
+    protected string $output;
 
     public function __construct(
         public string $description,
@@ -16,7 +16,7 @@ class Task
     ) {
     }
 
-    public function execute(?string $context): string
+    public function execute(?string $context = null): string
     {
 
         if ($this->agent == null) {
