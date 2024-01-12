@@ -97,7 +97,7 @@ class OpenAI extends BaseDriver implements LLM
         return $this->client->chat()->create([
             'max_tokens' => $this->maxTokens,
             'temperature' => $this->temperature,
-            'model' => $this->model->value,
+            'model' => $this->model,
             'messages' => $this->systemMessage
                 ? [
                     ['role' => 'system', 'content' => $this->systemMessage],
@@ -114,7 +114,7 @@ class OpenAI extends BaseDriver implements LLM
         return $this->client->completions()->create([
             'max_tokens' => $this->maxTokens,
             'temperature' => $this->temperature,
-            'model' => $this->model->value,
+            'model' => $this->model,
             'prompt' => $prompt,
         ]);
     }

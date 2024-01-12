@@ -2,7 +2,11 @@
 
 namespace Mindwave\Mindwave\Crew;
 
+use Mindwave\Mindwave\Agents\Actions\AgentAction;
+use Mindwave\Mindwave\Agents\Actions\AgentFinish;
 use Mindwave\Mindwave\Contracts\Tool;
+use Mindwave\Mindwave\Facades\Mindwave;
+use Spatie\Regex\Regex;
 
 class Agent
 {
@@ -50,11 +54,34 @@ class Agent
         ];
 
 
+        $combined = implode("\n", $prompt);
+        dump($combined);
 
-        // TODO: plan next step
-        // TODO: parse output of planning
+        $result = $this->planStep($combined);
 
-        //  return -> AgentAction / AgentFinish
+
+        dd($result);
+
+        if ($result instanceof AgentAction) {
+
+            /** @var Tool $tool */
+            $tool = collect($tools)->first(fn(Tool $tool) => $tool->name() === $result->tool);
+
+
+            // TODO(20 mai 2023) ~ Helge: Handle tool missing
+
+            $observation = $tool->run($result->toolInput);
+            $history[] = [
+                'tool' => $result->tool,
+                'toolInput' => $result->toolInput,
+                'observation' => $observation,
+            ];
+        }
+
+        if ($result instanceof AgentFinish) {
+            return $result->response;
+        }
+
         //
         //
         //yields if action is AgentFinish
@@ -72,6 +99,46 @@ class Agent
         //Task is now "complete" and we loop around to the Crew "for task in tasks" loop
 
         return $output;
+    }
+
+    private function planStep(string $combined): AgentFinish|AgentAction
+    {
+        $result = Mindwave::llm()->generateText($combined);
+
+
+        $action = $this->parseToolOutput($result);
+
+        // TODO: Parse result into AgentAction  or AgentFinish
+
+        return $action;
+    }
+
+    protected function parseToolOutput($text)
+    {
+
+
+        // Regular expression for parsing 'Action' and 'Action Input'
+        $actionRegex = '/Action\s*:\s*(?P<action>.*?)\s*Action\s*Input\s*:\s*(?P<actionInput>.*)/s';
+        $actionMatch = Regex::match($actionRegex, $text);
+
+        // Regular expression for parsing 'Final Answer'
+        $finalAnswerRegex = '/Final Answer:\s*(?P<finalAnswer>.+)/s';
+        $finalAnswerMatch = Regex::match($finalAnswerRegex, $text);
+
+        if ($actionMatch->hasMatch()) {
+            return new AgentAction(
+                tool: trim($actionMatch->group('action')),
+                toolInput: trim($actionMatch->group('actionInput'), ' "')
+            );
+        }
+
+
+        if ($finalAnswerMatch->hasMatch()) {
+            return new AgentFinish(trim($finalAnswerMatch->group('finalAnswer')));
+        }
+
+        // No match found
+        return null;
     }
 
 }

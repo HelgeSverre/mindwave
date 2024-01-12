@@ -30,6 +30,7 @@
     "probots-io/pinecone-php": "^0.0.3",
     "smalot/pdfparser": "^2.5",
     "spatie/laravel-package-tools": "^1.14.0",
+    "spatie/regex": "^3.1",
     "symfony/dom-crawler": "^6.2",
     "timkley/weaviate-php": "^0.3.0",
     "yethee/tiktoken": "^0.1.2"
