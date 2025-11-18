@@ -8,7 +8,30 @@ use Mindwave\Mindwave\Embeddings\Data\EmbeddingVector;
 use Mindwave\Mindwave\Vectorstore\Data\VectorStoreEntry;
 use Weaviate\Weaviate;
 
+/**
+ * Check if Weaviate service is available
+ */
+function isWeaviateAvailable(): bool
+{
+    try {
+        $ch = curl_init('http://localhost:8080/v1/.well-known/ready');
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 2);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 2);
+        $result = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        return $httpCode === 200;
+    } catch (\Throwable $e) {
+        return false;
+    }
+}
+
 it('We can connect to weaviate in the docker container', function () {
+    if (! isWeaviateAvailable()) {
+        $this->markTestSkipped('Weaviate service not available on localhost:8080');
+    }
     Config::set('mindwave-embeddings.embeddings.openai.api_key', env('MINDWAVE_OPENAI_API_KEY'));
 
     $vectorstore = new \Mindwave\Mindwave\Vectorstore\Drivers\Weaviate(
@@ -29,6 +52,9 @@ it('We can connect to weaviate in the docker container', function () {
 });
 
 it('We can truncate weaviate index', function () {
+    if (! isWeaviateAvailable()) {
+        $this->markTestSkipped('Weaviate service not available on localhost:8080');
+    }
     Config::set('mindwave-embeddings.embeddings.openai.api_key', env('MINDWAVE_OPENAI_API_KEY'));
 
     $vectorstore = new \Mindwave\Mindwave\Vectorstore\Drivers\Weaviate(
@@ -52,6 +78,9 @@ it('We can truncate weaviate index', function () {
 });
 
 it('We can connect search weaviate', function () {
+    if (! isWeaviateAvailable()) {
+        $this->markTestSkipped('Weaviate service not available on localhost:8080');
+    }
     Config::set('mindwave-embeddings.embeddings.openai.api_key', env('MINDWAVE_OPENAI_API_KEY'));
 
     $vectorstore = new \Mindwave\Mindwave\Vectorstore\Drivers\Weaviate(
@@ -104,6 +133,9 @@ it('We can connect search weaviate', function () {
 });
 
 it('Can insert multiple in batch', function () {
+    if (! isWeaviateAvailable()) {
+        $this->markTestSkipped('Weaviate service not available on localhost:8080');
+    }
     Config::set('mindwave-embeddings.embeddings.openai.api_key', env('MINDWAVE_OPENAI_API_KEY'));
 
     $vectorstore = new \Mindwave\Mindwave\Vectorstore\Drivers\Weaviate(

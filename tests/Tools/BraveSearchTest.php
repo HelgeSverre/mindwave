@@ -7,6 +7,5 @@ it('Cna find my number', function () {
 
     $response = $tool->run('helge sverre liseth');
 
-    dd($response);
-
+    expect($response)->toBeString()->not()->toBeEmpty();
 });

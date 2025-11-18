@@ -4,7 +4,7 @@ use Mindwave\Mindwave\PromptComposer\PromptComposer;
 use Mindwave\Mindwave\PromptComposer\Tokenizer\TiktokenTokenizer;
 
 beforeEach(function () {
-    $this->tokenizer = new TiktokenTokenizer();
+    $this->tokenizer = new TiktokenTokenizer;
     $this->composer = new PromptComposer($this->tokenizer);
 });
 

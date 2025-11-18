@@ -7,7 +7,30 @@ use Mindwave\Mindwave\Facades\Embeddings;
 use Mindwave\Mindwave\Vectorstore\Data\VectorStoreEntry;
 use Mindwave\Mindwave\Vectorstore\Drivers\Qdrant;
 
+/**
+ * Check if Qdrant service is available
+ */
+function isQdrantAvailable(): bool
+{
+    try {
+        $ch = curl_init('http://localhost:6333/collections');
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 2);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 2);
+        curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        return $httpCode === 200;
+    } catch (\Throwable $e) {
+        return false;
+    }
+}
+
 it('can insert one into qdrant', function () {
+    if (! isQdrantAvailable()) {
+        $this->markTestSkipped('Qdrant service not available on localhost:6333');
+    }
 
     $vectorstore = new Qdrant(
         apiKey: '',
@@ -29,6 +52,9 @@ it('can insert one into qdrant', function () {
 });
 
 it('can insert multiple into qdrant', function () {
+    if (! isQdrantAvailable()) {
+        $this->markTestSkipped('Qdrant service not available on localhost:6333');
+    }
 
     $vectorstore = new Qdrant(
         apiKey: '',
@@ -53,6 +79,9 @@ it('can insert multiple into qdrant', function () {
 });
 
 it('We can perform similarity search on documents in qdrant', function () {
+    if (! isQdrantAvailable()) {
+        $this->markTestSkipped('Qdrant service not available on localhost:6333');
+    }
 
     Config::set('mindwave-embeddings.embeddings.openai.api_key', env('MINDWAVE_OPENAI_API_KEY'));
     $vectorstore = new Qdrant(

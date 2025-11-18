@@ -10,7 +10,7 @@ use OpenTelemetry\API\Trace\SpanKind;
 use OpenTelemetry\SDK\Trace\SpanExporter\InMemoryExporter;
 
 beforeEach(function () {
-    $this->exporter = new InMemoryExporter();
+    $this->exporter = new InMemoryExporter;
     $this->tracer = new TracerManager(
         exporters: [$this->exporter],
         serviceName: 'test-service',
@@ -260,8 +260,8 @@ test('Span wrap handles exceptions correctly', function () {
 });
 
 test('TracerManager supports multiple exporters', function () {
-    $exporter1 = new InMemoryExporter();
-    $exporter2 = new InMemoryExporter();
+    $exporter1 = new InMemoryExporter;
+    $exporter2 = new InMemoryExporter;
 
     $tracer = new TracerManager(
         exporters: [$exporter1, $exporter2],

@@ -8,7 +8,8 @@ use Mindwave\Mindwave\Prompts\OutputParsers\StructuredOutputParser;
 use Mindwave\Mindwave\Prompts\PromptTemplate;
 
 it('can use a structured output parser', function () {
-    $personClass = new class {
+    $personClass = new class
+    {
         public string $name;
         public ?int $age;
         public ?bool $hasBusiness;
@@ -24,7 +25,7 @@ it('can use a structured output parser', function () {
     expect($result)->toBeInstanceOf($personClass::class);
 
     dump($result);
-});
+})->skip('Requires OpenAI API key and makes real API calls');
 
 it('We can parse a small recipe into an object', function () {
     Config::set('mindwave-llm.llms.openai.model', ModelNames::GPT4_1106_PREVIEW);

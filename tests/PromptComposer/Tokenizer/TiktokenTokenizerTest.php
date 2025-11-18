@@ -3,7 +3,7 @@
 use Mindwave\Mindwave\PromptComposer\Tokenizer\TiktokenTokenizer;
 
 it('can count tokens for GPT-4', function () {
-    $tokenizer = new TiktokenTokenizer();
+    $tokenizer = new TiktokenTokenizer;
 
     $text = 'Hello, how are you today?';
     $count = $tokenizer->count($text, 'gpt-4');
@@ -13,7 +13,7 @@ it('can count tokens for GPT-4', function () {
 });
 
 it('can count tokens for GPT-3.5', function () {
-    $tokenizer = new TiktokenTokenizer();
+    $tokenizer = new TiktokenTokenizer;
 
     $text = 'The quick brown fox jumps over the lazy dog';
     $count = $tokenizer->count($text, 'gpt-3.5-turbo');
@@ -23,7 +23,7 @@ it('can count tokens for GPT-3.5', function () {
 });
 
 it('can encode text into tokens', function () {
-    $tokenizer = new TiktokenTokenizer();
+    $tokenizer = new TiktokenTokenizer;
 
     $text = 'Hello world';
     $tokens = $tokenizer->encode($text, 'gpt-4');
@@ -34,7 +34,7 @@ it('can encode text into tokens', function () {
 });
 
 it('can decode tokens back to text', function () {
-    $tokenizer = new TiktokenTokenizer();
+    $tokenizer = new TiktokenTokenizer;
 
     $originalText = 'The quick brown fox';
     $tokens = $tokenizer->encode($originalText, 'gpt-4');
@@ -44,7 +44,7 @@ it('can decode tokens back to text', function () {
 });
 
 it('returns correct context window for GPT-4', function () {
-    $tokenizer = new TiktokenTokenizer();
+    $tokenizer = new TiktokenTokenizer;
 
     $contextWindow = $tokenizer->getContextWindow('gpt-4');
 
@@ -52,7 +52,7 @@ it('returns correct context window for GPT-4', function () {
 });
 
 it('returns correct context window for GPT-4 Turbo', function () {
-    $tokenizer = new TiktokenTokenizer();
+    $tokenizer = new TiktokenTokenizer;
 
     $contextWindow = $tokenizer->getContextWindow('gpt-4-turbo');
 
@@ -60,7 +60,7 @@ it('returns correct context window for GPT-4 Turbo', function () {
 });
 
 it('returns correct context window for Claude 3.5', function () {
-    $tokenizer = new TiktokenTokenizer();
+    $tokenizer = new TiktokenTokenizer;
 
     $contextWindow = $tokenizer->getContextWindow('claude-3-5-sonnet');
 
@@ -68,14 +68,14 @@ it('returns correct context window for Claude 3.5', function () {
 });
 
 it('supports OpenAI models', function () {
-    $tokenizer = new TiktokenTokenizer();
+    $tokenizer = new TiktokenTokenizer;
 
     expect($tokenizer->supports('gpt-4'))->toBeTrue();
     expect($tokenizer->supports('gpt-3.5-turbo'))->toBeTrue();
 });
 
 it('counts tokens consistently', function () {
-    $tokenizer = new TiktokenTokenizer();
+    $tokenizer = new TiktokenTokenizer;
 
     $text = 'This is a test sentence with multiple words.';
     $count1 = $tokenizer->count($text, 'gpt-4');
@@ -85,7 +85,7 @@ it('counts tokens consistently', function () {
 });
 
 it('handles empty strings', function () {
-    $tokenizer = new TiktokenTokenizer();
+    $tokenizer = new TiktokenTokenizer;
 
     $count = $tokenizer->count('', 'gpt-4');
 
@@ -93,7 +93,7 @@ it('handles empty strings', function () {
 });
 
 it('handles long text', function () {
-    $tokenizer = new TiktokenTokenizer();
+    $tokenizer = new TiktokenTokenizer;
 
     $longText = str_repeat('This is a sentence. ', 1000);
     $count = $tokenizer->count($longText, 'gpt-4');
@@ -102,7 +102,7 @@ it('handles long text', function () {
 });
 
 it('handles unicode characters', function () {
-    $tokenizer = new TiktokenTokenizer();
+    $tokenizer = new TiktokenTokenizer;
 
     $text = 'Hello 👋 World 🌍';
     $count = $tokenizer->count($text, 'gpt-4');
@@ -111,7 +111,7 @@ it('handles unicode characters', function () {
 });
 
 it('handles special characters', function () {
-    $tokenizer = new TiktokenTokenizer();
+    $tokenizer = new TiktokenTokenizer;
 
     $text = "Special chars: @#$%^&*()_+-=[]{}|;':\",./<>?";
     $count = $tokenizer->count($text, 'gpt-4');
@@ -120,7 +120,7 @@ it('handles special characters', function () {
 });
 
 it('handles newlines and tabs', function () {
-    $tokenizer = new TiktokenTokenizer();
+    $tokenizer = new TiktokenTokenizer;
 
     $text = "Line 1\nLine 2\tTabbed";
     $count = $tokenizer->count($text, 'gpt-4');
@@ -129,7 +129,7 @@ it('handles newlines and tabs', function () {
 });
 
 it('counts different encodings correctly', function () {
-    $tokenizer = new TiktokenTokenizer();
+    $tokenizer = new TiktokenTokenizer;
 
     $text = 'Hello world';
 
@@ -144,7 +144,7 @@ it('counts different encodings correctly', function () {
 });
 
 it('can handle multiple consecutive calls efficiently', function () {
-    $tokenizer = new TiktokenTokenizer();
+    $tokenizer = new TiktokenTokenizer;
 
     $texts = [
         'First text',
