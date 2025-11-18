@@ -7,7 +7,5 @@ use Attribute;
 #[Attribute]
 class Description
 {
-    public function __construct(public ?string $description = null)
-    {
-    }
+    public function __construct(public ?string $description = null) {}
 }

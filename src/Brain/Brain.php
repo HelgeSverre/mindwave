@@ -14,10 +14,8 @@ class Brain
     public function __construct(
         protected Vectorstore $vectorstore,
         protected Embeddings $embeddings,
-        protected TextSplitter $textSplitter = new RecursiveCharacterTextSplitter()
-    ) {
-
-    }
+        protected TextSplitter $textSplitter = new RecursiveCharacterTextSplitter
+    ) {}
 
     /**
      * @return Document[]

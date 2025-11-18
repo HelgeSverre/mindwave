@@ -18,8 +18,7 @@ class OpenAI extends BaseDriver implements LLM
         protected ?string $systemMessage = null,
         protected int $maxTokens = 800,
         protected float $temperature = 0.7,
-    ) {
-    }
+    ) {}
 
     public function model(string $model): self
     {
@@ -59,7 +58,7 @@ class OpenAI extends BaseDriver implements LLM
             'tool_choice' => match ($requiredFunction) {
                 null, 'auto' => 'auto',
                 'none' => 'none',
-                default => ['name' => $requiredFunction],
+                default => ['type' => 'function', 'function' => ['name' => $requiredFunction]],
             },
         ]);
 

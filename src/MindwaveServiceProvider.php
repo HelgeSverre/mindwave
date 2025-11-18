@@ -2,6 +2,7 @@
 
 namespace Mindwave\Mindwave;
 
+use Illuminate\Support\Facades\Event;
 use Mindwave\Mindwave\Commands\ExportTracesCommand;
 use Mindwave\Mindwave\Commands\PruneTracesCommand;
 use Mindwave\Mindwave\Commands\ToolMakeCommand;
@@ -16,6 +17,7 @@ use Mindwave\Mindwave\Document\Loaders\WordLoader;
 use Mindwave\Mindwave\Embeddings\EmbeddingsManager;
 use Mindwave\Mindwave\Facades\Vectorstore;
 use Mindwave\Mindwave\LLM\LLMManager;
+use Mindwave\Mindwave\Observability\Listeners\TraceEventSubscriber;
 use Mindwave\Mindwave\PromptComposer\Tokenizer\TiktokenTokenizer;
 use Mindwave\Mindwave\PromptComposer\Tokenizer\TokenizerInterface;
 use Mindwave\Mindwave\Vectorstore\VectorstoreManager;
@@ -77,5 +79,16 @@ class MindwaveServiceProvider extends PackageServiceProvider
             vectorstore: $app->make(Vectorstore::class),
             tokenizer: $app->make(TokenizerInterface::class),
         ));
+    }
+
+    /**
+     * Bootstrap any package services.
+     *
+     * @return void
+     */
+    public function bootingPackage(): void
+    {
+        // Register event subscriber for LLM tracing events
+        Event::subscribe(TraceEventSubscriber::class);
     }
 }

@@ -18,7 +18,7 @@ class PromptTemplate
     public function __construct(string $template, ?OutputParser $outputParser = null)
     {
         $this->template = $template;
-        $this->outputParser = $outputParser ?? new TextOutputParser();
+        $this->outputParser = $outputParser ?? new TextOutputParser;
     }
 
     public static function create(string $template, ?OutputParser $outputParser = null): self

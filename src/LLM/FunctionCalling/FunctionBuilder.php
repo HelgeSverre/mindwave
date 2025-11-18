@@ -7,14 +7,11 @@ use Illuminate\Contracts\Support\Arrayable;
 
 class FunctionBuilder implements Arrayable
 {
-    public function __construct(protected array $functions = [])
-    {
-
-    }
+    public function __construct(protected array $functions = []) {}
 
     public static function make(): self
     {
-        return new self();
+        return new self;
     }
 
     public function add(string $name, Closure $param)

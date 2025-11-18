@@ -12,14 +12,11 @@ class ConversationMemory implements Memory
     /**
      * @param  Message[]  $messages
      */
-    public function __construct(protected array $messages = [])
-    {
-
-    }
+    public function __construct(protected array $messages = []) {}
 
     public static function make(): self
     {
-        return new static();
+        return new static;
     }
 
     public function conversationAsString(

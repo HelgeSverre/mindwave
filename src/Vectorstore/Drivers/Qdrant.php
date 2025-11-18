@@ -49,7 +49,7 @@ class Qdrant implements Vectorstore
             return;
         }
 
-        $createCollection = new CreateCollection();
+        $createCollection = new CreateCollection;
         $createCollection->addVector(new VectorParams(
             self::OPENAI_EMBEDDING_LENGTH,
             VectorParams::DISTANCE_COSINE),
@@ -75,7 +75,7 @@ class Qdrant implements Vectorstore
         // TODO(01 Jun 2023) ~ Helge: DANGER: This is a NAIVE and UNSAFE workaround, until we get UUID support in the qdrant library
         $count = $this->itemCount();
 
-        $points = new PointsStruct();
+        $points = new PointsStruct;
         $points->addPoint(
 
             new PointStruct(
@@ -92,7 +92,7 @@ class Qdrant implements Vectorstore
     {
         $this->ensureCollectionExists();
 
-        $points = new PointsStruct();
+        $points = new PointsStruct;
 
         // TODO(01 Jun 2023) ~ Helge: DANGER: This is a NAIVE and UNSAFE workaround, until we get UUID support in the qdrant library
         $count = $this->itemCount();

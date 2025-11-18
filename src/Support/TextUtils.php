@@ -10,7 +10,7 @@ class TextUtils
 {
     public static function countTokens(string $text, $model = 'gpt-3.5-turbo'): int
     {
-        $provider = new EncoderProvider();
+        $provider = new EncoderProvider;
         $encoder = $provider->getForModel($model);
         $tokens = $encoder->encode('Hello world!');
 

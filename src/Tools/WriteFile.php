@@ -10,9 +10,7 @@ use Throwable;
  */
 class WriteFile implements Tool
 {
-    public function __construct(protected string $path)
-    {
-    }
+    public function __construct(protected string $path) {}
 
     public function name(): string
     {

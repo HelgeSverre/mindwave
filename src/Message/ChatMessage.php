@@ -10,9 +10,7 @@ readonly class ChatMessage implements Message
         protected Role $role,
         protected string $content,
         protected ?array $meta = [],
-    ) {
-
-    }
+    ) {}
 
     public static function makeAiMessage(string $content, ?array $meta = []): self
     {

@@ -20,8 +20,7 @@ class QA
         protected Vectorstore $vectorstore,
         protected Embeddings $embeddings,
 
-    ) {
-    }
+    ) {}
 
     public function answerQuestion(string $question): string
     {

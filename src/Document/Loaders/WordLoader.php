@@ -13,7 +13,7 @@ class WordLoader implements DocumentLoader
         $tempFile = tempnam(sys_get_temp_dir(), 'mindwave_zip_');
         file_put_contents($tempFile, $data);
 
-        $zip = new ZipArchive();
+        $zip = new ZipArchive;
 
         if ($zip->open($tempFile) !== true) {
             unlink($tempFile);

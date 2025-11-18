@@ -80,7 +80,7 @@ Remember to respond with a JSON blob, and NOTHING else.');
             return null;
         }
 
-        $instance = new $this->schema();
+        $instance = new $this->schema;
 
         foreach ($data as $key => $value) {
 

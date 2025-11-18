@@ -28,7 +28,7 @@ class VectorstoreManager extends Manager
 
     public function createArrayDriver(): Vectorstore
     {
-        return new InMemory();
+        return new InMemory;
     }
 
     public function createPineconeDriver(): Vectorstore
@@ -36,7 +36,7 @@ class VectorstoreManager extends Manager
         return new Pinecone(
             new Client(
                 apiKey: $this->config->get('mindwave-vectorstore.vectorstores.pinecone.api_key'),
-                environment: $this->config->get('mindwave-vectorstore.vectorstores.pinecone.environment'),
+                indexHost: $this->config->get('mindwave-vectorstore.vectorstores.pinecone.index_host'),
             ),
             index: $this->config->get('mindwave-vectorstore.vectorstores.pinecone.index')
         );

@@ -8,7 +8,5 @@ readonly class FunctionCall
         public string $name,
         public array $arguments,
         public string $rawArguments,
-    ) {
-
-    }
+    ) {}
 }

@@ -21,7 +21,7 @@ interface Vectorstore
     public function insertMany(array $entries): void;
 
     /**
-     * @return  VectorStoreEntry[]
+     * @return VectorStoreEntry[]
      */
     public function similaritySearch(EmbeddingVector $embedding, int $count = 5): array;
 }
