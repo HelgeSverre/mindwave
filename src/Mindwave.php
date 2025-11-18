@@ -12,6 +12,8 @@ use Mindwave\Mindwave\Contracts\Memory;
 use Mindwave\Mindwave\Contracts\Vectorstore;
 use Mindwave\Mindwave\LLM\FunctionCalling\FunctionBuilder;
 use Mindwave\Mindwave\Memory\ConversationMemory;
+use Mindwave\Mindwave\PromptComposer\PromptComposer;
+use Mindwave\Mindwave\PromptComposer\Tokenizer\TokenizerInterface;
 
 class Mindwave
 {
@@ -20,16 +22,19 @@ class Mindwave
     public function __construct(
         protected LLM $llm,
         protected Embeddings $embeddings,
-        protected Vectorstore $vectorstore
+        protected Vectorstore $vectorstore,
+        protected ?TokenizerInterface $tokenizer = null,
     ) {
         $this->brain = new Brain(
             vectorstore: $vectorstore,
             embeddings: $embeddings,
         );
+
+        $this->tokenizer = $tokenizer ?? app(TokenizerInterface::class);
     }
 
     public function agent(
-        Memory $memory = new ConversationMemory(),
+        Memory $memory = new ConversationMemory,
         array $tools = []
     ): Agent {
         return new Agent(
@@ -61,7 +66,7 @@ class Mindwave
             throw new InvalidArgumentException('classes provided is not an array, nor an enum.');
         }
 
-        $builder = new FunctionBuilder();
+        $builder = new FunctionBuilder;
         $builder
             ->addFunction(
                 name: 'submit_classification',
@@ -109,5 +114,13 @@ class Mindwave
     public function llm(): LLM
     {
         return $this->llm;
+    }
+
+    /**
+     * Create a new prompt composer for auto-fitting prompts to context windows.
+     */
+    public function prompt(): PromptComposer
+    {
+        return new PromptComposer($this->tokenizer, $this->llm);
     }
 }
