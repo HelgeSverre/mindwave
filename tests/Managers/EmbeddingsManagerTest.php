@@ -7,6 +7,14 @@ use Mindwave\Mindwave\Embeddings\EmbeddingsManager;
 
 it('returns the default driver', function () {
     Config::shouldReceive('get')
+        ->with('database.default')
+        ->andReturn('testing');
+
+    Config::shouldReceive('get')
+        ->with('database.connections.testing')
+        ->andReturn(['driver' => 'sqlite', 'database' => ':memory:']);
+
+    Config::shouldReceive('get')
         ->with('mindwave-embeddings.default')
         ->andReturn('openai');
 
@@ -16,6 +24,13 @@ it('returns the default driver', function () {
 });
 
 it('creates the OpenAIEmbeddings driver', function () {
+    Config::shouldReceive('get')
+        ->with('database.default')
+        ->andReturn('testing');
+
+    Config::shouldReceive('get')
+        ->with('database.connections.testing')
+        ->andReturn(['driver' => 'sqlite', 'database' => ':memory:']);
 
     Config::shouldReceive('get')
         ->with('mindwave-embeddings.default')

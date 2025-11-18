@@ -4,7 +4,7 @@ use Mindwave\Mindwave\Prompts\OutputParsers\JsonListOutputParser;
 use Mindwave\Mindwave\Prompts\PromptTemplate;
 
 it('json list output parser generates a list from constructor', function () {
-    $outputParser = new JsonListOutputParser();
+    $outputParser = new JsonListOutputParser;
     $prompt = PromptTemplate::create(
         template: 'Generate 10 keywords for {topic}',
         outputParser: $outputParser
@@ -17,7 +17,7 @@ it('json list output parser generates a list from constructor', function () {
 });
 
 it('json list output parser generates a list from method', function () {
-    $outputParser = new JsonListOutputParser();
+    $outputParser = new JsonListOutputParser;
 
     $prompt = PromptTemplate::create(
         template: 'Generate 10 keywords for {topic}',
@@ -31,7 +31,7 @@ it('json list output parser generates a list from method', function () {
 
 it('can parse json array as array', function () {
 
-    $parser = new JsonListOutputParser();
+    $parser = new JsonListOutputParser;
 
     expect($parser->parse('```json{"data": ["monsters", "bananas", "flies", "sausages"]}```'))->toEqual([
         'monsters',

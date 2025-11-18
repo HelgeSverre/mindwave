@@ -19,7 +19,7 @@ class LLMManager extends Manager
 
     public function createFakeDriver(): Fake
     {
-        return new Fake();
+        return new Fake;
     }
 
     public function createOpenAIDriver(?ClientContract $client = null): OpenAIDriver
@@ -44,10 +44,10 @@ class LLMManager extends Manager
                 apiKey: $this->config->get('mindwave-llm.llms.mistral.api_key'),
                 baseUrl: $this->config->get('mindwave-llm.llms.mistral.base_url'),
             ),
-            model: $this->config->get('mindwave-llm.llms.openai.model'),
+            model: $this->config->get('mindwave-llm.llms.mistral.model'),
             systemMessage: $this->config->get('mindwave-llm.llms.mistral.system_message'),
-            maxTokens: $this->config->get('mindwave-llm.llms.openai.max_tokens'),
-            temperature: $this->config->get('mindwave-llm.llms.openai.temperature'),
+            maxTokens: $this->config->get('mindwave-llm.llms.mistral.max_tokens'),
+            temperature: $this->config->get('mindwave-llm.llms.mistral.temperature'),
             safeMode: $this->config->get('mindwave-llm.llms.mistral.safe_mode'),
             randomSeed: $this->config->get('mindwave-llm.llms.mistral.random_seed'),
         );

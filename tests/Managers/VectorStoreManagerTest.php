@@ -10,6 +10,14 @@ use Mindwave\Mindwave\Vectorstore\VectorstoreManager;
 
 it('returns the default driver', function () {
     Config::shouldReceive('get')
+        ->with('database.default')
+        ->andReturn('testing');
+
+    Config::shouldReceive('get')
+        ->with('database.connections.testing')
+        ->andReturn(['driver' => 'sqlite', 'database' => ':memory:']);
+
+    Config::shouldReceive('get')
         ->with('mindwave-vectorstore.default')
         ->andReturn('array');
 
@@ -35,14 +43,21 @@ it('creates the QDrant driver', function () {
 });
 
 it('creates the Pinecone driver', function () {
+    Config::shouldReceive('get')
+        ->with('database.default')
+        ->andReturn('testing');
+
+    Config::shouldReceive('get')
+        ->with('database.connections.testing')
+        ->andReturn(['driver' => 'sqlite', 'database' => ':memory:']);
 
     Config::shouldReceive('get')
         ->with('mindwave-vectorstore.vectorstores.pinecone.api_key')
         ->andReturn('your_pinecone_api_key');
 
     Config::shouldReceive('get')
-        ->with('mindwave-vectorstore.vectorstores.pinecone.environment')
-        ->andReturn('your_pinecone_environment');
+        ->with('mindwave-vectorstore.vectorstores.pinecone.index_host')
+        ->andReturn('your-index-host.pinecone.io');
 
     Config::shouldReceive('get')
         ->with('mindwave-vectorstore.vectorstores.pinecone.index')
@@ -57,6 +72,13 @@ it('creates the Pinecone driver', function () {
 });
 
 it('creates the Weaviate driver', function () {
+    Config::shouldReceive('get')
+        ->with('database.default')
+        ->andReturn('testing');
+
+    Config::shouldReceive('get')
+        ->with('database.connections.testing')
+        ->andReturn(['driver' => 'sqlite', 'database' => ':memory:']);
 
     Config::shouldReceive('get')
         ->with('mindwave-vectorstore.vectorstores.weaviate.api_url')

@@ -2,11 +2,19 @@
 
 use Illuminate\Support\Facades\Config;
 use Mindwave\Mindwave\LLM\Drivers\Fake;
-use Mindwave\Mindwave\LLM\Drivers\OpenAI\Model;
+use Mindwave\Mindwave\LLM\Drivers\OpenAI\ModelNames;
 use Mindwave\Mindwave\LLM\Drivers\OpenAI\OpenAI;
 use Mindwave\Mindwave\LLM\LLMManager;
 
 it('returns the default driver', function () {
+    Config::shouldReceive('get')
+        ->with('database.default')
+        ->andReturn('testing');
+
+    Config::shouldReceive('get')
+        ->with('database.connections.testing')
+        ->andReturn(['driver' => 'sqlite', 'database' => ':memory:']);
+
     Config::shouldReceive('get')
         ->with('mindwave-llm.default')
         ->andReturn('fake');
@@ -25,6 +33,14 @@ it('creates the Fake driver', function () {
 
 it('creates the OpenAI driver', function () {
     Config::shouldReceive('get')
+        ->with('database.default')
+        ->andReturn('testing');
+
+    Config::shouldReceive('get')
+        ->with('database.connections.testing')
+        ->andReturn(['driver' => 'sqlite', 'database' => ':memory:']);
+
+    Config::shouldReceive('get')
         ->with('mindwave-llm.llms.openai.api_key')
         ->andReturn('your_openai_api_key');
 
@@ -34,7 +50,7 @@ it('creates the OpenAI driver', function () {
 
     Config::shouldReceive('get')
         ->with('mindwave-llm.llms.openai.model')
-        ->andReturn(Model::turbo16k);
+        ->andReturn(ModelNames::TURBO_16K);
 
     Config::shouldReceive('get')
         ->with('mindwave-llm.llms.openai.max_tokens')

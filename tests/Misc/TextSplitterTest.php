@@ -9,7 +9,7 @@ it('splits the text into chunks')
     ->expect(function () {
         $text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed accumsan tortor id ex tincidunt condimentum. Nulla bibendum urna nec laoreet euismod. Suspendisse tempor ex eget nibh gravida interdum. Duis convallis urna at diam mattis, a dictum massa egestas. Nam ac orci vitae justo vulputate sagittis. Fusce consectetur rutrum arcu in convallis. Aliquam venenatis libero nec sem ultricies placerat. Pellentesque vel metus non ligula finibus finibus. Suspendisse id nisl id tellus dapibus egestas.';
 
-        $splitter = new CharacterTextSplitter();
+        $splitter = new CharacterTextSplitter;
         $chunks = $splitter->splitText($text);
 
         return count($chunks);
@@ -20,7 +20,7 @@ it('splits pdf files into chunks')
     ->expect(function () {
         $text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed accumsan tortor id ex tincidunt condimentum. Nulla bibendum urna nec laoreet euismod. Suspendisse tempor ex eget nibh gravida interdum. Duis convallis urna at diam mattis, a dictum massa egestas. Nam ac orci vitae justo vulputate sagittis. Fusce consectetur rutrum arcu in convallis. Aliquam venenatis libero nec sem ultricies placerat. Pellentesque vel metus non ligula finibus finibus. Suspendisse id nisl id tellus dapibus egestas.';
 
-        $splitter = new CharacterTextSplitter();
+        $splitter = new CharacterTextSplitter;
         $chunks = $splitter->splitText($text);
 
         return count($chunks);
@@ -83,7 +83,7 @@ it('creates documents from texts')
             'adipiscing elit',
         ];
 
-        $splitter = new CharacterTextSplitter();
+        $splitter = new CharacterTextSplitter;
         $documents = $splitter->createDocuments($texts);
 
         return count($documents);
@@ -98,7 +98,7 @@ it('splits documents')
             new Document('adipiscing elit'),
         ];
 
-        $splitter = new CharacterTextSplitter();
+        $splitter = new CharacterTextSplitter;
         $splitDocuments = $splitter->splitDocuments($documents);
 
         return count($splitDocuments);

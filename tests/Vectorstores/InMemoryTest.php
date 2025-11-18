@@ -6,7 +6,7 @@ use Mindwave\Mindwave\Vectorstore\Data\VectorStoreEntry;
 use Mindwave\Mindwave\Vectorstore\Drivers\InMemory;
 
 it('can put things into the vectorstore', function () {
-    $vectorstore = new InMemory();
+    $vectorstore = new InMemory;
 
     $entry = new VectorStoreEntry(
         vector: new EmbeddingVector([1, 2, 3]),
@@ -22,7 +22,7 @@ it('can put things into the vectorstore', function () {
 
 it('can put multiple things into the vectorstore', function () {
 
-    $vectorstore = new InMemory();
+    $vectorstore = new InMemory;
 
     $entryA = new VectorStoreEntry(
         vector: new EmbeddingVector([1, 2, 3]),
@@ -41,7 +41,7 @@ it('can put multiple things into the vectorstore', function () {
 
 it('can search by similarity', function () {
 
-    $vectorstore = new InMemory();
+    $vectorstore = new InMemory;
 
     $vectorstore->insertMany([
         new VectorStoreEntry(
@@ -94,7 +94,7 @@ it('can search by similarity', function () {
 
 it('can wipe entire vectorstore', function () {
 
-    $vectorstore = new InMemory();
+    $vectorstore = new InMemory;
 
     $vectorstore->insertMany([
         new VectorStoreEntry(

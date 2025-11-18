@@ -3,37 +3,31 @@
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Config;
 use Mindwave\Mindwave\Facades\Mindwave;
-use Mindwave\Mindwave\LLM\Drivers\OpenAI\Model;
+use Mindwave\Mindwave\LLM\Drivers\OpenAI\ModelNames;
 use Mindwave\Mindwave\Prompts\OutputParsers\StructuredOutputParser;
 use Mindwave\Mindwave\Prompts\PromptTemplate;
 
 it('can use a structured output parser', function () {
-
-    class Person
-    {
+    $personClass = new class {
         public string $name;
-
         public ?int $age;
-
         public ?bool $hasBusiness;
-
         public ?array $interests;
-
         public ?Collection $tags;
-    }
+    };
 
     $result = Mindwave::llm()->generate(PromptTemplate::create(
         'Generate random details about a fictional person',
-        new StructuredOutputParser(Person::class)
+        new StructuredOutputParser($personClass::class)
     ));
 
-    expect($result)->toBeInstanceOf(Person::class);
+    expect($result)->toBeInstanceOf($personClass::class);
 
     dump($result);
 });
 
 it('We can parse a small recipe into an object', function () {
-    Config::set('mindwave-llm.llms.openai.model', Model::turbo16k);
+    Config::set('mindwave-llm.llms.openai.model', ModelNames::GPT4_1106_PREVIEW);
     Config::set('mindwave-llm.llms.openai.max_tokens', 2600);
     Config::set('mindwave-llm.llms.openai.temperature', 0.2);
 
