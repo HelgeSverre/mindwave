@@ -1,0 +1,28 @@
+name: PHPStan
+
+on:
+  push:
+    branches: [main, next-version]
+  pull_request:
+    branches: [main, next-version]
+
+jobs:
+  phpstan:
+    name: phpstan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: none
+
+      - name: Install composer dependencies
+        run: composer update --prefer-stable --prefer-dist --no-interaction
+
+      - name: Run PHPStan
+        run: vendor/bin/phpstan --error-format=github
