@@ -61,9 +61,9 @@ final class MultiExporter implements SpanExporterInterface
     /**
      * Constructor
      *
-     * @param array<int, SpanExporterInterface> $exporters Array of exporters to use
-     * @param LoggerInterface|null $logger Optional logger for error reporting
-     * @param bool $failOnAllErrors If true, export() returns failure only if ALL exporters fail
+     * @param  array<int, SpanExporterInterface>  $exporters  Array of exporters to use
+     * @param  LoggerInterface|null  $logger  Optional logger for error reporting
+     * @param  bool  $failOnAllErrors  If true, export() returns failure only if ALL exporters fail
      */
     public function __construct(
         array $exporters,
@@ -91,7 +91,7 @@ final class MultiExporter implements SpanExporterInterface
         }
 
         $this->exporters = array_values($exporters); // Re-index
-        $this->logger = $logger ?? new NullLogger();
+        $this->logger = $logger ?? new NullLogger;
         $this->failOnAllErrors = $failOnAllErrors;
 
         $this->logger->info('MultiExporter initialized', [
@@ -111,8 +111,8 @@ final class MultiExporter implements SpanExporterInterface
      * - Overall export is considered successful if ANY exporter succeeds
      * - If ALL exporters fail, the result depends on $failOnAllErrors setting
      *
-     * @param iterable $batch Batch of spans to export
-     * @param CancellationInterface|null $cancellation Optional cancellation interface
+     * @param  iterable  $batch  Batch of spans to export
+     * @param  CancellationInterface|null  $cancellation  Optional cancellation interface
      * @return FutureInterface<bool> Future that resolves to true on success
      */
     public function export(iterable $batch, ?CancellationInterface $cancellation = null): FutureInterface
@@ -123,6 +123,7 @@ final class MultiExporter implements SpanExporterInterface
 
         if ($spanCount === 0) {
             $this->logger->debug('MultiExporter received empty batch, skipping');
+
             return new CompletedFuture(true);
         }
 
@@ -203,7 +204,7 @@ final class MultiExporter implements SpanExporterInterface
      * Calls shutdown() on each exporter to allow graceful cleanup.
      * Continues shutting down all exporters even if some fail.
      *
-     * @param CancellationInterface|null $cancellation Optional cancellation interface
+     * @param  CancellationInterface|null  $cancellation  Optional cancellation interface
      * @return bool True if ALL exporters shut down successfully
      */
     public function shutdown(?CancellationInterface $cancellation = null): bool
@@ -257,7 +258,7 @@ final class MultiExporter implements SpanExporterInterface
      * Forces all exporters to immediately export any buffered spans.
      * This is called before shutdown or when immediate export is needed.
      *
-     * @param CancellationInterface|null $cancellation Optional cancellation interface
+     * @param  CancellationInterface|null  $cancellation  Optional cancellation interface
      * @return bool True if ALL exporters flushed successfully
      */
     public function forceFlush(?CancellationInterface $cancellation = null): bool
@@ -312,8 +313,6 @@ final class MultiExporter implements SpanExporterInterface
 
     /**
      * Get the number of configured exporters
-     *
-     * @return int
      */
     public function getExporterCount(): int
     {
@@ -322,8 +321,6 @@ final class MultiExporter implements SpanExporterInterface
 
     /**
      * Reset statistics counters
-     *
-     * @return void
      */
     public function resetStats(): void
     {
@@ -338,8 +335,8 @@ final class MultiExporter implements SpanExporterInterface
     /**
      * Determine overall export success based on individual results
      *
-     * @param int $successCount Number of successful exports
-     * @param int $failureCount Number of failed exports
+     * @param  int  $successCount  Number of successful exports
+     * @param  int  $failureCount  Number of failed exports
      * @return bool Overall success status
      */
     private function determineOverallSuccess(
@@ -363,10 +360,6 @@ final class MultiExporter implements SpanExporterInterface
 
     /**
      * Get a human-readable name for an exporter
-     *
-     * @param SpanExporterInterface $exporter
-     * @param int $index
-     * @return string
      */
     private function getExporterName(SpanExporterInterface $exporter, int $index): string
     {

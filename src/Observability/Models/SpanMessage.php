@@ -70,8 +70,6 @@ class SpanMessage extends Model
 
     /**
      * Check if this is an input message.
-     *
-     * @return bool
      */
     public function isInput(): bool
     {
@@ -80,8 +78,6 @@ class SpanMessage extends Model
 
     /**
      * Check if this is an output message.
-     *
-     * @return bool
      */
     public function isOutput(): bool
     {
@@ -90,8 +86,6 @@ class SpanMessage extends Model
 
     /**
      * Check if this is a system message.
-     *
-     * @return bool
      */
     public function isSystem(): bool
     {
@@ -100,8 +94,6 @@ class SpanMessage extends Model
 
     /**
      * Get the total number of messages.
-     *
-     * @return int
      */
     public function getMessageCount(): int
     {
@@ -110,12 +102,10 @@ class SpanMessage extends Model
 
     /**
      * Get the total character count of all messages.
-     *
-     * @return int
      */
     public function getTotalCharacters(): int
     {
-        if (!is_array($this->messages)) {
+        if (! is_array($this->messages)) {
             return 0;
         }
 
@@ -131,8 +121,7 @@ class SpanMessage extends Model
     /**
      * Scope a query to only include messages of a specific type.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param string $type
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeOfType($query, string $type)

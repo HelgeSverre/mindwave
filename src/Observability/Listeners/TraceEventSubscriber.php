@@ -23,7 +23,6 @@ class TraceEventSubscriber
     /**
      * Register the listeners for the subscriber.
      *
-     * @param Dispatcher $events
      * @return array<string, string|array>
      */
     public function subscribe(Dispatcher $events): array
@@ -38,9 +37,6 @@ class TraceEventSubscriber
 
     /**
      * Handle the LlmRequestStarted event.
-     *
-     * @param LlmRequestStarted $event
-     * @return void
      */
     public function handleRequestStarted(LlmRequestStarted $event): void
     {
@@ -58,9 +54,6 @@ class TraceEventSubscriber
 
     /**
      * Handle the LlmTokenStreamed event.
-     *
-     * @param LlmTokenStreamed $event
-     * @return void
      */
     public function handleTokenStreamed(LlmTokenStreamed $event): void
     {
@@ -77,9 +70,6 @@ class TraceEventSubscriber
 
     /**
      * Handle the LlmResponseCompleted event.
-     *
-     * @param LlmResponseCompleted $event
-     * @return void
      */
     public function handleResponseCompleted(LlmResponseCompleted $event): void
     {
@@ -132,7 +122,7 @@ class TraceEventSubscriber
                     'provider' => $event->provider,
                     'model' => $event->model,
                     'cost_estimate' => $event->getFormattedCost(),
-                    'threshold' => '$' . number_format($costThreshold, 4),
+                    'threshold' => '$'.number_format($costThreshold, 4),
                     'total_tokens' => $event->getTotalTokens(),
                 ]);
             }
@@ -141,9 +131,6 @@ class TraceEventSubscriber
 
     /**
      * Handle the LlmErrorOccurred event.
-     *
-     * @param LlmErrorOccurred $event
-     * @return void
      */
     public function handleErrorOccurred(LlmErrorOccurred $event): void
     {

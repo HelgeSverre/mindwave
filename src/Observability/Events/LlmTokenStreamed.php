@@ -18,12 +18,12 @@ class LlmTokenStreamed
     /**
      * Create a new event instance.
      *
-     * @param string $delta The token delta (new content chunk)
-     * @param int $cumulativeTokens The cumulative number of tokens streamed so far
-     * @param string $spanId The OpenTelemetry span ID
-     * @param string $traceId The OpenTelemetry trace ID
-     * @param int $timestamp The timestamp when this token was received in nanoseconds
-     * @param array $metadata Additional metadata (role, finish_reason, etc.)
+     * @param  string  $delta  The token delta (new content chunk)
+     * @param  int  $cumulativeTokens  The cumulative number of tokens streamed so far
+     * @param  string  $spanId  The OpenTelemetry span ID
+     * @param  string  $traceId  The OpenTelemetry trace ID
+     * @param  int  $timestamp  The timestamp when this token was received in nanoseconds
+     * @param  array  $metadata  Additional metadata (role, finish_reason, etc.)
      */
     public function __construct(
         public readonly string $delta,
@@ -32,13 +32,10 @@ class LlmTokenStreamed
         public readonly string $traceId,
         public readonly int $timestamp,
         public readonly array $metadata = [],
-    ) {
-    }
+    ) {}
 
     /**
      * Get the length of the delta in characters.
-     *
-     * @return int
      */
     public function getDeltaLength(): int
     {
@@ -47,10 +44,6 @@ class LlmTokenStreamed
 
     /**
      * Get metadata value.
-     *
-     * @param string $key
-     * @param mixed $default
-     * @return mixed
      */
     public function getMetadata(string $key, mixed $default = null): mixed
     {
@@ -59,8 +52,6 @@ class LlmTokenStreamed
 
     /**
      * Check if this is the final token (has finish_reason).
-     *
-     * @return bool
      */
     public function isFinal(): bool
     {
@@ -69,8 +60,6 @@ class LlmTokenStreamed
 
     /**
      * Get the finish reason if this is the final token.
-     *
-     * @return string|null
      */
     public function getFinishReason(): ?string
     {
@@ -79,8 +68,6 @@ class LlmTokenStreamed
 
     /**
      * Get the timestamp in seconds.
-     *
-     * @return float
      */
     public function getTimestampInSeconds(): float
     {
@@ -89,8 +76,6 @@ class LlmTokenStreamed
 
     /**
      * Get the timestamp in milliseconds.
-     *
-     * @return float
      */
     public function getTimestampInMilliseconds(): float
     {
@@ -99,8 +84,6 @@ class LlmTokenStreamed
 
     /**
      * Get event data as array.
-     *
-     * @return array
      */
     public function toArray(): array
     {

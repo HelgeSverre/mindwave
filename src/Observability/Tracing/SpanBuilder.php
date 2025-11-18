@@ -31,7 +31,7 @@ class SpanBuilder
     private array $attributes = [];
 
     /**
-     * @param SpanBuilderInterface $builder The underlying OpenTelemetry span builder
+     * @param  SpanBuilderInterface  $builder  The underlying OpenTelemetry span builder
      */
     public function __construct(SpanBuilderInterface $builder)
     {
@@ -41,8 +41,7 @@ class SpanBuilder
     /**
      * Set the span name
      *
-     * @param string $name Span name (e.g., "chat gpt-4")
-     * @return self
+     * @param  string  $name  Span name (e.g., "chat gpt-4")
      */
     public function setName(string $name): self
     {
@@ -62,8 +61,7 @@ class SpanBuilder
      * - PRODUCER: Message producer
      * - CONSUMER: Message consumer
      *
-     * @param int $kind SpanKind constant
-     * @return self
+     * @param  int  $kind  SpanKind constant
      */
     public function setSpanKind(int $kind): self
     {
@@ -74,8 +72,6 @@ class SpanBuilder
 
     /**
      * Set span kind to CLIENT
-     *
-     * @return self
      */
     public function asClient(): self
     {
@@ -84,8 +80,6 @@ class SpanBuilder
 
     /**
      * Set span kind to SERVER
-     *
-     * @return self
      */
     public function asServer(): self
     {
@@ -94,8 +88,6 @@ class SpanBuilder
 
     /**
      * Set span kind to INTERNAL
-     *
-     * @return self
      */
     public function asInternal(): self
     {
@@ -104,8 +96,6 @@ class SpanBuilder
 
     /**
      * Set span kind to PRODUCER
-     *
-     * @return self
      */
     public function asProducer(): self
     {
@@ -114,8 +104,6 @@ class SpanBuilder
 
     /**
      * Set span kind to CONSUMER
-     *
-     * @return self
      */
     public function asConsumer(): self
     {
@@ -127,8 +115,7 @@ class SpanBuilder
      *
      * If not set, the current active context is used.
      *
-     * @param ContextInterface $context Parent context
-     * @return self
+     * @param  ContextInterface  $context  Parent context
      */
     public function setParent(ContextInterface $context): self
     {
@@ -140,8 +127,7 @@ class SpanBuilder
     /**
      * Set as root span (no parent)
      *
-     * @param bool $value Whether this should be a root span
-     * @return self
+     * @param  bool  $value  Whether this should be a root span
      */
     public function setNoParent(bool $value = true): self
     {
@@ -158,9 +144,8 @@ class SpanBuilder
      * Links allow associating this span with other spans that are
      * causally related but not in a parent-child relationship.
      *
-     * @param SpanContextInterface $context Context of the span to link to
-     * @param array<string, mixed> $attributes Link attributes
-     * @return self
+     * @param  SpanContextInterface  $context  Context of the span to link to
+     * @param  array<string, mixed>  $attributes  Link attributes
      */
     public function addLink(SpanContextInterface $context, array $attributes = []): self
     {
@@ -172,9 +157,8 @@ class SpanBuilder
     /**
      * Set a single attribute
      *
-     * @param string $key Attribute key
-     * @param mixed $value Attribute value (null values are ignored)
-     * @return self
+     * @param  string  $key  Attribute key
+     * @param  mixed  $value  Attribute value (null values are ignored)
      */
     public function setAttribute(string $key, mixed $value): self
     {
@@ -189,8 +173,7 @@ class SpanBuilder
     /**
      * Set multiple attributes
      *
-     * @param array<string, mixed> $attributes Attributes to set
-     * @return self
+     * @param  array<string, mixed>  $attributes  Attributes to set
      */
     public function setAttributes(array $attributes): self
     {
@@ -206,8 +189,7 @@ class SpanBuilder
      *
      * If not set, the current time is used when start() is called.
      *
-     * @param int $timestampNanos Timestamp in nanoseconds since epoch
-     * @return self
+     * @param  int  $timestampNanos  Timestamp in nanoseconds since epoch
      */
     public function setStartTimestamp(int $timestampNanos): self
     {
@@ -221,10 +203,9 @@ class SpanBuilder
      *
      * Helper for setting common GenAI operation metadata.
      *
-     * @param string $operationName Operation name (e.g., "chat", "embeddings")
-     * @param string $providerName Provider name (e.g., "openai", "anthropic")
-     * @param string $model Model name
-     * @return self
+     * @param  string  $operationName  Operation name (e.g., "chat", "embeddings")
+     * @param  string  $providerName  Provider name (e.g., "openai", "anthropic")
+     * @param  string  $model  Model name
      */
     public function forGenAiOperation(
         string $operationName,
@@ -241,8 +222,7 @@ class SpanBuilder
     /**
      * Set GenAI request parameters
      *
-     * @param array<string, mixed> $params Request parameters
-     * @return self
+     * @param  array<string, mixed>  $params  Request parameters
      */
     public function withGenAiRequestParams(array $params): self
     {
@@ -282,9 +262,8 @@ class SpanBuilder
     /**
      * Set server attributes
      *
-     * @param string $address Server address (e.g., "api.openai.com")
-     * @param int $port Server port (e.g., 443)
-     * @return self
+     * @param  string  $address  Server address (e.g., "api.openai.com")
+     * @param  int  $port  Server port (e.g., 443)
      */
     public function withServerAttributes(string $address, int $port = 443): self
     {
@@ -299,9 +278,8 @@ class SpanBuilder
      *
      * Convenience method that sets operation name to "chat".
      *
-     * @param string $providerName Provider name
-     * @param string $model Model name
-     * @return self
+     * @param  string  $providerName  Provider name
+     * @param  string  $model  Model name
      */
     public function forChat(string $providerName, string $model): self
     {
@@ -313,9 +291,8 @@ class SpanBuilder
      *
      * Convenience method that sets operation name to "embeddings".
      *
-     * @param string $providerName Provider name
-     * @param string $model Model name
-     * @return self
+     * @param  string  $providerName  Provider name
+     * @param  string  $model  Model name
      */
     public function forEmbeddings(string $providerName, string $model): self
     {
@@ -327,8 +304,7 @@ class SpanBuilder
      *
      * Convenience method that sets operation name to "execute_tool".
      *
-     * @param string $toolName Tool name
-     * @return self
+     * @param  string  $toolName  Tool name
      */
     public function forToolExecution(string $toolName): self
     {
@@ -341,8 +317,6 @@ class SpanBuilder
      *
      * This creates and returns the actual span. After this point,
      * you can't modify the span builder anymore.
-     *
-     * @return Span
      */
     public function start(): Span
     {
@@ -372,8 +346,6 @@ class SpanBuilder
 
     /**
      * Get the underlying OpenTelemetry span builder
-     *
-     * @return SpanBuilderInterface
      */
     public function getBuilder(): SpanBuilderInterface
     {

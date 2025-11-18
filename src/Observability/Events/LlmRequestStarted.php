@@ -18,14 +18,14 @@ class LlmRequestStarted
     /**
      * Create a new event instance.
      *
-     * @param string $provider The LLM provider (e.g., 'openai', 'anthropic', 'ollama')
-     * @param string $model The model being used (e.g., 'gpt-4', 'claude-3-opus')
-     * @param string $operation The operation type (e.g., 'chat', 'text_completion', 'embeddings')
-     * @param array|null $messages The messages being sent (null if capture disabled)
-     * @param array $parameters Additional request parameters (temperature, max_tokens, etc.)
-     * @param string $spanId The OpenTelemetry span ID
-     * @param string $traceId The OpenTelemetry trace ID
-     * @param int $timestamp The request start timestamp in nanoseconds
+     * @param  string  $provider  The LLM provider (e.g., 'openai', 'anthropic', 'ollama')
+     * @param  string  $model  The model being used (e.g., 'gpt-4', 'claude-3-opus')
+     * @param  string  $operation  The operation type (e.g., 'chat', 'text_completion', 'embeddings')
+     * @param  array|null  $messages  The messages being sent (null if capture disabled)
+     * @param  array  $parameters  Additional request parameters (temperature, max_tokens, etc.)
+     * @param  string  $spanId  The OpenTelemetry span ID
+     * @param  string  $traceId  The OpenTelemetry trace ID
+     * @param  int  $timestamp  The request start timestamp in nanoseconds
      */
     public function __construct(
         public readonly string $provider,
@@ -36,13 +36,10 @@ class LlmRequestStarted
         public readonly string $spanId,
         public readonly string $traceId,
         public readonly int $timestamp,
-    ) {
-    }
+    ) {}
 
     /**
      * Get the request parameters.
-     *
-     * @return array
      */
     public function getParameters(): array
     {
@@ -51,10 +48,6 @@ class LlmRequestStarted
 
     /**
      * Get a specific parameter value.
-     *
-     * @param string $key
-     * @param mixed $default
-     * @return mixed
      */
     public function getParameter(string $key, mixed $default = null): mixed
     {
@@ -63,8 +56,6 @@ class LlmRequestStarted
 
     /**
      * Check if messages are captured.
-     *
-     * @return bool
      */
     public function hasMessages(): bool
     {
@@ -73,8 +64,6 @@ class LlmRequestStarted
 
     /**
      * Get the timestamp in seconds.
-     *
-     * @return float
      */
     public function getTimestampInSeconds(): float
     {
@@ -83,8 +72,6 @@ class LlmRequestStarted
 
     /**
      * Get the timestamp in milliseconds.
-     *
-     * @return float
      */
     public function getTimestampInMilliseconds(): float
     {
@@ -93,8 +80,6 @@ class LlmRequestStarted
 
     /**
      * Get event data as array.
-     *
-     * @return array
      */
     public function toArray(): array
     {

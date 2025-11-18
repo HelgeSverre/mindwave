@@ -355,9 +355,6 @@ final class GenAiAttributes
 
     /**
      * Check if an attribute is sensitive
-     *
-     * @param string $attributeName
-     * @return bool
      */
     public static function isSensitive(string $attributeName): bool
     {
@@ -366,9 +363,6 @@ final class GenAiAttributes
 
     /**
      * Check if an attribute is required
-     *
-     * @param string $attributeName
-     * @return bool
      */
     public static function isRequired(string $attributeName): bool
     {

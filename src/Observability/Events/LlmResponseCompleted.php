@@ -19,17 +19,17 @@ class LlmResponseCompleted
     /**
      * Create a new event instance.
      *
-     * @param string $provider The LLM provider (e.g., 'openai', 'anthropic', 'ollama')
-     * @param string $model The model that was used
-     * @param string $operation The operation type (e.g., 'chat', 'text_completion', 'embeddings')
-     * @param array $response The response data (id, choices, finish_reason, etc.)
-     * @param array $tokenUsage Token usage information (input, output, cache, etc.)
-     * @param int $duration The request duration in nanoseconds
-     * @param float|null $costEstimate Estimated cost in USD (null if not available)
-     * @param string $spanId The OpenTelemetry span ID
-     * @param string $traceId The OpenTelemetry trace ID
-     * @param int $timestamp The completion timestamp in nanoseconds
-     * @param array $metadata Additional metadata
+     * @param  string  $provider  The LLM provider (e.g., 'openai', 'anthropic', 'ollama')
+     * @param  string  $model  The model that was used
+     * @param  string  $operation  The operation type (e.g., 'chat', 'text_completion', 'embeddings')
+     * @param  array  $response  The response data (id, choices, finish_reason, etc.)
+     * @param  array  $tokenUsage  Token usage information (input, output, cache, etc.)
+     * @param  int  $duration  The request duration in nanoseconds
+     * @param  float|null  $costEstimate  Estimated cost in USD (null if not available)
+     * @param  string  $spanId  The OpenTelemetry span ID
+     * @param  string  $traceId  The OpenTelemetry trace ID
+     * @param  int  $timestamp  The completion timestamp in nanoseconds
+     * @param  array  $metadata  Additional metadata
      */
     public function __construct(
         public readonly string $provider,
@@ -43,13 +43,10 @@ class LlmResponseCompleted
         public readonly string $traceId,
         public readonly int $timestamp,
         public readonly array $metadata = [],
-    ) {
-    }
+    ) {}
 
     /**
      * Get the response ID.
-     *
-     * @return string|null
      */
     public function getResponseId(): ?string
     {
@@ -58,8 +55,6 @@ class LlmResponseCompleted
 
     /**
      * Get the finish reason.
-     *
-     * @return string|null
      */
     public function getFinishReason(): ?string
     {
@@ -68,8 +63,6 @@ class LlmResponseCompleted
 
     /**
      * Get all finish reasons (for multiple choices).
-     *
-     * @return array
      */
     public function getFinishReasons(): array
     {
@@ -78,8 +71,6 @@ class LlmResponseCompleted
 
     /**
      * Get input token count.
-     *
-     * @return int
      */
     public function getInputTokens(): int
     {
@@ -88,8 +79,6 @@ class LlmResponseCompleted
 
     /**
      * Get output token count.
-     *
-     * @return int
      */
     public function getOutputTokens(): int
     {
@@ -98,8 +87,6 @@ class LlmResponseCompleted
 
     /**
      * Get total token count.
-     *
-     * @return int
      */
     public function getTotalTokens(): int
     {
@@ -108,8 +95,6 @@ class LlmResponseCompleted
 
     /**
      * Get cache read token count.
-     *
-     * @return int
      */
     public function getCacheReadTokens(): int
     {
@@ -118,8 +103,6 @@ class LlmResponseCompleted
 
     /**
      * Get cache creation token count.
-     *
-     * @return int
      */
     public function getCacheCreationTokens(): int
     {
@@ -128,8 +111,6 @@ class LlmResponseCompleted
 
     /**
      * Check if caching was used.
-     *
-     * @return bool
      */
     public function usedCache(): bool
     {
@@ -138,8 +119,6 @@ class LlmResponseCompleted
 
     /**
      * Get the duration in seconds.
-     *
-     * @return float
      */
     public function getDurationInSeconds(): float
     {
@@ -148,8 +127,6 @@ class LlmResponseCompleted
 
     /**
      * Get the duration in milliseconds.
-     *
-     * @return float
      */
     public function getDurationInMilliseconds(): float
     {
@@ -158,8 +135,6 @@ class LlmResponseCompleted
 
     /**
      * Get tokens per second.
-     *
-     * @return float
      */
     public function getTokensPerSecond(): float
     {
@@ -173,8 +148,6 @@ class LlmResponseCompleted
 
     /**
      * Get the timestamp in seconds.
-     *
-     * @return float
      */
     public function getTimestampInSeconds(): float
     {
@@ -183,8 +156,6 @@ class LlmResponseCompleted
 
     /**
      * Get the timestamp in milliseconds.
-     *
-     * @return float
      */
     public function getTimestampInMilliseconds(): float
     {
@@ -193,10 +164,6 @@ class LlmResponseCompleted
 
     /**
      * Get metadata value.
-     *
-     * @param string $key
-     * @param mixed $default
-     * @return mixed
      */
     public function getMetadata(string $key, mixed $default = null): mixed
     {
@@ -205,8 +172,6 @@ class LlmResponseCompleted
 
     /**
      * Check if cost estimate is available.
-     *
-     * @return bool
      */
     public function hasCostEstimate(): bool
     {
@@ -216,8 +181,7 @@ class LlmResponseCompleted
     /**
      * Get formatted cost estimate.
      *
-     * @param int $decimals Number of decimal places
-     * @return string|null
+     * @param  int  $decimals  Number of decimal places
      */
     public function getFormattedCost(int $decimals = 4): ?string
     {
@@ -225,13 +189,11 @@ class LlmResponseCompleted
             return null;
         }
 
-        return '$' . number_format($this->costEstimate, $decimals);
+        return '$'.number_format($this->costEstimate, $decimals);
     }
 
     /**
      * Get event data as array.
-     *
-     * @return array
      */
     public function toArray(): array
     {

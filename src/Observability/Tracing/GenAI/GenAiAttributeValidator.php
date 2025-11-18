@@ -17,9 +17,9 @@ final class GenAiAttributeValidator
     /**
      * Validate a single attribute
      *
-     * @param string $name The attribute name
-     * @param mixed $value The attribute value
-     * @return bool
+     * @param  string  $name  The attribute name
+     * @param  mixed  $value  The attribute value
+     *
      * @throws InvalidArgumentException If validation fails
      */
     public static function validate(string $name, mixed $value): bool
@@ -76,8 +76,8 @@ final class GenAiAttributeValidator
     /**
      * Validate multiple attributes
      *
-     * @param array<string, mixed> $attributes
-     * @return bool
+     * @param  array<string, mixed>  $attributes
+     *
      * @throws InvalidArgumentException If any validation fails
      */
     public static function validateBatch(array $attributes): bool
@@ -92,14 +92,14 @@ final class GenAiAttributeValidator
     /**
      * Validate required attributes are present
      *
-     * @param array<string, mixed> $attributes
-     * @return bool
+     * @param  array<string, mixed>  $attributes
+     *
      * @throws InvalidArgumentException If required attributes are missing
      */
     public static function validateRequired(array $attributes): bool
     {
         foreach (GenAiAttributes::getRequiredAttributes() as $required) {
-            if (!isset($attributes[$required])) {
+            if (! isset($attributes[$required])) {
                 throw new InvalidArgumentException(
                     "Required attribute '{$required}' is missing"
                 );
@@ -117,26 +117,23 @@ final class GenAiAttributeValidator
 
     /**
      * Validate operation name
-     *
-     * @param mixed $value
-     * @return bool
      */
     private static function validateOperation(mixed $value): bool
     {
-        if (!is_string($value)) {
+        if (! is_string($value)) {
             throw new InvalidArgumentException(
-                'Operation name must be a string, got ' . gettype($value)
+                'Operation name must be a string, got '.gettype($value)
             );
         }
 
         $validOperations = array_map(
-            fn(GenAiOperations $op) => $op->value,
+            fn (GenAiOperations $op) => $op->value,
             GenAiOperations::cases()
         );
 
-        if (!in_array($value, $validOperations, true)) {
+        if (! in_array($value, $validOperations, true)) {
             throw new InvalidArgumentException(
-                "Invalid operation name '{$value}'. Must be one of: " . implode(', ', $validOperations)
+                "Invalid operation name '{$value}'. Must be one of: ".implode(', ', $validOperations)
             );
         }
 
@@ -145,26 +142,23 @@ final class GenAiAttributeValidator
 
     /**
      * Validate provider name
-     *
-     * @param mixed $value
-     * @return bool
      */
     private static function validateProvider(mixed $value): bool
     {
-        if (!is_string($value)) {
+        if (! is_string($value)) {
             throw new InvalidArgumentException(
-                'Provider name must be a string, got ' . gettype($value)
+                'Provider name must be a string, got '.gettype($value)
             );
         }
 
         $validProviders = array_map(
-            fn(GenAiProviders $provider) => $provider->value,
+            fn (GenAiProviders $provider) => $provider->value,
             GenAiProviders::cases()
         );
 
-        if (!in_array($value, $validProviders, true)) {
+        if (! in_array($value, $validProviders, true)) {
             throw new InvalidArgumentException(
-                "Invalid provider name '{$value}'. Must be one of: " . implode(', ', $validProviders)
+                "Invalid provider name '{$value}'. Must be one of: ".implode(', ', $validProviders)
             );
         }
 
@@ -173,16 +167,12 @@ final class GenAiAttributeValidator
 
     /**
      * Validate string value
-     *
-     * @param string $name
-     * @param mixed $value
-     * @return bool
      */
     private static function validateString(string $name, mixed $value): bool
     {
-        if (!is_string($value)) {
+        if (! is_string($value)) {
             throw new InvalidArgumentException(
-                "Attribute '{$name}' must be a string, got " . gettype($value)
+                "Attribute '{$name}' must be a string, got ".gettype($value)
             );
         }
 
@@ -197,18 +187,12 @@ final class GenAiAttributeValidator
 
     /**
      * Validate integer value
-     *
-     * @param string $name
-     * @param mixed $value
-     * @param int|null $min
-     * @param int|null $max
-     * @return bool
      */
     private static function validateInteger(string $name, mixed $value, ?int $min = null, ?int $max = null): bool
     {
-        if (!is_int($value)) {
+        if (! is_int($value)) {
             throw new InvalidArgumentException(
-                "Attribute '{$name}' must be an integer, got " . gettype($value)
+                "Attribute '{$name}' must be an integer, got ".gettype($value)
             );
         }
 
@@ -229,18 +213,12 @@ final class GenAiAttributeValidator
 
     /**
      * Validate float value
-     *
-     * @param string $name
-     * @param mixed $value
-     * @param float|null $min
-     * @param float|null $max
-     * @return bool
      */
     private static function validateFloat(string $name, mixed $value, ?float $min = null, ?float $max = null): bool
     {
-        if (!is_float($value) && !is_int($value)) {
+        if (! is_float($value) && ! is_int($value)) {
             throw new InvalidArgumentException(
-                "Attribute '{$name}' must be a number, got " . gettype($value)
+                "Attribute '{$name}' must be a number, got ".gettype($value)
             );
         }
 
@@ -263,16 +241,12 @@ final class GenAiAttributeValidator
 
     /**
      * Validate array value
-     *
-     * @param string $name
-     * @param mixed $value
-     * @return bool
      */
     private static function validateArray(string $name, mixed $value): bool
     {
-        if (!is_array($value)) {
+        if (! is_array($value)) {
             throw new InvalidArgumentException(
-                "Attribute '{$name}' must be an array, got " . gettype($value)
+                "Attribute '{$name}' must be an array, got ".gettype($value)
             );
         }
 
@@ -281,16 +255,12 @@ final class GenAiAttributeValidator
 
     /**
      * Validate string or array value
-     *
-     * @param string $name
-     * @param mixed $value
-     * @return bool
      */
     private static function validateStringOrArray(string $name, mixed $value): bool
     {
-        if (!is_string($value) && !is_array($value)) {
+        if (! is_string($value) && ! is_array($value)) {
             throw new InvalidArgumentException(
-                "Attribute '{$name}' must be a string or array, got " . gettype($value)
+                "Attribute '{$name}' must be a string or array, got ".gettype($value)
             );
         }
 
@@ -299,42 +269,38 @@ final class GenAiAttributeValidator
 
     /**
      * Validate messages array
-     *
-     * @param string $name
-     * @param mixed $value
-     * @return bool
      */
     private static function validateMessages(string $name, mixed $value): bool
     {
-        if (!is_array($value)) {
+        if (! is_array($value)) {
             throw new InvalidArgumentException(
-                "Attribute '{$name}' must be an array, got " . gettype($value)
+                "Attribute '{$name}' must be an array, got ".gettype($value)
             );
         }
 
         foreach ($value as $index => $message) {
-            if (!is_array($message)) {
+            if (! is_array($message)) {
                 throw new InvalidArgumentException(
                     "Attribute '{$name}[{$index}]' must be an array (message object)"
                 );
             }
 
-            if (!isset($message['role'])) {
+            if (! isset($message['role'])) {
                 throw new InvalidArgumentException(
                     "Attribute '{$name}[{$index}]' must have a 'role' field"
                 );
             }
 
-            if (!isset($message['content'])) {
+            if (! isset($message['content'])) {
                 throw new InvalidArgumentException(
                     "Attribute '{$name}[{$index}]' must have a 'content' field"
                 );
             }
 
             $validRoles = ['system', 'user', 'assistant', 'tool'];
-            if (!in_array($message['role'], $validRoles, true)) {
+            if (! in_array($message['role'], $validRoles, true)) {
                 throw new InvalidArgumentException(
-                    "Attribute '{$name}[{$index}]' has invalid role '{$message['role']}'. Must be one of: " . implode(', ', $validRoles)
+                    "Attribute '{$name}[{$index}]' has invalid role '{$message['role']}'. Must be one of: ".implode(', ', $validRoles)
                 );
             }
         }
@@ -345,13 +311,12 @@ final class GenAiAttributeValidator
     /**
      * Sanitize attributes by removing sensitive data if needed
      *
-     * @param array<string, mixed> $attributes
-     * @param bool $redactSensitive
+     * @param  array<string, mixed>  $attributes
      * @return array<string, mixed>
      */
     public static function sanitize(array $attributes, bool $redactSensitive = true): array
     {
-        if (!$redactSensitive) {
+        if (! $redactSensitive) {
             return $attributes;
         }
 
@@ -369,14 +334,14 @@ final class GenAiAttributeValidator
     /**
      * Extract only GenAI attributes from a mixed attribute set
      *
-     * @param array<string, mixed> $attributes
+     * @param  array<string, mixed>  $attributes
      * @return array<string, mixed>
      */
     public static function filterGenAiAttributes(array $attributes): array
     {
         return array_filter(
             $attributes,
-            fn(string $key) => str_starts_with($key, 'gen_ai.'),
+            fn (string $key) => str_starts_with($key, 'gen_ai.'),
             ARRAY_FILTER_USE_KEY
         );
     }

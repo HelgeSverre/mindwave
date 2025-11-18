@@ -98,8 +98,8 @@ class Trace extends Model
     /**
      * Scope a query to only include slow traces.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param int $thresholdMs Duration threshold in milliseconds
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  int  $thresholdMs  Duration threshold in milliseconds
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeSlow($query, int $thresholdMs = 5000)
@@ -110,8 +110,8 @@ class Trace extends Model
     /**
      * Scope a query to only include expensive traces.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param float $minCost Minimum cost in USD
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  float  $minCost  Minimum cost in USD
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeExpensive($query, float $minCost = 0.01)
@@ -121,8 +121,6 @@ class Trace extends Model
 
     /**
      * Get the total number of tokens (input + output).
-     *
-     * @return int
      */
     public function getTotalTokens(): int
     {
@@ -131,8 +129,6 @@ class Trace extends Model
 
     /**
      * Get the duration in seconds.
-     *
-     * @return float|null
      */
     public function getDurationInSeconds(): ?float
     {
@@ -145,8 +141,6 @@ class Trace extends Model
 
     /**
      * Get the duration in milliseconds.
-     *
-     * @return float|null
      */
     public function getDurationInMilliseconds(): ?float
     {
@@ -159,8 +153,6 @@ class Trace extends Model
 
     /**
      * Check if the trace has an error status.
-     *
-     * @return bool
      */
     public function hasError(): bool
     {
@@ -169,8 +161,6 @@ class Trace extends Model
 
     /**
      * Check if the trace is completed.
-     *
-     * @return bool
      */
     public function isCompleted(): bool
     {

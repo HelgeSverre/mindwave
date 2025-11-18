@@ -118,8 +118,6 @@ enum GenAiOperations: string
 
     /**
      * Check if this operation is a chat operation
-     *
-     * @return bool
      */
     public function isChat(): bool
     {
@@ -128,8 +126,6 @@ enum GenAiOperations: string
 
     /**
      * Check if this operation is a vector operation
-     *
-     * @return bool
      */
     public function isVector(): bool
     {
@@ -138,8 +134,6 @@ enum GenAiOperations: string
 
     /**
      * Check if this operation is an audio operation
-     *
-     * @return bool
      */
     public function isAudio(): bool
     {
@@ -148,8 +142,6 @@ enum GenAiOperations: string
 
     /**
      * Check if this operation supports token usage tracking
-     *
-     * @return bool
      */
     public function supportsTokenUsage(): bool
     {
@@ -163,8 +155,6 @@ enum GenAiOperations: string
 
     /**
      * Get a human-readable description of the operation
-     *
-     * @return string
      */
     public function getDescription(): string
     {

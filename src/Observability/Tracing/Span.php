@@ -8,7 +8,6 @@ use Mindwave\Mindwave\Observability\Tracing\GenAI\GenAiAttributes;
 use OpenTelemetry\API\Trace\SpanInterface;
 use OpenTelemetry\API\Trace\StatusCode;
 use OpenTelemetry\Context\Context;
-use OpenTelemetry\Context\ContextInterface;
 use OpenTelemetry\Context\ScopeInterface;
 use Throwable;
 
@@ -34,7 +33,7 @@ class Span
     private ?ScopeInterface $scope = null;
 
     /**
-     * @param SpanInterface $span The underlying OpenTelemetry span
+     * @param  SpanInterface  $span  The underlying OpenTelemetry span
      */
     public function __construct(SpanInterface $span)
     {
@@ -43,8 +42,6 @@ class Span
 
     /**
      * Get the underlying OpenTelemetry span
-     *
-     * @return SpanInterface
      */
     public function getOtelSpan(): SpanInterface
     {
@@ -56,9 +53,8 @@ class Span
      *
      * Handles null values gracefully by skipping them.
      *
-     * @param string $key Attribute key
-     * @param mixed $value Attribute value (null values are ignored)
-     * @return self
+     * @param  string  $key  Attribute key
+     * @param  mixed  $value  Attribute value (null values are ignored)
      */
     public function setAttribute(string $key, mixed $value): self
     {
@@ -72,8 +68,7 @@ class Span
     /**
      * Set multiple attributes on the span
      *
-     * @param array<string, mixed> $attributes Attributes to set
-     * @return self
+     * @param  array<string, mixed>  $attributes  Attributes to set
      */
     public function setAttributes(array $attributes): self
     {
@@ -87,9 +82,8 @@ class Span
     /**
      * Set the span status
      *
-     * @param string $code Status code (StatusCode::STATUS_OK, StatusCode::STATUS_ERROR, StatusCode::STATUS_UNSET)
-     * @param string|null $description Optional status description
-     * @return self
+     * @param  string  $code  Status code (StatusCode::STATUS_OK, StatusCode::STATUS_ERROR, StatusCode::STATUS_UNSET)
+     * @param  string|null  $description  Optional status description
      */
     public function setStatus(string $code, ?string $description = null): self
     {
@@ -100,8 +94,6 @@ class Span
 
     /**
      * Mark the span as OK
-     *
-     * @return self
      */
     public function markAsOk(): self
     {
@@ -111,8 +103,7 @@ class Span
     /**
      * Mark the span as errored
      *
-     * @param string|null $description Error description
-     * @return self
+     * @param  string|null  $description  Error description
      */
     public function markAsError(?string $description = null): self
     {
@@ -125,9 +116,8 @@ class Span
      * This automatically sets the span status to ERROR and records
      * the exception details as span events.
      *
-     * @param Throwable $exception Exception to record
-     * @param array<string, mixed> $attributes Additional attributes
-     * @return self
+     * @param  Throwable  $exception  Exception to record
+     * @param  array<string, mixed>  $attributes  Additional attributes
      */
     public function recordException(Throwable $exception, array $attributes = []): self
     {
@@ -142,10 +132,9 @@ class Span
      *
      * Events are timestamped occurrences during a span's lifetime.
      *
-     * @param string $name Event name
-     * @param array<string, mixed> $attributes Event attributes
-     * @param int|null $timestamp Event timestamp (nanoseconds since epoch)
-     * @return self
+     * @param  string  $name  Event name
+     * @param  array<string, mixed>  $attributes  Event attributes
+     * @param  int|null  $timestamp  Event timestamp (nanoseconds since epoch)
      */
     public function addEvent(string $name, array $attributes = [], ?int $timestamp = null): self
     {
@@ -159,8 +148,7 @@ class Span
      *
      * Useful when the span name depends on runtime information.
      *
-     * @param string $name New span name
-     * @return self
+     * @param  string  $name  New span name
      */
     public function updateName(string $name): self
     {
@@ -175,8 +163,6 @@ class Span
      * Makes this span the "active" span, so child spans will
      * automatically use it as their parent. Returns a scope
      * that must be detached when done.
-     *
-     * @return ScopeInterface
      */
     public function activate(): ScopeInterface
     {
@@ -190,8 +176,6 @@ class Span
      *
      * Call this after activate() when you're done with the span
      * to restore the previous context.
-     *
-     * @return self
      */
     public function detach(): self
     {
@@ -209,8 +193,7 @@ class Span
      * This marks the span as complete and queues it for export.
      * After calling end(), no more modifications to the span are allowed.
      *
-     * @param int|null $endEpochNanos Optional end timestamp (nanoseconds since epoch)
-     * @return void
+     * @param  int|null  $endEpochNanos  Optional end timestamp (nanoseconds since epoch)
      */
     public function end(?int $endEpochNanos = null): void
     {
@@ -221,8 +204,6 @@ class Span
      * Check if the span is recording
      *
      * A span may not be recording if it was sampled out.
-     *
-     * @return bool
      */
     public function isRecording(): bool
     {
@@ -231,8 +212,6 @@ class Span
 
     /**
      * Get the span context
-     *
-     * @return \OpenTelemetry\API\Trace\SpanContextInterface
      */
     public function getContext(): \OpenTelemetry\API\Trace\SpanContextInterface
     {
@@ -246,8 +225,10 @@ class Span
      * and detaches the scope. Handles exceptions properly.
      *
      * @template T
-     * @param callable(): T $callback
+     *
+     * @param  callable(): T  $callback
      * @return T
+     *
      * @throws Throwable
      */
     public function wrap(callable $callback): mixed
@@ -269,10 +250,9 @@ class Span
      *
      * Helper for setting common GenAI operation metadata.
      *
-     * @param string $operationName Operation name (e.g., "chat", "embeddings")
-     * @param string $providerName Provider name (e.g., "openai", "anthropic")
-     * @param string $model Model name
-     * @return self
+     * @param  string  $operationName  Operation name (e.g., "chat", "embeddings")
+     * @param  string  $providerName  Provider name (e.g., "openai", "anthropic")
+     * @param  string  $model  Model name
      */
     public function setGenAiOperation(
         string $operationName,
@@ -291,8 +271,7 @@ class Span
      *
      * Helper for setting common request parameters.
      *
-     * @param array<string, mixed> $params Request parameters
-     * @return self
+     * @param  array<string, mixed>  $params  Request parameters
      */
     public function setGenAiRequestParams(array $params): self
     {
@@ -334,8 +313,7 @@ class Span
      *
      * Helper for setting response metadata.
      *
-     * @param array<string, mixed> $response Response data
-     * @return self
+     * @param  array<string, mixed>  $response  Response data
      */
     public function setGenAiResponse(array $response): self
     {
@@ -361,11 +339,10 @@ class Span
      *
      * Helper for setting token usage data.
      *
-     * @param int|null $inputTokens Number of input tokens
-     * @param int|null $outputTokens Number of output tokens
-     * @param int|null $cacheReadTokens Cache read tokens (optional)
-     * @param int|null $cacheCreationTokens Cache creation tokens (optional)
-     * @return self
+     * @param  int|null  $inputTokens  Number of input tokens
+     * @param  int|null  $outputTokens  Number of output tokens
+     * @param  int|null  $cacheReadTokens  Cache read tokens (optional)
+     * @param  int|null  $cacheCreationTokens  Cache creation tokens (optional)
      */
     public function setGenAiUsage(
         ?int $inputTokens = null,
@@ -401,8 +378,7 @@ class Span
     /**
      * Set GenAI input messages (opt-in sensitive data)
      *
-     * @param array<array<string, mixed>> $messages Input messages
-     * @return self
+     * @param  array<array<string, mixed>>  $messages  Input messages
      */
     public function setGenAiInputMessages(array $messages): self
     {
@@ -412,8 +388,7 @@ class Span
     /**
      * Set GenAI output messages (opt-in sensitive data)
      *
-     * @param array<array<string, mixed>> $messages Output messages
-     * @return self
+     * @param  array<array<string, mixed>>  $messages  Output messages
      */
     public function setGenAiOutputMessages(array $messages): self
     {
@@ -423,9 +398,8 @@ class Span
     /**
      * Set server attributes
      *
-     * @param string $address Server address (e.g., "api.openai.com")
-     * @param int $port Server port (e.g., 443)
-     * @return self
+     * @param  string  $address  Server address (e.g., "api.openai.com")
+     * @param  int  $port  Server port (e.g., 443)
      */
     public function setServerAttributes(string $address, int $port = 443): self
     {

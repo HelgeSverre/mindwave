@@ -48,12 +48,12 @@ class TracerManager
     private string $instrumentationScope;
 
     /**
-     * @param array<SpanExporterInterface> $exporters Span exporters (database, OTLP, etc.)
-     * @param string $serviceName Service name for resource attributes
-     * @param string $serviceVersion Service version for resource attributes
-     * @param string $instrumentationScope Instrumentation scope name
-     * @param SamplerInterface|null $sampler Custom sampler (defaults to AlwaysOnSampler)
-     * @param array<string, mixed> $batchConfig Batch processor configuration
+     * @param  array<SpanExporterInterface>  $exporters  Span exporters (database, OTLP, etc.)
+     * @param  string  $serviceName  Service name for resource attributes
+     * @param  string  $serviceVersion  Service version for resource attributes
+     * @param  string  $instrumentationScope  Instrumentation scope name
+     * @param  SamplerInterface|null  $sampler  Custom sampler (defaults to AlwaysOnSampler)
+     * @param  array<string, mixed>  $batchConfig  Batch processor configuration
      */
     public function __construct(
         array $exporters = [],
@@ -75,9 +75,7 @@ class TracerManager
     /**
      * Create the TracerProvider with configured exporters and processors
      *
-     * @param SamplerInterface|null $sampler
-     * @param array<string, mixed> $batchConfig
-     * @return TracerProviderInterface
+     * @param  array<string, mixed>  $batchConfig
      */
     private function createTracerProvider(
         ?SamplerInterface $sampler,
@@ -85,7 +83,7 @@ class TracerManager
     ): TracerProviderInterface {
         $resource = $this->createResourceInfo();
         $processors = $this->createSpanProcessors($batchConfig);
-        $sampler = $sampler ?? new AlwaysOnSampler();
+        $sampler = $sampler ?? new AlwaysOnSampler;
 
         return new TracerProvider(
             $processors,
@@ -96,8 +94,6 @@ class TracerManager
 
     /**
      * Create ResourceInfo with service metadata
-     *
-     * @return ResourceInfo
      */
     private function createResourceInfo(): ResourceInfo
     {
@@ -115,7 +111,7 @@ class TracerManager
     /**
      * Create span processors for all configured exporters
      *
-     * @param array<string, mixed> $batchConfig
+     * @param  array<string, mixed>  $batchConfig
      * @return array<SpanProcessorInterface>
      */
     private function createSpanProcessors(array $batchConfig): array
@@ -146,10 +142,9 @@ class TracerManager
      * This creates a new span in the current trace context. If called within
      * an active span, the new span will be a child of the active span.
      *
-     * @param string $name Span name (e.g., "chat gpt-4")
-     * @param array<string, mixed> $attributes Initial span attributes
-     * @param int $kind Span kind (default: SpanKind::KIND_CLIENT)
-     * @return Span
+     * @param  string  $name  Span name (e.g., "chat gpt-4")
+     * @param  array<string, mixed>  $attributes  Initial span attributes
+     * @param  int  $kind  Span kind (default: SpanKind::KIND_CLIENT)
      */
     public function startSpan(
         string $name,
@@ -180,8 +175,7 @@ class TracerManager
      * - Links to other spans
      * - Additional attributes
      *
-     * @param string $name Span name
-     * @return SpanBuilder
+     * @param  string  $name  Span name
      */
     public function spanBuilder(string $name): SpanBuilder
     {
@@ -190,8 +184,6 @@ class TracerManager
 
     /**
      * Get the underlying OpenTelemetry tracer
-     *
-     * @return TracerInterface
      */
     public function getTracer(): TracerInterface
     {
@@ -200,8 +192,6 @@ class TracerManager
 
     /**
      * Get the TracerProvider instance
-     *
-     * @return TracerProviderInterface
      */
     public function getTracerProvider(): TracerProviderInterface
     {
@@ -251,18 +241,17 @@ class TracerManager
      * - traceidratio: Sample based on trace ID ratio
      * - parentbased: Respect parent span sampling decision
      *
-     * @param string $type Sampler type
-     * @param float $ratio Sampling ratio (for traceidratio)
-     * @return SamplerInterface
+     * @param  string  $type  Sampler type
+     * @param  float  $ratio  Sampling ratio (for traceidratio)
      */
     public static function createSampler(string $type, float $ratio = 1.0): SamplerInterface
     {
         return match ($type) {
-            'always_on' => new AlwaysOnSampler(),
-            'always_off' => new \OpenTelemetry\SDK\Trace\Sampler\AlwaysOffSampler(),
+            'always_on' => new AlwaysOnSampler,
+            'always_off' => new \OpenTelemetry\SDK\Trace\Sampler\AlwaysOffSampler,
             'traceidratio' => new TraceIdRatioBasedSampler($ratio),
-            'parentbased' => new ParentBased(new AlwaysOnSampler()),
-            default => new AlwaysOnSampler(),
+            'parentbased' => new ParentBased(new AlwaysOnSampler),
+            default => new AlwaysOnSampler,
         };
     }
 
@@ -271,9 +260,6 @@ class TracerManager
      *
      * Note: This requires recreating the TracerProvider to take effect.
      * Best used during initialization, not at runtime.
-     *
-     * @param SpanExporterInterface $exporter
-     * @return void
      */
     public function addExporter(SpanExporterInterface $exporter): void
     {
@@ -292,8 +278,6 @@ class TracerManager
 
     /**
      * Get service name
-     *
-     * @return string
      */
     public function getServiceName(): string
     {
@@ -302,8 +286,6 @@ class TracerManager
 
     /**
      * Get service version
-     *
-     * @return string
      */
     public function getServiceVersion(): string
     {
@@ -312,8 +294,6 @@ class TracerManager
 
     /**
      * Get instrumentation scope
-     *
-     * @return string
      */
     public function getInstrumentationScope(): string
     {

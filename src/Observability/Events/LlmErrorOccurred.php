@@ -19,14 +19,14 @@ class LlmErrorOccurred
     /**
      * Create a new event instance.
      *
-     * @param Throwable $exception The exception that occurred
-     * @param string $provider The LLM provider (e.g., 'openai', 'anthropic', 'ollama')
-     * @param string $model The model being used
-     * @param string $operation The operation type (e.g., 'chat', 'text_completion', 'embeddings')
-     * @param string $spanId The OpenTelemetry span ID
-     * @param string $traceId The OpenTelemetry trace ID
-     * @param int $timestamp The error timestamp in nanoseconds
-     * @param array $context Additional context about the error
+     * @param  Throwable  $exception  The exception that occurred
+     * @param  string  $provider  The LLM provider (e.g., 'openai', 'anthropic', 'ollama')
+     * @param  string  $model  The model being used
+     * @param  string  $operation  The operation type (e.g., 'chat', 'text_completion', 'embeddings')
+     * @param  string  $spanId  The OpenTelemetry span ID
+     * @param  string  $traceId  The OpenTelemetry trace ID
+     * @param  int  $timestamp  The error timestamp in nanoseconds
+     * @param  array  $context  Additional context about the error
      */
     public function __construct(
         public readonly Throwable $exception,
@@ -37,13 +37,10 @@ class LlmErrorOccurred
         public readonly string $traceId,
         public readonly int $timestamp,
         public readonly array $context = [],
-    ) {
-    }
+    ) {}
 
     /**
      * Get the exception message.
-     *
-     * @return string
      */
     public function getMessage(): string
     {
@@ -52,8 +49,6 @@ class LlmErrorOccurred
 
     /**
      * Get the exception code.
-     *
-     * @return int|string
      */
     public function getCode(): int|string
     {
@@ -62,8 +57,6 @@ class LlmErrorOccurred
 
     /**
      * Get the exception class name.
-     *
-     * @return string
      */
     public function getExceptionClass(): string
     {
@@ -72,8 +65,6 @@ class LlmErrorOccurred
 
     /**
      * Get the exception file.
-     *
-     * @return string
      */
     public function getFile(): string
     {
@@ -82,8 +73,6 @@ class LlmErrorOccurred
 
     /**
      * Get the exception line number.
-     *
-     * @return int
      */
     public function getLine(): int
     {
@@ -92,8 +81,6 @@ class LlmErrorOccurred
 
     /**
      * Get the exception stack trace.
-     *
-     * @return string
      */
     public function getTrace(): string
     {
@@ -102,8 +89,6 @@ class LlmErrorOccurred
 
     /**
      * Get the previous exception if available.
-     *
-     * @return Throwable|null
      */
     public function getPrevious(): ?Throwable
     {
@@ -112,8 +97,6 @@ class LlmErrorOccurred
 
     /**
      * Check if there is a previous exception.
-     *
-     * @return bool
      */
     public function hasPrevious(): bool
     {
@@ -122,10 +105,6 @@ class LlmErrorOccurred
 
     /**
      * Get context value.
-     *
-     * @param string $key
-     * @param mixed $default
-     * @return mixed
      */
     public function getContext(string $key, mixed $default = null): mixed
     {
@@ -134,8 +113,6 @@ class LlmErrorOccurred
 
     /**
      * Get the timestamp in seconds.
-     *
-     * @return float
      */
     public function getTimestampInSeconds(): float
     {
@@ -144,8 +121,6 @@ class LlmErrorOccurred
 
     /**
      * Get the timestamp in milliseconds.
-     *
-     * @return float
      */
     public function getTimestampInMilliseconds(): float
     {
@@ -154,8 +129,6 @@ class LlmErrorOccurred
 
     /**
      * Get error information for logging.
-     *
-     * @return array
      */
     public function getErrorInfo(): array
     {
@@ -170,8 +143,6 @@ class LlmErrorOccurred
 
     /**
      * Get event data as array.
-     *
-     * @return array
      */
     public function toArray(): array
     {

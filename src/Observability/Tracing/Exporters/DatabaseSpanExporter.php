@@ -10,6 +10,8 @@ use Illuminate\Support\Str;
 use Mindwave\Mindwave\Observability\Tracing\GenAI\GenAiAttributes;
 use OpenTelemetry\API\Trace\SpanKind;
 use OpenTelemetry\SDK\Common\Future\CancellationInterface;
+use OpenTelemetry\SDK\Common\Future\CompletedFuture;
+use OpenTelemetry\SDK\Common\Future\FutureInterface;
 use OpenTelemetry\SDK\Trace\SpanDataInterface;
 use OpenTelemetry\SDK\Trace\SpanExporterInterface;
 
@@ -42,10 +44,10 @@ final class DatabaseSpanExporter implements SpanExporterInterface
     /**
      * Export a batch of spans to the database
      *
-     * @param iterable<SpanDataInterface> $batch
-     * @return int Return code (SUCCESS or FAILURE)
+     * @param  iterable<SpanDataInterface>  $batch
+     * @return FutureInterface<bool>
      */
-    public function export(iterable $batch, ?CancellationInterface $cancellation = null): int
+    public function export(iterable $batch, ?CancellationInterface $cancellation = null): FutureInterface
     {
         $exported = 0;
 
@@ -65,23 +67,20 @@ final class DatabaseSpanExporter implements SpanExporterInterface
         // Batch insert all buffered spans
         try {
             $this->flush();
+
+            return new CompletedFuture(true);
         } catch (\Throwable $e) {
             Log::error('Failed to flush span buffer', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
             ]);
 
-            return SpanExporterInterface::STATUS_FAILED_NOT_RETRYABLE;
+            return new CompletedFuture(false);
         }
-
-        return SpanExporterInterface::STATUS_SUCCESS;
     }
 
     /**
      * Force flush any buffered spans
-     *
-     * @param CancellationInterface|null $cancellation
-     * @return bool
      */
     public function forceFlush(?CancellationInterface $cancellation = null): bool
     {
@@ -100,9 +99,6 @@ final class DatabaseSpanExporter implements SpanExporterInterface
 
     /**
      * Shutdown the exporter
-     *
-     * @param CancellationInterface|null $cancellation
-     * @return bool
      */
     public function shutdown(?CancellationInterface $cancellation = null): bool
     {
@@ -111,9 +107,6 @@ final class DatabaseSpanExporter implements SpanExporterInterface
 
     /**
      * Buffer a span for batch processing
-     *
-     * @param SpanDataInterface $span
-     * @return void
      */
     private function bufferSpan(SpanDataInterface $span): void
     {
@@ -134,7 +127,6 @@ final class DatabaseSpanExporter implements SpanExporterInterface
     /**
      * Create a trace record from a span
      *
-     * @param SpanDataInterface $span
      * @return array<string, mixed>
      */
     private function createTraceRecord(SpanDataInterface $span): array
@@ -165,10 +157,6 @@ final class DatabaseSpanExporter implements SpanExporterInterface
 
     /**
      * Update trace record with data from another span in the same trace
-     *
-     * @param string $traceId
-     * @param SpanDataInterface $span
-     * @return void
      */
     private function updateTraceRecord(string $traceId, SpanDataInterface $span): void
     {
@@ -218,7 +206,6 @@ final class DatabaseSpanExporter implements SpanExporterInterface
     /**
      * Create a span record from OpenTelemetry span data
      *
-     * @param SpanDataInterface $span
      * @return array<string, mixed>
      */
     private function createSpanRecord(SpanDataInterface $span): array
@@ -294,7 +281,6 @@ final class DatabaseSpanExporter implements SpanExporterInterface
     /**
      * Flush buffered spans to database
      *
-     * @return void
      * @throws \Throwable
      */
     private function flush(): void
@@ -342,7 +328,7 @@ final class DatabaseSpanExporter implements SpanExporterInterface
     /**
      * Redact sensitive attributes based on configuration
      *
-     * @param array<string, mixed> $attributes
+     * @param  array<string, mixed>  $attributes
      * @return array<string, mixed>
      */
     private function redactSensitiveAttributes(array $attributes): array
@@ -372,7 +358,6 @@ final class DatabaseSpanExporter implements SpanExporterInterface
     /**
      * Estimate the cost of a span based on token usage and pricing
      *
-     * @param SpanDataInterface $span
      * @return float Cost in USD
      */
     private function estimateCost(SpanDataInterface $span): float
@@ -414,9 +399,6 @@ final class DatabaseSpanExporter implements SpanExporterInterface
 
     /**
      * Get model prefix for pricing lookup
-     *
-     * @param string $model
-     * @return string
      */
     private function getModelPrefix(string $model): string
     {
@@ -437,9 +419,6 @@ final class DatabaseSpanExporter implements SpanExporterInterface
 
     /**
      * Get service name from span or config
-     *
-     * @param SpanDataInterface $span
-     * @return string
      */
     private function getServiceName(SpanDataInterface $span): string
     {
@@ -456,9 +435,6 @@ final class DatabaseSpanExporter implements SpanExporterInterface
 
     /**
      * Get status code as string
-     *
-     * @param SpanDataInterface $span
-     * @return string
      */
     private function getStatusCode(SpanDataInterface $span): string
     {
@@ -475,9 +451,6 @@ final class DatabaseSpanExporter implements SpanExporterInterface
 
     /**
      * Convert OpenTelemetry SpanKind to string
-     *
-     * @param int $kind
-     * @return string
      */
     private function getSpanKind(int $kind): string
     {

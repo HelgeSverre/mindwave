@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Mindwave\Mindwave\Observability\Tracing\GenAI;
 
+use Generator;
 use Mindwave\Mindwave\Contracts\LLM;
 use Mindwave\Mindwave\LLM\FunctionCalling\FunctionBuilder;
 use Mindwave\Mindwave\LLM\FunctionCalling\FunctionCall;
@@ -48,11 +49,11 @@ class LLMDriverInstrumentorDecorator implements LLM
     private ?string $serverAddress = null;
 
     /**
-     * @param LLM $driver The underlying LLM driver to wrap
-     * @param GenAiInstrumentor $instrumentor The instrumentor for creating spans
-     * @param string $provider Provider name (e.g., "openai", "anthropic", "mistral_ai")
-     * @param string|null $model Optional default model name
-     * @param string|null $serverAddress Optional server address override
+     * @param  LLM  $driver  The underlying LLM driver to wrap
+     * @param  GenAiInstrumentor  $instrumentor  The instrumentor for creating spans
+     * @param  string  $provider  Provider name (e.g., "openai", "anthropic", "mistral_ai")
+     * @param  string|null  $model  Optional default model name
+     * @param  string|null  $serverAddress  Optional server address override
      */
     public function __construct(
         LLM $driver,
@@ -70,9 +71,6 @@ class LLMDriverInstrumentorDecorator implements LLM
 
     /**
      * Set system message on the underlying driver
-     *
-     * @param string $systemMessage
-     * @return static
      */
     public function setSystemMessage(string $systemMessage): static
     {
@@ -84,8 +82,7 @@ class LLMDriverInstrumentorDecorator implements LLM
     /**
      * Set options on the underlying driver
      *
-     * @param array<string, mixed> $options
-     * @return static
+     * @param  array<string, mixed>  $options
      */
     public function setOptions(array $options): static
     {
@@ -99,9 +96,6 @@ class LLMDriverInstrumentorDecorator implements LLM
      *
      * This method automatically instruments the text generation call, capturing
      * request parameters, response attributes, and token usage.
-     *
-     * @param string $prompt
-     * @return string|null
      */
     public function generateText(string $prompt): ?string
     {
@@ -113,7 +107,7 @@ class LLMDriverInstrumentorDecorator implements LLM
             model: $model,
             prompt: $prompt,
             options: $options,
-            execute: fn() => $this->driver->generateText($prompt),
+            execute: fn () => $this->driver->generateText($prompt),
             serverAddress: $this->serverAddress
         );
     }
@@ -121,9 +115,7 @@ class LLMDriverInstrumentorDecorator implements LLM
     /**
      * Generate with prompt template and automatic tracing
      *
-     * @param PromptTemplate $promptTemplate
-     * @param array<string, mixed> $inputs
-     * @return mixed
+     * @param  array<string, mixed>  $inputs
      */
     public function generate(PromptTemplate $promptTemplate, array $inputs = []): mixed
     {
@@ -138,7 +130,39 @@ class LLMDriverInstrumentorDecorator implements LLM
             model: $model,
             prompt: $formatted,
             options: $options,
-            execute: fn() => $this->driver->generate($promptTemplate, $inputs),
+            execute: fn () => $this->driver->generate($promptTemplate, $inputs),
+            serverAddress: $this->serverAddress
+        );
+    }
+
+    /**
+     * Generate text with streaming and automatic tracing
+     *
+     * This method automatically instruments the streaming text generation call,
+     * capturing request parameters, streaming deltas, and cumulative token usage.
+     * Each streamed delta fires a LlmTokenStreamed event for real-time monitoring.
+     *
+     * @return Generator<string> Yields text deltas as they arrive
+     */
+    public function streamText(string $prompt): Generator
+    {
+        // Check if the underlying driver supports streaming
+        if (! method_exists($this->driver, 'streamText')) {
+            // If not, throw a clear exception
+            throw new \BadMethodCallException(
+                sprintf('Streaming is not supported by the %s driver', get_class($this->driver))
+            );
+        }
+
+        $model = $this->detectModel();
+        $options = $this->extractOptions();
+
+        return $this->instrumentor->instrumentStreamedChatCompletion(
+            provider: $this->provider,
+            model: $model,
+            prompt: $prompt,
+            options: $options,
+            execute: fn () => $this->driver->streamText($prompt),
             serverAddress: $this->serverAddress
         );
     }
@@ -150,12 +174,11 @@ class LLMDriverInstrumentorDecorator implements LLM
      * It checks for the 'chat' method using method_exists to maintain compatibility
      * with different driver implementations.
      *
-     * @param array<array<string, mixed>>|string $prompt Messages or prompt string
-     * @return mixed
+     * @param  array<array<string, mixed>>|string  $prompt  Messages or prompt string
      */
     public function chat(array|string $prompt): mixed
     {
-        if (!method_exists($this->driver, 'chat')) {
+        if (! method_exists($this->driver, 'chat')) {
             // Fallback to generateText if chat not supported
             return $this->generateText(is_array($prompt) ? json_encode($prompt) : $prompt);
         }
@@ -171,7 +194,7 @@ class LLMDriverInstrumentorDecorator implements LLM
             model: $model,
             messages: $messages,
             options: $options,
-            execute: fn() => $this->driver->chat($prompt),
+            execute: fn () => $this->driver->chat($prompt),
             serverAddress: $this->serverAddress
         );
     }
@@ -181,17 +204,14 @@ class LLMDriverInstrumentorDecorator implements LLM
      *
      * This method instruments function calling if the underlying driver supports it.
      *
-     * @param string $prompt
-     * @param array<mixed>|FunctionBuilder $functions
-     * @param string|null $requiredFunction
-     * @return FunctionCall|string|null
+     * @param  array<mixed>|FunctionBuilder  $functions
      */
     public function functionCall(
         string $prompt,
         array|FunctionBuilder $functions,
         ?string $requiredFunction = 'auto'
     ): FunctionCall|string|null {
-        if (!method_exists($this->driver, 'functionCall')) {
+        if (! method_exists($this->driver, 'functionCall')) {
             // Fallback to generateText if functionCall not supported
             return $this->generateText($prompt);
         }
@@ -210,7 +230,7 @@ class LLMDriverInstrumentorDecorator implements LLM
             model: $model,
             messages: [['role' => 'system', 'content' => $prompt]],
             options: $options,
-            execute: fn() => $this->driver->functionCall($prompt, $functions, $requiredFunction),
+            execute: fn () => $this->driver->functionCall($prompt, $functions, $requiredFunction),
             serverAddress: $this->serverAddress
         );
     }
@@ -219,9 +239,6 @@ class LLMDriverInstrumentorDecorator implements LLM
      * Set the model name for tracing
      *
      * This is useful when the model is determined at runtime.
-     *
-     * @param string $model
-     * @return static
      */
     public function model(string $model): static
     {
@@ -237,9 +254,6 @@ class LLMDriverInstrumentorDecorator implements LLM
 
     /**
      * Set maximum tokens
-     *
-     * @param int $maxTokens
-     * @return static
      */
     public function maxTokens(int $maxTokens): static
     {
@@ -252,9 +266,6 @@ class LLMDriverInstrumentorDecorator implements LLM
 
     /**
      * Set temperature
-     *
-     * @param float $temperature
-     * @return static
      */
     public function temperature(float $temperature): static
     {
@@ -270,8 +281,6 @@ class LLMDriverInstrumentorDecorator implements LLM
      *
      * This attempts to extract the model name from the underlying driver
      * using reflection if not explicitly set.
-     *
-     * @return string
      */
     private function detectModel(): string
     {
@@ -346,8 +355,6 @@ class LLMDriverInstrumentorDecorator implements LLM
      * Get the underlying driver
      *
      * Useful for accessing driver-specific methods not in the LLM interface.
-     *
-     * @return LLM
      */
     public function getDriver(): LLM
     {
@@ -356,8 +363,6 @@ class LLMDriverInstrumentorDecorator implements LLM
 
     /**
      * Get the instrumentor
-     *
-     * @return GenAiInstrumentor
      */
     public function getInstrumentor(): GenAiInstrumentor
     {
@@ -366,8 +371,6 @@ class LLMDriverInstrumentorDecorator implements LLM
 
     /**
      * Get the provider name
-     *
-     * @return string
      */
     public function getProvider(): string
     {
@@ -376,9 +379,6 @@ class LLMDriverInstrumentorDecorator implements LLM
 
     /**
      * Set the provider name
-     *
-     * @param string $provider
-     * @return static
      */
     public function setProvider(string $provider): static
     {
@@ -389,8 +389,6 @@ class LLMDriverInstrumentorDecorator implements LLM
 
     /**
      * Get the server address
-     *
-     * @return string|null
      */
     public function getServerAddress(): ?string
     {
@@ -399,9 +397,6 @@ class LLMDriverInstrumentorDecorator implements LLM
 
     /**
      * Set the server address
-     *
-     * @param string|null $serverAddress
-     * @return static
      */
     public function setServerAddress(?string $serverAddress): static
     {
@@ -416,9 +411,7 @@ class LLMDriverInstrumentorDecorator implements LLM
      * This allows the decorator to be truly transparent, forwarding
      * any driver-specific methods that aren't part of the LLM interface.
      *
-     * @param string $method
-     * @param array<mixed> $arguments
-     * @return mixed
+     * @param  array<mixed>  $arguments
      */
     public function __call(string $method, array $arguments): mixed
     {
@@ -433,9 +426,6 @@ class LLMDriverInstrumentorDecorator implements LLM
 
     /**
      * Magic method to proxy property access to the underlying driver
-     *
-     * @param string $name
-     * @return mixed
      */
     public function __get(string $name): mixed
     {
@@ -450,10 +440,6 @@ class LLMDriverInstrumentorDecorator implements LLM
 
     /**
      * Magic method to proxy property setting to the underlying driver
-     *
-     * @param string $name
-     * @param mixed $value
-     * @return void
      */
     public function __set(string $name, mixed $value): void
     {
@@ -464,5 +450,15 @@ class LLMDriverInstrumentorDecorator implements LLM
                 sprintf('Property %s does not exist on %s', $name, get_class($this->driver))
             );
         }
+    }
+
+    /**
+     * Get the maximum context window size for the current model.
+     *
+     * Delegates to the underlying driver to retrieve the model's token limit.
+     */
+    public function maxContextTokens(): int
+    {
+        return $this->driver->maxContextTokens();
     }
 }

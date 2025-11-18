@@ -106,8 +106,6 @@ enum GenAiProviders: string
 
     /**
      * Get the default server address for this provider
-     *
-     * @return string
      */
     public function getDefaultServerAddress(): string
     {
@@ -127,8 +125,6 @@ enum GenAiProviders: string
 
     /**
      * Get the default server port for this provider
-     *
-     * @return int
      */
     public function getDefaultServerPort(): int
     {
@@ -140,8 +136,6 @@ enum GenAiProviders: string
 
     /**
      * Get the display name for this provider
-     *
-     * @return string
      */
     public function getDisplayName(): string
     {
@@ -161,8 +155,6 @@ enum GenAiProviders: string
 
     /**
      * Check if this provider is a cloud provider
-     *
-     * @return bool
      */
     public function isCloudProvider(): bool
     {
@@ -171,8 +163,6 @@ enum GenAiProviders: string
 
     /**
      * Check if this provider is self-hosted
-     *
-     * @return bool
      */
     public function isSelfHosted(): bool
     {
@@ -227,9 +217,6 @@ enum GenAiProviders: string
 
     /**
      * Check if this provider supports a specific operation
-     *
-     * @param GenAiOperations $operation
-     * @return bool
      */
     public function supportsOperation(GenAiOperations $operation): bool
     {
@@ -238,9 +225,6 @@ enum GenAiProviders: string
 
     /**
      * Get provider from string value (case-insensitive)
-     *
-     * @param string $value
-     * @return self|null
      */
     public static function fromString(string $value): ?self
     {
@@ -257,9 +241,6 @@ enum GenAiProviders: string
 
     /**
      * Try to detect provider from model name
-     *
-     * @param string $model
-     * @return self|null
      */
     public static function detectFromModel(string $model): ?self
     {

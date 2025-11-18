@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Mindwave\Mindwave\Observability\Tracing\GenAI;
 
+use Generator;
+use Mindwave\Mindwave\Observability\Events\LlmTokenStreamed;
 use Mindwave\Mindwave\Observability\Tracing\Span;
 use Mindwave\Mindwave\Observability\Tracing\TracerManager;
 use Throwable;
@@ -45,9 +47,9 @@ class GenAiInstrumentor
     private bool $enabled;
 
     /**
-     * @param TracerManager $tracerManager Tracer manager for span creation
-     * @param bool $captureMessages Whether to capture message content (opt-in for sensitive data)
-     * @param bool $enabled Whether instrumentation is enabled
+     * @param  TracerManager  $tracerManager  Tracer manager for span creation
+     * @param  bool  $captureMessages  Whether to capture message content (opt-in for sensitive data)
+     * @param  bool  $enabled  Whether instrumentation is enabled
      */
     public function __construct(
         TracerManager $tracerManager,
@@ -65,13 +67,14 @@ class GenAiInstrumentor
      * Creates a span for chat-based LLM interactions, capturing request parameters,
      * response metadata, and token usage.
      *
-     * @param string $provider Provider name (e.g., "openai", "anthropic")
-     * @param string $model Model name (e.g., "gpt-4", "claude-3-opus")
-     * @param array<array<string, mixed>> $messages Chat messages
-     * @param array<string, mixed> $options Request options (temperature, max_tokens, etc.)
-     * @param callable(): mixed $execute Callback that executes the actual LLM call
-     * @param string|null $serverAddress Optional server address override
+     * @param  string  $provider  Provider name (e.g., "openai", "anthropic")
+     * @param  string  $model  Model name (e.g., "gpt-4", "claude-3-opus")
+     * @param  array<array<string, mixed>>  $messages  Chat messages
+     * @param  array<string, mixed>  $options  Request options (temperature, max_tokens, etc.)
+     * @param  callable(): mixed  $execute  Callback that executes the actual LLM call
+     * @param  string|null  $serverAddress  Optional server address override
      * @return mixed The response from the execute callback
+     *
      * @throws Throwable Re-throws any exception from the execute callback
      */
     public function instrumentChatCompletion(
@@ -82,7 +85,7 @@ class GenAiInstrumentor
         callable $execute,
         ?string $serverAddress = null
     ): mixed {
-        if (!$this->enabled) {
+        if (! $this->enabled) {
             return $execute();
         }
 
@@ -112,13 +115,14 @@ class GenAiInstrumentor
      *
      * Creates a span for traditional text completion (non-chat) operations.
      *
-     * @param string $provider Provider name
-     * @param string $model Model name
-     * @param string $prompt The input prompt
-     * @param array<string, mixed> $options Request options
-     * @param callable(): mixed $execute Callback that executes the actual LLM call
-     * @param string|null $serverAddress Optional server address override
+     * @param  string  $provider  Provider name
+     * @param  string  $model  Model name
+     * @param  string  $prompt  The input prompt
+     * @param  array<string, mixed>  $options  Request options
+     * @param  callable(): mixed  $execute  Callback that executes the actual LLM call
+     * @param  string|null  $serverAddress  Optional server address override
      * @return mixed The response from the execute callback
+     *
      * @throws Throwable Re-throws any exception from the execute callback
      */
     public function instrumentTextCompletion(
@@ -129,7 +133,7 @@ class GenAiInstrumentor
         callable $execute,
         ?string $serverAddress = null
     ): mixed {
-        if (!$this->enabled) {
+        if (! $this->enabled) {
             return $execute();
         }
 
@@ -155,17 +159,103 @@ class GenAiInstrumentor
     }
 
     /**
+     * Instrument a streamed chat completion operation
+     *
+     * Creates a span for streaming chat-based LLM interactions. The span remains
+     * active throughout the stream lifecycle, tracking cumulative tokens and firing
+     * events for each delta. The span is ended only after the stream completes.
+     *
+     * @param  string  $provider  Provider name (e.g., "openai", "anthropic")
+     * @param  string  $model  Model name (e.g., "gpt-4", "claude-3-opus")
+     * @param  string  $prompt  The input prompt
+     * @param  array<string, mixed>  $options  Request options (temperature, max_tokens, etc.)
+     * @param  callable(): Generator<string>  $execute  Callback that executes the streaming LLM call
+     * @param  string|null  $serverAddress  Optional server address override
+     * @return Generator<string> Yields text deltas from the LLM stream
+     *
+     * @throws Throwable Re-throws any exception from the execute callback
+     */
+    public function instrumentStreamedChatCompletion(
+        string $provider,
+        string $model,
+        string $prompt,
+        array $options,
+        callable $execute,
+        ?string $serverAddress = null
+    ): Generator {
+        if (! $this->enabled) {
+            yield from $execute();
+
+            return;
+        }
+
+        $span = $this->createTextCompletionSpan($provider, $model, $prompt, $options, $serverAddress);
+        $scope = $span->activate();
+
+        $cumulativeTokens = 0;
+        $fullResponse = '';
+        $finishReason = null;
+
+        try {
+            foreach ($execute() as $delta) {
+                $cumulativeTokens++;
+                $fullResponse .= $delta;
+
+                // Fire event for each streamed token
+                event(new LlmTokenStreamed(
+                    delta: $delta,
+                    cumulativeTokens: $cumulativeTokens,
+                    spanId: $span->getSpanId(),
+                    traceId: $span->getTraceId(),
+                    timestamp: hrtime(true),
+                    metadata: [
+                        'provider' => $provider,
+                        'model' => $model,
+                    ]
+                ));
+
+                yield $delta;
+            }
+
+            // After stream completes, set final attributes
+            $span->setGenAiUsage(
+                inputTokens: null, // Input tokens not available in streaming
+                outputTokens: $cumulativeTokens
+            );
+
+            // Optionally capture the full response
+            if ($this->captureMessages && $fullResponse !== '') {
+                $span->setGenAiOutputMessages([
+                    [
+                        'role' => 'assistant',
+                        'content' => $fullResponse,
+                    ],
+                ]);
+            }
+
+            $span->markAsOk();
+        } catch (Throwable $e) {
+            $span->recordException($e);
+            throw $e;
+        } finally {
+            $scope->detach();
+            $span->end();
+        }
+    }
+
+    /**
      * Instrument an embeddings operation
      *
      * Creates a span for vector embedding generation.
      *
-     * @param string $provider Provider name
-     * @param string $model Model name
-     * @param string|array<string> $input Input text(s) for embedding
-     * @param array<string, mixed> $options Request options
-     * @param callable(): mixed $execute Callback that executes the actual embeddings call
-     * @param string|null $serverAddress Optional server address override
+     * @param  string  $provider  Provider name
+     * @param  string  $model  Model name
+     * @param  string|array<string>  $input  Input text(s) for embedding
+     * @param  array<string, mixed>  $options  Request options
+     * @param  callable(): mixed  $execute  Callback that executes the actual embeddings call
+     * @param  string|null  $serverAddress  Optional server address override
      * @return mixed The response from the execute callback
+     *
      * @throws Throwable Re-throws any exception from the execute callback
      */
     public function instrumentEmbeddings(
@@ -176,7 +266,7 @@ class GenAiInstrumentor
         callable $execute,
         ?string $serverAddress = null
     ): mixed {
-        if (!$this->enabled) {
+        if (! $this->enabled) {
             return $execute();
         }
 
@@ -206,10 +296,11 @@ class GenAiInstrumentor
      *
      * Creates a span for tool/function calls made by the LLM.
      *
-     * @param string $toolName Name of the tool/function being executed
-     * @param array<string, mixed> $arguments Tool arguments
-     * @param callable(): mixed $execute Callback that executes the tool
+     * @param  string  $toolName  Name of the tool/function being executed
+     * @param  array<string, mixed>  $arguments  Tool arguments
+     * @param  callable(): mixed  $execute  Callback that executes the tool
      * @return mixed The result from the execute callback
+     *
      * @throws Throwable Re-throws any exception from the execute callback
      */
     public function instrumentToolExecution(
@@ -217,7 +308,7 @@ class GenAiInstrumentor
         array $arguments,
         callable $execute
     ): mixed {
-        if (!$this->enabled) {
+        if (! $this->enabled) {
             return $execute();
         }
 
@@ -247,12 +338,8 @@ class GenAiInstrumentor
     /**
      * Create a span for chat completion
      *
-     * @param string $provider
-     * @param string $model
-     * @param array<array<string, mixed>> $messages
-     * @param array<string, mixed> $options
-     * @param string|null $serverAddress
-     * @return Span
+     * @param  array<array<string, mixed>>  $messages
+     * @param  array<string, mixed>  $options
      */
     private function createChatSpan(
         string $provider,
@@ -294,12 +381,7 @@ class GenAiInstrumentor
     /**
      * Create a span for text completion
      *
-     * @param string $provider
-     * @param string $model
-     * @param string $prompt
-     * @param array<string, mixed> $options
-     * @param string|null $serverAddress
-     * @return Span
+     * @param  array<string, mixed>  $options
      */
     private function createTextCompletionSpan(
         string $provider,
@@ -341,12 +423,8 @@ class GenAiInstrumentor
     /**
      * Create a span for embeddings generation
      *
-     * @param string $provider
-     * @param string $model
-     * @param string|array<string> $input
-     * @param array<string, mixed> $options
-     * @param string|null $serverAddress
-     * @return Span
+     * @param  string|array<string>  $input
+     * @param  array<string, mixed>  $options
      */
     private function createEmbeddingsSpan(
         string $provider,
@@ -385,9 +463,7 @@ class GenAiInstrumentor
     /**
      * Create a span for tool execution
      *
-     * @param string $toolName
-     * @param array<string, mixed> $arguments
-     * @return Span
+     * @param  array<string, mixed>  $arguments
      */
     private function createToolExecutionSpan(string $toolName, array $arguments): Span
     {
@@ -412,14 +488,10 @@ class GenAiInstrumentor
      *
      * This method handles different response types from various LLM providers.
      * It's designed to be flexible and work with OpenAI, Anthropic, Mistral, etc.
-     *
-     * @param Span $span
-     * @param mixed $response
-     * @return void
      */
     private function captureResponseAttributes(Span $span, mixed $response): void
     {
-        if (!is_object($response)) {
+        if (! is_object($response)) {
             return;
         }
 
@@ -435,12 +507,12 @@ class GenAiInstrumentor
         // Capture finish reasons
         if (isset($response->choices) && is_array($response->choices) && count($response->choices) > 0) {
             $finishReasons = array_map(
-                fn($choice) => $choice->finishReason ?? $choice->finish_reason ?? null,
+                fn ($choice) => $choice->finishReason ?? $choice->finish_reason ?? null,
                 $response->choices
             );
-            $finishReasons = array_filter($finishReasons, fn($reason) => $reason !== null);
+            $finishReasons = array_filter($finishReasons, fn ($reason) => $reason !== null);
 
-            if (!empty($finishReasons)) {
+            if (! empty($finishReasons)) {
                 $span->setAttribute(GenAiAttributes::GEN_AI_RESPONSE_FINISH_REASONS, $finishReasons);
             }
         }
@@ -472,14 +544,10 @@ class GenAiInstrumentor
 
     /**
      * Capture token usage from response
-     *
-     * @param Span $span
-     * @param mixed $usage
-     * @return void
      */
     private function captureTokenUsage(Span $span, mixed $usage): void
     {
-        if (!is_object($usage)) {
+        if (! is_object($usage)) {
             return;
         }
 
@@ -498,14 +566,10 @@ class GenAiInstrumentor
 
     /**
      * Capture embeddings response attributes
-     *
-     * @param Span $span
-     * @param mixed $response
-     * @return void
      */
     private function captureEmbeddingsResponse(Span $span, mixed $response): void
     {
-        if (!is_object($response)) {
+        if (! is_object($response)) {
             return;
         }
 
@@ -534,9 +598,6 @@ class GenAiInstrumentor
 
     /**
      * Enable or disable instrumentation at runtime
-     *
-     * @param bool $enabled
-     * @return self
      */
     public function setEnabled(bool $enabled): self
     {
@@ -547,8 +608,6 @@ class GenAiInstrumentor
 
     /**
      * Check if instrumentation is enabled
-     *
-     * @return bool
      */
     public function isEnabled(): bool
     {
@@ -557,9 +616,6 @@ class GenAiInstrumentor
 
     /**
      * Enable or disable message capture at runtime
-     *
-     * @param bool $captureMessages
-     * @return self
      */
     public function setCaptureMessages(bool $captureMessages): self
     {
@@ -570,8 +626,6 @@ class GenAiInstrumentor
 
     /**
      * Check if message capture is enabled
-     *
-     * @return bool
      */
     public function isCaptureMessagesEnabled(): bool
     {
@@ -580,8 +634,6 @@ class GenAiInstrumentor
 
     /**
      * Get the tracer manager
-     *
-     * @return TracerManager
      */
     public function getTracerManager(): TracerManager
     {

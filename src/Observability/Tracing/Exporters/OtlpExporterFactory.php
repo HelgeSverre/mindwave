@@ -7,7 +7,6 @@ namespace Mindwave\Mindwave\Observability\Tracing\Exporters;
 use InvalidArgumentException;
 use OpenTelemetry\Contrib\Otlp\Protocols;
 use OpenTelemetry\Contrib\Otlp\SpanExporter;
-use OpenTelemetry\SDK\Common\Export\Http\PsrTransportFactory;
 use OpenTelemetry\SDK\Registry;
 use OpenTelemetry\SDK\Trace\SpanExporterInterface;
 use Psr\Log\LoggerInterface;
@@ -59,11 +58,11 @@ final class OtlpExporterFactory
     /**
      * Constructor
      *
-     * @param LoggerInterface|null $logger Optional logger for error reporting
+     * @param  LoggerInterface|null  $logger  Optional logger for error reporting
      */
     public function __construct(?LoggerInterface $logger = null)
     {
-        $this->logger = $logger ?? new NullLogger();
+        $this->logger = $logger ?? new NullLogger;
     }
 
     /**
@@ -74,8 +73,8 @@ final class OtlpExporterFactory
      * - otlp.endpoint: The OTLP endpoint URL
      * - otlp.headers: Additional HTTP headers (e.g., API keys)
      *
-     * @param array<string, mixed> $config Configuration array from mindwave-tracing.otlp
-     * @return SpanExporterInterface
+     * @param  array<string, mixed>  $config  Configuration array from mindwave-tracing.otlp
+     *
      * @throws InvalidArgumentException If configuration is invalid
      */
     public function fromConfig(array $config): SpanExporterInterface
@@ -118,10 +117,10 @@ final class OtlpExporterFactory
      * - Honeycomb: https://api.honeycomb.io/v1/traces
      * - Datadog: http://localhost:4318/v1/traces (via Datadog Agent)
      *
-     * @param string $endpoint The OTLP HTTP endpoint URL (including /v1/traces path)
-     * @param array<string, string> $headers Additional HTTP headers (e.g., authentication)
-     * @param int $timeoutMs Request timeout in milliseconds
-     * @return SpanExporterInterface
+     * @param  string  $endpoint  The OTLP HTTP endpoint URL (including /v1/traces path)
+     * @param  array<string, string>  $headers  Additional HTTP headers (e.g., authentication)
+     * @param  int  $timeoutMs  Request timeout in milliseconds
+     *
      * @throws InvalidArgumentException If endpoint is invalid
      */
     public function createHttpExporter(
@@ -145,7 +144,7 @@ final class OtlpExporterFactory
             // Get the HTTP transport factory from the registry
             $protocol = Protocols::HTTP_PROTOBUF;
             $factoryClass = Registry::transportFactory($protocol);
-            $factory = new $factoryClass();
+            $factory = new $factoryClass;
 
             // Create transport with configuration
             $contentType = Protocols::contentType($protocol);
@@ -186,10 +185,10 @@ final class OtlpExporterFactory
      * - Jaeger: localhost:4317
      * - Grafana Tempo: tempo:4317
      *
-     * @param string $endpoint The OTLP gRPC endpoint (host:port format)
-     * @param array<string, string> $headers Additional gRPC metadata headers
-     * @param int $timeoutMs Request timeout in milliseconds
-     * @return SpanExporterInterface
+     * @param  string  $endpoint  The OTLP gRPC endpoint (host:port format)
+     * @param  array<string, string>  $headers  Additional gRPC metadata headers
+     * @param  int  $timeoutMs  Request timeout in milliseconds
+     *
      * @throws InvalidArgumentException If endpoint is invalid or gRPC is not available
      */
     public function createGrpcExporter(
@@ -201,7 +200,7 @@ final class OtlpExporterFactory
         if (! extension_loaded('grpc')) {
             throw new InvalidArgumentException(
                 'gRPC protocol requires the grpc PHP extension to be installed. '
-                . 'Install it with: pecl install grpc'
+                .'Install it with: pecl install grpc'
             );
         }
 
@@ -232,7 +231,7 @@ final class OtlpExporterFactory
                 );
             }
 
-            $factory = new $factoryClass();
+            $factory = new $factoryClass;
 
             // Create transport with configuration
             $contentType = Protocols::contentType($protocol);
@@ -264,8 +263,6 @@ final class OtlpExporterFactory
     /**
      * Validate endpoint URL
      *
-     * @param string $endpoint
-     * @return void
      * @throws InvalidArgumentException If endpoint is empty or invalid
      */
     private function validateEndpoint(string $endpoint): void
@@ -285,8 +282,6 @@ final class OtlpExporterFactory
     /**
      * Validate timeout value
      *
-     * @param int $timeoutMs
-     * @return void
      * @throws InvalidArgumentException If timeout is invalid
      */
     private function validateTimeout(int $timeoutMs): void
@@ -306,9 +301,6 @@ final class OtlpExporterFactory
 
     /**
      * Normalize HTTP endpoint to include /v1/traces path
-     *
-     * @param string $endpoint
-     * @return string
      */
     private function normalizeHttpEndpoint(string $endpoint): string
     {
@@ -325,9 +317,6 @@ final class OtlpExporterFactory
 
     /**
      * Normalize gRPC endpoint to host:port format
-     *
-     * @param string $endpoint
-     * @return string
      */
     private function normalizeGrpcEndpoint(string $endpoint): string
     {
@@ -346,7 +335,7 @@ final class OtlpExporterFactory
      * Parses OTLP headers from the standard environment variable format:
      * "key1=value1,key2=value2"
      *
-     * @param string $headersString Headers in environment variable format
+     * @param  string  $headersString  Headers in environment variable format
      * @return array<string, string>
      */
     public static function parseHeadersFromEnv(string $headersString): array
@@ -388,8 +377,6 @@ final class OtlpExporterFactory
      * - OTEL_EXPORTER_OTLP_PROTOCOL
      * - OTEL_EXPORTER_OTLP_HEADERS
      * - OTEL_EXPORTER_OTLP_TIMEOUT
-     *
-     * @return SpanExporterInterface
      */
     public function createFromEnvironment(): SpanExporterInterface
     {

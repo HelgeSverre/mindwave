@@ -157,8 +157,6 @@ class Span extends Model
 
     /**
      * Get the duration in seconds.
-     *
-     * @return float|null
      */
     public function getDurationInSeconds(): ?float
     {
@@ -171,8 +169,6 @@ class Span extends Model
 
     /**
      * Get the duration in milliseconds.
-     *
-     * @return float|null
      */
     public function getDurationInMilliseconds(): ?float
     {
@@ -185,8 +181,6 @@ class Span extends Model
 
     /**
      * Get the total number of tokens (input + output).
-     *
-     * @return int
      */
     public function getTotalTokens(): int
     {
@@ -195,8 +189,6 @@ class Span extends Model
 
     /**
      * Get the total cache tokens (read + creation).
-     *
-     * @return int
      */
     public function getTotalCacheTokens(): int
     {
@@ -205,8 +197,6 @@ class Span extends Model
 
     /**
      * Check if this span represents an LLM call.
-     *
-     * @return bool
      */
     public function isLlmCall(): bool
     {
@@ -215,8 +205,6 @@ class Span extends Model
 
     /**
      * Check if this span represents a tool execution.
-     *
-     * @return bool
      */
     public function isToolExecution(): bool
     {
@@ -225,8 +213,6 @@ class Span extends Model
 
     /**
      * Check if this span has an error status.
-     *
-     * @return bool
      */
     public function hasError(): bool
     {
@@ -235,8 +221,6 @@ class Span extends Model
 
     /**
      * Check if this is a root span (no parent).
-     *
-     * @return bool
      */
     public function isRootSpan(): bool
     {
@@ -245,21 +229,16 @@ class Span extends Model
 
     /**
      * Get a specific attribute value.
-     *
-     * @param string $key
-     * @param mixed $default
-     * @return mixed
      */
-    public function getAttribute(string $key, $default = null): mixed
+    public function getAttribute($key)
     {
-        return $this->attributes[$key] ?? $default;
+        return parent::getAttribute($key);
     }
 
     /**
      * Scope a query to only include spans of a specific operation.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param string $operation
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeOperation($query, string $operation)
@@ -270,8 +249,7 @@ class Span extends Model
     /**
      * Scope a query to only include spans from a specific provider.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param string $provider
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeProvider($query, string $provider)
@@ -282,8 +260,7 @@ class Span extends Model
     /**
      * Scope a query to only include spans using a specific model.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param string $model
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeModel($query, string $model)
@@ -294,8 +271,8 @@ class Span extends Model
     /**
      * Scope a query to only include slow spans.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param int $thresholdMs Duration threshold in milliseconds
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  int  $thresholdMs  Duration threshold in milliseconds
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeSlow($query, int $thresholdMs = 5000)
@@ -306,7 +283,7 @@ class Span extends Model
     /**
      * Scope a query to only include spans with errors.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeWithErrors($query)
