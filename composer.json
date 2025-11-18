@@ -1,10 +1,16 @@
 {
   "name": "mindwave/mindwave",
-  "description": "Building AI chatbots, agents, and document Q&A in Laravel made easy.",
+  "description": "Production AI utilities for Laravel: auto-fit prompts, streaming, tracing, and context discovery.",
   "keywords": [
     "mindwave",
     "laravel",
-    "mindwave"
+    "ai",
+    "llm",
+    "openai",
+    "streaming",
+    "opentelemetry",
+    "tracing",
+    "tntsearch"
   ],
   "homepage": "https://github.com/helgesverre/mindwave",
   "license": "MIT",
@@ -17,35 +23,39 @@
     }
   ],
   "require": {
-    "php": "^8.2",
+    "php": "^8.2|^8.3|^8.4",
     "ext-zip": "*",
     "brandembassy/file-type-detector": "^2.3",
     "guzzlehttp/guzzle": "^7.5",
-    "helgesverre/mistral": "^1.0",
+    "helgesverre/mistral": "^2.0",
     "helgesverre/telefonkatalog": "^1.0",
     "hkulekci/qdrant": "^0.4.1",
-    "illuminate/contracts": "^10.0",
-    "laravel/prompts": "^0.1.14",
-    "openai-php/client": "^v0.8.1",
-    "probots-io/pinecone-php": "^0.0.3",
+    "illuminate/contracts": "^11.0",
+    "laravel/prompts": "^0.3",
+    "open-telemetry/sdk": "^1.0",
+    "open-telemetry/exporter-otlp": "^1.0",
+    "openai-php/client": "^0.10",
+    "probots-io/pinecone-php": "^1.1.0",
     "smalot/pdfparser": "^2.5",
     "spatie/laravel-package-tools": "^1.14.0",
     "spatie/regex": "^3.1",
-    "symfony/dom-crawler": "^6.2",
-    "timkley/weaviate-php": "^0.3.0",
-    "yethee/tiktoken": "^0.1.2"
+    "symfony/dom-crawler": "^6.2|^7.0",
+    "teamtnt/laravel-scout-tntsearch-driver": "^13.0|^14.0",
+    "teamtnt/tntsearch": "^3.0",
+    "yethee/tiktoken": "^0.5"
   },
   "require-dev": {
-    "laravel/pint": "^1.0",
-    "nunomaduro/collision": "^7.9",
-    "nunomaduro/larastan": "^2.0.1",
-    "orchestra/testbench": "^8.0",
-    "pestphp/pest": "^2.0",
-    "pestphp/pest-plugin-arch": "^2.0",
-    "pestphp/pest-plugin-laravel": "^2.0",
+    "larastan/larastan": "^3.7",
+    "laravel/pint": "^1.18",
+    "nunomaduro/collision": "^8.0",
+    "orchestra/testbench": "^9.0",
+    "pestphp/pest": "^3.0",
+    "pestphp/pest-plugin-arch": "^3.0",
+    "pestphp/pest-plugin-laravel": "^3.0",
     "phpstan/extension-installer": "^1.1",
-    "phpstan/phpstan-deprecation-rules": "^1.0",
-    "phpstan/phpstan-phpunit": "^1.0"
+    "phpstan/phpstan-deprecation-rules": "^2.0",
+    "phpstan/phpstan-phpunit": "^2.0",
+    "timkley/weaviate-php": "^0.10.0"
   },
   "autoload": {
     "psr-4": {
@@ -71,8 +81,9 @@
     "sort-packages": true,
     "allow-plugins": {
       "pestphp/pest-plugin": true,
+      "php-http/discovery": false,
       "phpstan/extension-installer": true,
-      "php-http/discovery": false
+      "tbachert/spi": true
     }
   },
   "extra": {
