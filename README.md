@@ -192,20 +192,76 @@ Production-ready Server-Sent Events streaming:
 
 Industry-standard observability with GenAI semantic conventions:
 
-- **Automatic tracing** - All LLM calls tracked
-- **Database storage** - Query traces via Eloquent
-- **OTLP export** - Send to Jaeger, Grafana, Datadog, etc.
+- **Automatic tracing** - All LLM calls tracked (zero configuration)
+- **Database storage** - Query traces via Eloquent models
+- **OTLP export** - Send to Jaeger, Grafana, Datadog, Honeycomb, etc.
 - **Cost tracking** - Automatic cost estimation per call
-- **PII protection** - Configurable redaction
+- **Token usage** - Input/output/total tokens tracked
+- **PII protection** - Configurable message capture and redaction
+- **Artisan commands** - Export, prune, and analyze traces
+
+**Quick Start:**
+
+```php
+// 1. Enable tracing in .env
+// MINDWAVE_TRACING_ENABLED=true
+
+// 2. LLM calls are automatically traced
+$response = Mindwave::llm()->generateText('Hello!');
+
+// 3. Query traces
+use Mindwave\Mindwave\Observability\Models\Trace;
+
+$expensive = Span::where('cost_usd', '>', 0.10)
+    ->orderBy('cost_usd', 'desc')
+    ->get();
+```
+
+📖 **[Complete Tracing Guide](examples/tracing-examples.md)** - Querying, cost analysis, custom spans, OTLP setup
+
+📐 **[Architecture Documentation](TRACING_ARCHITECTURE.md)** - Technical deep dive
 
 ### 🔍 TNTSearch Context Discovery
 
 Pull context from your application data without complex RAG setup:
 
 - **No infrastructure** - Pure PHP, no external services
-- **Multiple sources** - Eloquent, arrays, CSV files
-- **Fast indexing** - Ephemeral indexes with caching
+- **Multiple sources** - Eloquent, arrays, CSV files, VectorStores
+- **Fast indexing** - Ephemeral indexes with automatic cleanup
 - **BM25 ranking** - Industry-standard relevance scoring
+- **Auto-query extraction** - Automatically extracts search terms from user messages
+- **OpenTelemetry tracing** - Track search performance and results
+
+**Quick Example:**
+
+```php
+use Mindwave\Mindwave\Context\Sources\TntSearch\TntSearchSource;
+use Mindwave\Mindwave\Context\ContextPipeline;
+
+// Search Eloquent models
+$userSource = TntSearchSource::fromEloquent(
+    User::where('active', true),
+    fn($u) => "Name: {$u->name}, Skills: {$u->skills}"
+);
+
+// Search CSV files
+$docsSource = TntSearchSource::fromCsv('data/knowledge-base.csv');
+
+// Combine multiple sources
+$pipeline = (new ContextPipeline)
+    ->addSource($userSource)
+    ->addSource($docsSource)
+    ->deduplicate()  // Remove duplicates
+    ->rerank();      // Sort by relevance
+
+// Use in prompt (query auto-extracted from user message)
+Mindwave::prompt()
+    ->context($pipeline, limit: 5)
+    ->section('user', 'Who has Laravel expertise?')
+    ->run();
+```
+
+📖 **[Complete Context Discovery Guide](examples/context-discovery-examples.md)** - All source types, pipelines, advanced features
 
 ## Configuration
 
@@ -264,8 +320,11 @@ php artisan mindwave:prune-traces --older-than=30days
 # View trace statistics
 php artisan mindwave:trace-stats
 
-# Clear TNTSearch indexes
-php artisan mindwave:clear-indexes
+# View TNTSearch index statistics
+php artisan mindwave:index-stats
+
+# Clear old TNTSearch indexes (default: 24 hours)
+php artisan mindwave:clear-indexes --ttl=24 --force
 ```
 
 ## Use Cases
