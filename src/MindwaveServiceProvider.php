@@ -3,7 +3,9 @@
 namespace Mindwave\Mindwave;
 
 use Illuminate\Support\Facades\Event;
+use Mindwave\Mindwave\Commands\ClearIndexesCommand;
 use Mindwave\Mindwave\Commands\ExportTracesCommand;
+use Mindwave\Mindwave\Commands\IndexStatsCommand;
 use Mindwave\Mindwave\Commands\PruneTracesCommand;
 use Mindwave\Mindwave\Commands\ToolMakeCommand;
 use Mindwave\Mindwave\Commands\TraceStatsCommand;
@@ -15,9 +17,12 @@ use Mindwave\Mindwave\Document\Loaders\PdfLoader;
 use Mindwave\Mindwave\Document\Loaders\WebLoader;
 use Mindwave\Mindwave\Document\Loaders\WordLoader;
 use Mindwave\Mindwave\Embeddings\EmbeddingsManager;
+use Mindwave\Mindwave\Context\TntSearch\EphemeralIndexManager;
 use Mindwave\Mindwave\Facades\Vectorstore;
 use Mindwave\Mindwave\LLM\LLMManager;
 use Mindwave\Mindwave\Observability\Listeners\TraceEventSubscriber;
+use Mindwave\Mindwave\Observability\Tracing\GenAI\GenAiInstrumentor;
+use Mindwave\Mindwave\Observability\Tracing\TracerManager;
 use Mindwave\Mindwave\PromptComposer\Tokenizer\TiktokenTokenizer;
 use Mindwave\Mindwave\PromptComposer\Tokenizer\TokenizerInterface;
 use Mindwave\Mindwave\Vectorstore\VectorstoreManager;
@@ -35,6 +40,8 @@ class MindwaveServiceProvider extends PackageServiceProvider
                 'mindwave-embeddings',
                 'mindwave-llm',
                 'mindwave-vectorstore',
+                'mindwave-tracing',
+                'mindwave-context',
             ])
             ->hasMigrations([
                 'create_mindwave_traces_table',
@@ -46,6 +53,8 @@ class MindwaveServiceProvider extends PackageServiceProvider
                 ExportTracesCommand::class,
                 PruneTracesCommand::class,
                 TraceStatsCommand::class,
+                IndexStatsCommand::class,
+                ClearIndexesCommand::class,
             ]);
     }
 
@@ -62,7 +71,23 @@ class MindwaveServiceProvider extends PackageServiceProvider
         $this->app->singleton(LLM::class, fn ($app) => $app['mindwave.llm.manager']->driver());
 
         // Tokenizer
-        $this->app->singleton(TokenizerInterface::class, fn () => new TiktokenTokenizer());
+        $this->app->singleton(TokenizerInterface::class, fn () => new TiktokenTokenizer);
+
+        // Context Discovery - EphemeralIndexManager
+        $this->app->singleton(EphemeralIndexManager::class, fn () => new EphemeralIndexManager(
+            config('mindwave-context.tntsearch.storage_path')
+        ));
+
+        // OpenTelemetry Tracing
+        $this->app->singleton(TracerManager::class, fn ($app) => new TracerManager(
+            config('mindwave-tracing', [])
+        ));
+
+        $this->app->singleton(GenAiInstrumentor::class, fn ($app) => new GenAiInstrumentor(
+            tracerManager: $app->make(TracerManager::class),
+            enabled: config('mindwave-tracing.enabled', true),
+            captureMessages: config('mindwave-tracing.capture_messages', false)
+        ));
 
         // Document loader
         $this->app->bind(Loader::class, fn () => new Loader([
@@ -83,8 +108,6 @@ class MindwaveServiceProvider extends PackageServiceProvider
 
     /**
      * Bootstrap any package services.
-     *
-     * @return void
      */
     public function bootingPackage(): void
     {

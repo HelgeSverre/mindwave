@@ -3,7 +3,6 @@
 namespace Mindwave\Mindwave\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
 use Mindwave\Mindwave\Observability\Models\Trace;
 
 class ExportTracesCommand extends Command
