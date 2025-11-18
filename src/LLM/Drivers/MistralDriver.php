@@ -5,6 +5,13 @@ namespace Mindwave\Mindwave\LLM\Drivers;
 use HelgeSverre\Mistral\Mistral;
 use Mindwave\Mindwave\Contracts\LLM;
 
+/**
+ * Mistral AI LLM Driver
+ *
+ * Note: Streaming is not currently implemented for this driver.
+ * The streamText() method will throw a BadMethodCallException.
+ * This may be added in a future version if the underlying client supports it.
+ */
 class MistralDriver extends BaseDriver implements LLM
 {
     public function __construct(
