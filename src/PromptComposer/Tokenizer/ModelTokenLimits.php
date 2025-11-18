@@ -10,6 +10,16 @@ class ModelTokenLimits
     public static function getContextWindow(string $model): int
     {
         return match (true) {
+            // OpenAI GPT-5 Models (400K context window)
+            str_contains($model, 'gpt-5-mini') => 400_000,
+            str_contains($model, 'gpt-5-nano') => 400_000,
+            str_contains($model, 'gpt-5') => 400_000,
+
+            // OpenAI GPT-4.1 Models (1M context window)
+            str_contains($model, 'gpt-4.1-mini') => 1_000_000,
+            str_contains($model, 'gpt-4.1-nano') => 1_000_000,
+            str_contains($model, 'gpt-4.1') => 1_000_000,
+
             // OpenAI GPT-4 Models
             str_contains($model, 'gpt-4-turbo') => 128_000,
             str_contains($model, 'gpt-4o') => 128_000,
@@ -62,6 +72,10 @@ class ModelTokenLimits
     public static function getEncoding(string $model): string
     {
         return match (true) {
+            // GPT-5 and GPT-4.1 use o200k_base (same as o1 models)
+            str_contains($model, 'gpt-5') => 'o200k_base',
+            str_contains($model, 'gpt-4.1') => 'o200k_base',
+
             // GPT-4 and newer use cl100k_base
             str_contains($model, 'gpt-4') => 'cl100k_base',
             str_contains($model, 'gpt-3.5-turbo') => 'cl100k_base',
@@ -90,6 +104,12 @@ class ModelTokenLimits
     public static function all(): array
     {
         return [
+            'gpt-5' => 400_000,
+            'gpt-5-mini' => 400_000,
+            'gpt-5-nano' => 400_000,
+            'gpt-4.1' => 1_000_000,
+            'gpt-4.1-mini' => 1_000_000,
+            'gpt-4.1-nano' => 1_000_000,
             'gpt-4-turbo' => 128_000,
             'gpt-4o' => 128_000,
             'gpt-4-32k' => 32_768,

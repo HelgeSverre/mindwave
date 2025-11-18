@@ -13,7 +13,7 @@ class TiktokenTokenizer implements TokenizerInterface
 
     public function __construct(?EncoderProvider $provider = null)
     {
-        $this->provider = $provider ?? new EncoderProvider();
+        $this->provider = $provider ?? new EncoderProvider;
     }
 
     public function count(string $text, string $model): int

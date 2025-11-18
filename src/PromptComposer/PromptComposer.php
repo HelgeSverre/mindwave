@@ -2,6 +2,8 @@
 
 namespace Mindwave\Mindwave\PromptComposer;
 
+use Mindwave\Mindwave\Context\ContextPipeline;
+use Mindwave\Mindwave\Context\Contracts\ContextSource;
 use Mindwave\Mindwave\Contracts\LLM;
 use Mindwave\Mindwave\PromptComposer\Shrinkers\CompressShrinker;
 use Mindwave\Mindwave\PromptComposer\Shrinkers\ShrinkerInterface;
@@ -67,10 +69,58 @@ class PromptComposer
 
     /**
      * Add a context section (convenience method).
+     *
+     * Supports:
+     * - Plain string or array content
+     * - ContextSource instance (searches and formats results)
+     * - ContextPipeline instance (searches multiple sources)
+     *
+     * @param  string|array|ContextSource|ContextPipeline  $content  Content or context source
+     * @param  int  $priority  Section priority (higher = more important)
+     * @param  string|null  $query  Search query (optional, auto-extracted from user section if not provided)
+     * @param  int  $limit  Maximum context items to retrieve (default: 5)
      */
-    public function context(string|array $content, int $priority = 50): self
-    {
+    public function context(
+        string|array|ContextSource|ContextPipeline $content,
+        int $priority = 50,
+        ?string $query = null,
+        int $limit = 5
+    ): self {
+        // If content is a ContextSource or ContextPipeline, search and format
+        if ($content instanceof ContextSource || $content instanceof ContextPipeline) {
+            // Auto-extract query from user section if not provided
+            $query ??= $this->extractQueryFromSections();
+
+            // Initialize and search
+            if ($content instanceof ContextSource) {
+                $content->initialize();
+                $results = $content->search($query, $limit);
+            } else {
+                $results = $content->search($query, $limit);
+            }
+
+            // Format results as string
+            $content = $results->formatForPrompt();
+        }
+
         return $this->section('context', $content, $priority, 'truncate');
+    }
+
+    /**
+     * Extract search query from the most recent user section.
+     */
+    private function extractQueryFromSections(): string
+    {
+        // Get most recent user message
+        foreach (array_reverse($this->sections) as $section) {
+            if ($section->name === 'user' || str_contains(strtolower($section->name), 'user')) {
+                return is_string($section->content)
+                    ? $section->content
+                    : (is_array($section->content) ? implode(' ', array_map(fn ($item) => is_string($item) ? $item : ($item['content'] ?? ''), $section->content)) : '');
+            }
+        }
+
+        return '';
     }
 
     /**
