@@ -2,7 +2,10 @@
 
 namespace Mindwave\Mindwave;
 
+use Mindwave\Mindwave\Commands\ExportTracesCommand;
+use Mindwave\Mindwave\Commands\PruneTracesCommand;
 use Mindwave\Mindwave\Commands\ToolMakeCommand;
+use Mindwave\Mindwave\Commands\TraceStatsCommand;
 use Mindwave\Mindwave\Contracts\Embeddings;
 use Mindwave\Mindwave\Contracts\LLM;
 use Mindwave\Mindwave\Document\Loader;
@@ -13,6 +16,8 @@ use Mindwave\Mindwave\Document\Loaders\WordLoader;
 use Mindwave\Mindwave\Embeddings\EmbeddingsManager;
 use Mindwave\Mindwave\Facades\Vectorstore;
 use Mindwave\Mindwave\LLM\LLMManager;
+use Mindwave\Mindwave\PromptComposer\Tokenizer\TiktokenTokenizer;
+use Mindwave\Mindwave\PromptComposer\Tokenizer\TokenizerInterface;
 use Mindwave\Mindwave\Vectorstore\VectorstoreManager;
 use Smalot\PdfParser\Parser;
 use Spatie\LaravelPackageTools\Package;
@@ -29,8 +34,16 @@ class MindwaveServiceProvider extends PackageServiceProvider
                 'mindwave-llm',
                 'mindwave-vectorstore',
             ])
+            ->hasMigrations([
+                'create_mindwave_traces_table',
+                'create_mindwave_spans_table',
+                'create_mindwave_span_messages_table',
+            ])
             ->hasCommands([
                 ToolMakeCommand::class,
+                ExportTracesCommand::class,
+                PruneTracesCommand::class,
+                TraceStatsCommand::class,
             ]);
     }
 
@@ -46,12 +59,15 @@ class MindwaveServiceProvider extends PackageServiceProvider
         $this->app->singleton(Vectorstore::class, fn ($app) => $app['mindwave.vectorstore.manager']->driver());
         $this->app->singleton(LLM::class, fn ($app) => $app['mindwave.llm.manager']->driver());
 
+        // Tokenizer
+        $this->app->singleton(TokenizerInterface::class, fn () => new TiktokenTokenizer());
+
         // Document loader
         $this->app->bind(Loader::class, fn () => new Loader([
-            'pdf' => new PdfLoader(new Parser()),
-            'html' => new HtmlLoader(),
-            'url' => new WebLoader(),
-            'word' => new WordLoader(),
+            'pdf' => new PdfLoader(new Parser),
+            'html' => new HtmlLoader,
+            'url' => new WebLoader,
+            'word' => new WordLoader,
         ]));
 
         // Shortcut
@@ -59,6 +75,7 @@ class MindwaveServiceProvider extends PackageServiceProvider
             llm: $app->make(LLM::class),
             embeddings: $app->make(Embeddings::class),
             vectorstore: $app->make(Vectorstore::class),
+            tokenizer: $app->make(TokenizerInterface::class),
         ));
     }
 }
