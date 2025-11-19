@@ -22,10 +22,21 @@ class ModelNames
     const GPT4_32K = 'gpt-4-32k';
     const GPT4_32K_0613 = 'gpt-4-32k-0613';
     const GPT4_1106_PREVIEW = 'gpt-4-1106-preview';
+    const GPT4O = 'gpt-4o';
+    const GPT4O_MINI = 'gpt-4o-mini';
+    const GPT4_1 = 'gpt-4.1';
+    const GPT4_1_MINI = 'gpt-4.1-mini';
+    const GPT4_1_NANO = 'gpt-4.1-nano';
 
     // Legacy GPT-4 Models
     const GPT4_0314 = 'gpt-4-0314';
     const GPT4_32K_0314 = 'gpt-4-32k-0314';
+
+    // GPT-5 Models
+    const GPT5 = 'gpt-5';
+    const GPT5_1 = 'gpt-5.1';
+    const GPT5_MINI = 'gpt-5-mini';
+    const GPT5_NANO = 'gpt-5-nano';
 
     public static function isCompletionModel(string $modelName): bool
     {

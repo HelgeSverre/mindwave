@@ -10,10 +10,10 @@ class ModelTokenLimits
     public static function getContextWindow(string $model): int
     {
         return match (true) {
-            // OpenAI GPT-5 Models (400K context window)
-            str_contains($model, 'gpt-5-mini') => 400_000,
-            str_contains($model, 'gpt-5-nano') => 400_000,
-            str_contains($model, 'gpt-5') => 400_000,
+            // OpenAI GPT-5 Models (200K context window)
+            str_contains($model, 'gpt-5-mini') => 200_000,
+            str_contains($model, 'gpt-5-nano') => 200_000,
+            str_contains($model, 'gpt-5') => 200_000,
 
             // OpenAI GPT-4.1 Models (1M context window)
             str_contains($model, 'gpt-4.1-mini') => 1_000_000,
@@ -28,14 +28,21 @@ class ModelTokenLimits
 
             // OpenAI GPT-3.5 Models
             str_contains($model, 'gpt-3.5-turbo-16k') => 16_385,
-            str_contains($model, 'gpt-3.5-turbo') => 16_385,
+            str_contains($model, 'gpt-3.5-turbo') => 16_385, // Fallback for newer gpt-3.5-turbo models
 
             // OpenAI O1 Models
             str_contains($model, 'o1-preview') => 128_000,
             str_contains($model, 'o1-mini') => 128_000,
 
-            // Anthropic Claude Models
-            str_contains($model, 'claude-3-5-sonnet') => 200_000,
+            // Anthropic Claude 4.x Models (Latest)
+            str_contains($model, 'claude-sonnet-4-5') => 200_000,
+            str_contains($model, 'claude-haiku-4-5') => 200_000,
+            str_contains($model, 'claude-opus-4-1') => 200_000,
+
+            // Anthropic Claude 3.x Models
+            str_contains($model, 'claude-3.7-sonnet') => 200_000,
+            str_contains($model, 'claude-3.5-sonnet') => 200_000,
+            str_contains($model, 'claude-3.5-haiku') => 200_000,
             str_contains($model, 'claude-3-opus') => 200_000,
             str_contains($model, 'claude-3-sonnet') => 200_000,
             str_contains($model, 'claude-3-haiku') => 200_000,
@@ -44,8 +51,10 @@ class ModelTokenLimits
             str_contains($model, 'claude-instant') => 100_000,
 
             // Mistral Models
+            str_contains($model, 'codestral-22b') => 256_000,
             str_contains($model, 'mistral-large') => 128_000,
-            str_contains($model, 'mistral-medium') => 32_000,
+            str_contains($model, 'mistral-nemo') => 128_000,
+            str_contains($model, 'mistral-medium') => 128_000,
             str_contains($model, 'mistral-small') => 32_000,
             str_contains($model, 'mistral-tiny') => 32_000,
             str_contains($model, 'mixtral-8x7b') => 32_000,
@@ -53,12 +62,17 @@ class ModelTokenLimits
 
             // Google Gemini Models
             str_contains($model, 'gemini-1.5-pro') => 2_000_000,
+            str_contains($model, 'gemini-2.5-pro') => 1_048_576,
+            str_contains($model, 'gemini-3-pro') => 1_048_576,
             str_contains($model, 'gemini-1.5-flash') => 1_000_000,
+            str_contains($model, 'gemini-2.5-flash') => 1_000_000,
+            str_contains($model, 'gemini-1.0-ultra') => 128_000,
             str_contains($model, 'gemini-pro') => 32_768,
 
             // Cohere Models
             str_contains($model, 'command-r-plus') => 128_000,
             str_contains($model, 'command-r') => 128_000,
+            str_contains($model, 'command-light') => 4_096,
             str_contains($model, 'command') => 4_096,
 
             // Default fallback
@@ -104,9 +118,9 @@ class ModelTokenLimits
     public static function all(): array
     {
         return [
-            'gpt-5' => 400_000,
-            'gpt-5-mini' => 400_000,
-            'gpt-5-nano' => 400_000,
+            'gpt-5' => 200_000,
+            'gpt-5-mini' => 200_000,
+            'gpt-5-nano' => 200_000,
             'gpt-4.1' => 1_000_000,
             'gpt-4.1-mini' => 1_000_000,
             'gpt-4.1-nano' => 1_000_000,
@@ -118,21 +132,37 @@ class ModelTokenLimits
             'gpt-3.5-turbo' => 16_385,
             'o1-preview' => 128_000,
             'o1-mini' => 128_000,
-            'claude-3-5-sonnet' => 200_000,
+            'claude-sonnet-4-5' => 200_000,
+            'claude-haiku-4-5' => 200_000,
+            'claude-opus-4-1' => 200_000,
+            'claude-3.7-sonnet' => 200_000,
+            'claude-3.5-sonnet' => 200_000,
+            'claude-3.5-haiku' => 200_000,
             'claude-3-opus' => 200_000,
             'claude-3-sonnet' => 200_000,
             'claude-3-haiku' => 200_000,
             'claude-2.1' => 200_000,
             'claude-2.0' => 100_000,
+            'claude-instant' => 100_000,
+            'codestral-22b' => 256_000,
             'mistral-large' => 128_000,
-            'mistral-medium' => 32_000,
+            'mistral-nemo' => 128_000,
+            'mistral-medium' => 128_000,
+            'mistral-small' => 32_000,
+            'mistral-tiny' => 32_000,
             'mixtral-8x7b' => 32_000,
             'mixtral-8x22b' => 64_000,
             'gemini-1.5-pro' => 2_000_000,
+            'gemini-2.5-pro' => 1_048_576,
+            'gemini-3-pro' => 1_048_576,
             'gemini-1.5-flash' => 1_000_000,
+            'gemini-2.5-flash' => 1_000_000,
+            'gemini-1.0-ultra' => 128_000,
             'gemini-pro' => 32_768,
             'command-r-plus' => 128_000,
             'command-r' => 128_000,
+            'command-light' => 4_096,
+            'command' => 4_096,
         ];
     }
 }
