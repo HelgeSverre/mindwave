@@ -35,6 +35,34 @@ it('creates the Array driver', function () {
 });
 
 it('creates the QDrant driver', function () {
+    Config::shouldReceive('get')
+        ->with('database.default')
+        ->andReturn('testing');
+
+    Config::shouldReceive('get')
+        ->with('database.connections.testing')
+        ->andReturn(['driver' => 'sqlite', 'database' => ':memory:']);
+
+    Config::shouldReceive('get')
+        ->with('mindwave-vectorstore.vectorstores.qdrant.api_key')
+        ->andReturn('test-api-key');
+
+    Config::shouldReceive('get')
+        ->with('mindwave-vectorstore.vectorstores.qdrant.collection')
+        ->andReturn('test-collection');
+
+    Config::shouldReceive('get')
+        ->with('mindwave-vectorstore.vectorstores.qdrant.host')
+        ->andReturn('localhost');
+
+    Config::shouldReceive('get')
+        ->with('mindwave-vectorstore.vectorstores.qdrant.port')
+        ->andReturn('6333');
+
+    Config::shouldReceive('get')
+        ->with('mindwave-vectorstore.vectorstores.qdrant.dimensions', 1536)
+        ->andReturn(1536);
+
     $manager = new VectorstoreManager($this->app);
     $driver = $manager->createQdrantDriver();
 
@@ -95,6 +123,10 @@ it('creates the Weaviate driver', function () {
     Config::shouldReceive('get')
         ->with('mindwave-vectorstore.vectorstores.weaviate.additional_headers', [])
         ->andReturn([]);
+
+    Config::shouldReceive('get')
+        ->with('mindwave-vectorstore.vectorstores.weaviate.dimensions', 1536)
+        ->andReturn(1536);
 
     $manager = new VectorstoreManager($this->app);
 

@@ -49,6 +49,7 @@ class VectorstoreManager extends Manager
             collection: $this->config->get('mindwave-vectorstore.vectorstores.qdrant.collection'),
             host: $this->config->get('mindwave-vectorstore.vectorstores.qdrant.host'),
             port: $this->config->get('mindwave-vectorstore.vectorstores.qdrant.port'),
+            dimensions: $this->config->get('mindwave-vectorstore.vectorstores.qdrant.dimensions', 1536),
         );
     }
 
@@ -60,7 +61,8 @@ class VectorstoreManager extends Manager
                 apiToken: $this->config->get('mindwave-vectorstore.vectorstores.weaviate.api_token'),
                 additionalHeaders: $this->config->get('mindwave-vectorstore.vectorstores.weaviate.additional_headers', []),
             ),
-            className: $this->config->get('mindwave-vectorstore.vectorstores.weaviate.index')
+            className: $this->config->get('mindwave-vectorstore.vectorstores.weaviate.index'),
+            dimensions: $this->config->get('mindwave-vectorstore.vectorstores.weaviate.dimensions', 1536),
         );
     }
 }

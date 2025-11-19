@@ -18,16 +18,19 @@ class Weaviate implements Vectorstore
 
     protected string $className;
 
-    public function __construct(WeaviateClient $client, string $className)
+    protected int $dimensions;
+
+    public function __construct(WeaviateClient $client, string $className, int $dimensions = 1536)
     {
         $this->client = $client;
         $this->className = $className;
+        $this->dimensions = $dimensions;
     }
 
     protected function ensureClassExists()
     {
         if ($this->client->schema()->get()->getClasses()->isEmpty()) {
-            $this->client->schema()->create([
+            $this->client->schema()->createClass([
                 'class' => $this->className,
                 'description' => 'Created by Mindwave',
                 'vectorizer' => 'none',
@@ -55,7 +58,7 @@ class Weaviate implements Vectorstore
     {
         $this->ensureClassExists();
 
-        $this->client->objects()->create([
+        $this->client->dataObject()->create([
             'id' => Str::uuid()->toString(),
             'class' => $this->className,
             'vector' => $entry->vector->values,
@@ -129,7 +132,7 @@ class Weaviate implements Vectorstore
         $this->ensureClassExists();
 
         // No way to bulk delete, simply delete the entire schema and rebuild it.
-        $this->client->schema()->delete($this->className);
+        $this->client->schema()->deleteClass($this->className);
 
         $this->ensureClassExists();
     }

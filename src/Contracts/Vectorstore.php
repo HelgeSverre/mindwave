@@ -7,8 +7,6 @@ use Mindwave\Mindwave\Vectorstore\Data\VectorStoreEntry;
 
 interface Vectorstore
 {
-    const OPENAI_EMBEDDING_LENGTH = 1536;
-
     public function truncate(): void;
 
     public function itemCount(): int;
