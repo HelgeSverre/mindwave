@@ -58,6 +58,9 @@ class Weaviate implements Vectorstore
     {
         $this->ensureClassExists();
 
+        // TODO: Validate entry->vector dimension matches $this->dimensions
+        // Throw InvalidArgumentException if count($entry->vector->values) != $this->dimensions
+
         $this->client->dataObject()->create([
             'id' => Str::uuid()->toString(),
             'class' => $this->className,
@@ -68,6 +71,9 @@ class Weaviate implements Vectorstore
 
     public function insertMany(array $entries): void
     {
+        // TODO: Validate all entry vectors match $this->dimensions
+        // Throw InvalidArgumentException on first mismatch
+
         $objects = collect($entries)->map(function (VectorStoreEntry $entry) {
             return [
                 'id' => Str::uuid()->toString(),

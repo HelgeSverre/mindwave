@@ -76,6 +76,9 @@ class Qdrant implements Vectorstore
     {
         $this->ensureCollectionExists();
 
+        // TODO: Validate entry->vector dimension matches $this->dimensions
+        // Throw InvalidArgumentException if count($entry->vector->values) != $this->dimensions
+
         $points = new PointsStruct;
         $points->addPoint(
             new PointStruct(
@@ -91,6 +94,9 @@ class Qdrant implements Vectorstore
     public function insertMany(array $entries): void
     {
         $this->ensureCollectionExists();
+
+        // TODO: Validate all entry vectors match $this->dimensions
+        // Throw InvalidArgumentException on first mismatch with clear error message
 
         $points = new PointsStruct;
 

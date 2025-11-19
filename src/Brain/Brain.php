@@ -73,6 +73,8 @@ class Brain
         }
 
         // Insert all entries in a single batch operation
+        // TODO: Validate all embedding dimensions match vector store dimensions
+        // Should throw exception if any embedding dimension != $vectorstore->dimensions
         $this->vectorstore->insertMany($entries);
 
         return $this;
@@ -97,6 +99,8 @@ class Brain
             );
         }
 
+        // TODO: Validate embedding dimensions match vector store dimensions
+        // Should throw exception if $entry->vector->count() != $vectorstore->dimensions
         $this->vectorstore->insertMany($entries);
 
         return $this;
