@@ -37,10 +37,43 @@ class Brain
 
     public function consumeAll(array $documents): self
     {
-        // TODO: Horribly inefficient, use embedDocuments to speed up
+        // Split all documents into chunks first
+        $allChunks = [];
+        $chunkMetadata = [];
+
         foreach ($documents as $document) {
-            $this->consume($document);
+            $chunks = $this->textSplitter->splitDocument($document);
+
+            foreach ($chunks as $chunkIndex => $chunk) {
+                $allChunks[] = $chunk;
+                $chunkMetadata[] = [
+                    'chunk' => $chunk,
+                    'chunkIndex' => $chunkIndex,
+                ];
+            }
         }
+
+        // Batch embed all chunks at once for better performance
+        $embeddings = $this->embeddings->embedDocuments($allChunks);
+
+        // Build vector store entries with the embeddings
+        $entries = [];
+        foreach ($embeddings as $index => $embedding) {
+            $metadata = $chunkMetadata[$index];
+            $entries[] = new VectorStoreEntry(
+                vector: $embedding,
+                document: new Document(
+                    content: $metadata['chunk']->content(),
+                    metadata: array_merge(
+                        $metadata['chunk']->metadata(),
+                        ['_mindwave_doc_chunk_index' => $metadata['chunkIndex']]
+                    )
+                )
+            );
+        }
+
+        // Insert all entries in a single batch operation
+        $this->vectorstore->insertMany($entries);
 
         return $this;
     }
