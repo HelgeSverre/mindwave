@@ -47,5 +47,13 @@ return [
             'safe_mode' => env('MINDWAVE_MISTRAL_SAFE_MODE', false),
             'random_seed' => env('MINDWAVE_MISTRAL_RANDOM_SEED'),
         ],
+
+        'anthropic' => [
+            'api_key' => env('MINDWAVE_ANTHROPIC_API_KEY'),
+            'model' => env('MINDWAVE_ANTHROPIC_MODEL', 'claude-sonnet-4-5-20250929'),
+            'system_message' => env('MINDWAVE_ANTHROPIC_SYSTEM_MESSAGE'),
+            'max_tokens' => env('MINDWAVE_ANTHROPIC_MAX_TOKENS', 4096),
+            'temperature' => env('MINDWAVE_ANTHROPIC_TEMPERATURE', 1.0),
+        ],
     ],
 ];

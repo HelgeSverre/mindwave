@@ -4,6 +4,7 @@ namespace Mindwave\Mindwave\LLM;
 
 use HelgeSverre\Mistral\Mistral;
 use Illuminate\Support\Manager;
+use Mindwave\Mindwave\LLM\Drivers\Anthropic\AnthropicDriver;
 use Mindwave\Mindwave\LLM\Drivers\Fake;
 use Mindwave\Mindwave\LLM\Drivers\MistralDriver;
 use Mindwave\Mindwave\LLM\Drivers\OpenAI\OpenAI as OpenAIDriver;
@@ -50,6 +51,21 @@ class LLMManager extends Manager
             temperature: $this->config->get('mindwave-llm.llms.mistral.temperature'),
             safeMode: $this->config->get('mindwave-llm.llms.mistral.safe_mode'),
             randomSeed: $this->config->get('mindwave-llm.llms.mistral.random_seed'),
+        );
+    }
+
+    public function createAnthropicDriver(): AnthropicDriver
+    {
+        $client = \Anthropic::client(
+            apiKey: $this->config->get('mindwave-llm.llms.anthropic.api_key')
+        );
+
+        return new AnthropicDriver(
+            client: $client,
+            model: $this->config->get('mindwave-llm.llms.anthropic.model'),
+            systemMessage: $this->config->get('mindwave-llm.llms.anthropic.system_message'),
+            maxTokens: $this->config->get('mindwave-llm.llms.anthropic.max_tokens'),
+            temperature: $this->config->get('mindwave-llm.llms.anthropic.temperature'),
         );
     }
 }

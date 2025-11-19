@@ -32,6 +32,7 @@
     "hkulekci/qdrant": "^0.4.1",
     "illuminate/contracts": "^11.0",
     "laravel/prompts": "^0.3",
+    "mozex/anthropic-php": "^1.0",
     "open-telemetry/sdk": "^1.0",
     "open-telemetry/exporter-otlp": "^1.0",
     "openai-php/client": "^0.10",
@@ -42,6 +43,7 @@
     "symfony/dom-crawler": "^6.2|^7.0",
     "teamtnt/laravel-scout-tntsearch-driver": "^13.0|^14.0",
     "teamtnt/tntsearch": "^3.0",
+    "timkley/weaviate-php": "^0.10.0",
     "yethee/tiktoken": "^0.5"
   },
   "require-dev": {
@@ -54,8 +56,7 @@
     "pestphp/pest-plugin-laravel": "^3.0",
     "phpstan/extension-installer": "^1.1",
     "phpstan/phpstan-deprecation-rules": "^2.0",
-    "phpstan/phpstan-phpunit": "^2.0",
-    "timkley/weaviate-php": "^0.10.0"
+    "phpstan/phpstan-phpunit": "^2.0"
   },
   "autoload": {
     "psr-4": {

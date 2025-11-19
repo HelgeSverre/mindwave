@@ -112,9 +112,13 @@ class Mindwave
         return $this->vectorstore;
     }
 
-    public function llm(): LLM
+    public function llm(?string $driver = null): LLM
     {
-        return $this->llm;
+        if ($driver === null) {
+            return $this->llm;
+        }
+
+        return app('mindwave.llm.manager')->driver($driver);
     }
 
     /**
