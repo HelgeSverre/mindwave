@@ -39,7 +39,8 @@ it('We can connect to weaviate in the docker container', function () {
             apiUrl: 'http://localhost:8080/v1',
             apiToken: 'password',
         ),
-        className: 'MindwaveItems'
+        className: 'MindwaveItems',
+        dimensions: 1536
     );
 
     $vectorstore->insert(new VectorStoreEntry(
@@ -62,7 +63,8 @@ it('We can truncate weaviate index', function () {
             apiUrl: 'http://localhost:8080/v1',
             apiToken: 'password',
         ),
-        className: 'MindwaveItems'
+        className: 'MindwaveItems',
+        dimensions: 1536
     );
 
     $vectorstore->insert(new VectorStoreEntry(
@@ -88,7 +90,8 @@ it('We can connect search weaviate', function () {
             apiUrl: 'http://localhost:8080/v1',
             apiToken: 'password',
         ),
-        className: 'MindwaveItems'
+        className: 'MindwaveItems',
+        dimensions: 1536
     );
     $vectorstore->truncate();
 
@@ -143,7 +146,8 @@ it('Can insert multiple in batch', function () {
             apiUrl: 'http://localhost:8080/v1',
             apiToken: 'password',
         ),
-        className: 'MindwaveItems'
+        className: 'MindwaveItems',
+        dimensions: 1536
     );
     $vectorstore->truncate();
 
