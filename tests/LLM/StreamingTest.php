@@ -11,7 +11,6 @@ use Mindwave\Mindwave\Observability\Tracing\GenAI\LLMDriverInstrumentorDecorator
 use Mindwave\Mindwave\Observability\Tracing\TracerManager;
 use OpenAI\Client;
 use OpenAI\Contracts\ClientContract;
-use OpenAI\Responses\StreamResponse;
 
 beforeEach(function () {
     // Create a mock OpenAI client
