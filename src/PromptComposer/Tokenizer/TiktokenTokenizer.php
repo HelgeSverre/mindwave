@@ -2,13 +2,15 @@
 
 namespace Mindwave\Mindwave\PromptComposer\Tokenizer;
 
+use Exception;
+use Yethee\Tiktoken\Encoder;
 use Yethee\Tiktoken\EncoderProvider;
 
 class TiktokenTokenizer implements TokenizerInterface
 {
     private EncoderProvider $provider;
 
-    /** @var array<string, \Yethee\Tiktoken\Encoder> */
+    /** @var array<string, Encoder> */
     private array $encoders = [];
 
     public function __construct(?EncoderProvider $provider = null)
@@ -48,7 +50,7 @@ class TiktokenTokenizer implements TokenizerInterface
             $this->getEncoder($model);
 
             return true;
-        } catch (\Exception) {
+        } catch (Exception) {
             return false;
         }
     }
@@ -56,7 +58,7 @@ class TiktokenTokenizer implements TokenizerInterface
     /**
      * Get or create an encoder for the specified model.
      */
-    private function getEncoder(string $model): \Yethee\Tiktoken\Encoder
+    private function getEncoder(string $model): Encoder
     {
         $encodingName = ModelTokenLimits::getEncoding($model);
 

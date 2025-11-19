@@ -4,11 +4,11 @@ namespace Mindwave\Mindwave\PromptComposer\Shrinkers;
 
 use Mindwave\Mindwave\PromptComposer\Tokenizer\TokenizerInterface;
 
-class TruncateShrinker implements ShrinkerInterface
+readonly class TruncateShrinker implements ShrinkerInterface
 {
     public function __construct(
-        private readonly TokenizerInterface $tokenizer,
-        private readonly bool $sentenceAware = true,
+        protected TokenizerInterface $tokenizer,
+        protected bool $sentenceAware = true,
     ) {}
 
     public function shrink(string $content, int $targetTokens, string $model): string
@@ -37,7 +37,7 @@ class TruncateShrinker implements ShrinkerInterface
     /**
      * Truncate by complete sentences.
      */
-    private function truncateBySentence(string $content, int $targetTokens, string $model): string
+    protected function truncateBySentence(string $content, int $targetTokens, string $model): string
     {
         // Split into sentences (simple approach)
         $sentences = preg_split('/(?<=[.!?])\s+/', $content, -1, PREG_SPLIT_NO_EMPTY);
@@ -72,7 +72,7 @@ class TruncateShrinker implements ShrinkerInterface
     /**
      * Truncate by words.
      */
-    private function truncateByWord(string $content, int $targetTokens, string $model): string
+    protected function truncateByWord(string $content, int $targetTokens, string $model): string
     {
         $words = explode(' ', $content);
         $result = '';

@@ -29,9 +29,8 @@ class FileTypeDetector
             // TODO: throw exception ?
             return null;
         } finally {
-            // Close stream so we dont leak memory
+            // Close stream so we don't leak memory
             fclose($stream);
         }
-
     }
 }

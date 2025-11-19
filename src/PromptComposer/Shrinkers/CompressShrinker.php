@@ -4,10 +4,10 @@ namespace Mindwave\Mindwave\PromptComposer\Shrinkers;
 
 use Mindwave\Mindwave\PromptComposer\Tokenizer\TokenizerInterface;
 
-class CompressShrinker implements ShrinkerInterface
+readonly class CompressShrinker implements ShrinkerInterface
 {
     public function __construct(
-        private readonly TokenizerInterface $tokenizer,
+        protected TokenizerInterface $tokenizer,
     ) {}
 
     public function shrink(string $content, int $targetTokens, string $model): string
@@ -47,7 +47,7 @@ class CompressShrinker implements ShrinkerInterface
     /**
      * Remove extra whitespace (multiple spaces, newlines, tabs).
      */
-    private function removeExtraWhitespace(string $content): string
+    protected function removeExtraWhitespace(string $content): string
     {
         // Replace multiple newlines with single newline
         $content = preg_replace('/\n{3,}/', "\n\n", $content);
@@ -64,7 +64,7 @@ class CompressShrinker implements ShrinkerInterface
     /**
      * Remove markdown formatting to save tokens.
      */
-    private function removeMarkdownFormatting(string $content): string
+    protected function removeMarkdownFormatting(string $content): string
     {
         // Remove bold/italic markers
         $content = preg_replace('/\*\*([^*]+)\*\*/', '$1', $content);
@@ -80,7 +80,7 @@ class CompressShrinker implements ShrinkerInterface
         $content = preg_replace('/^#{1,6}\s+/m', '', $content);
 
         // Remove links but keep text
-        $content = preg_replace('/\[([^\]]+)\]\([^\)]+\)/', '$1', $content);
+        $content = preg_replace('/\[([^]]+)]\([^)]+\)/', '$1', $content);
 
         return $content;
     }
@@ -88,7 +88,7 @@ class CompressShrinker implements ShrinkerInterface
     /**
      * Truncate to target token count.
      */
-    private function truncateToTarget(string $content, int $targetTokens, string $model): string
+    protected function truncateToTarget(string $content, int $targetTokens, string $model): string
     {
         $words = explode(' ', $content);
         $result = '';

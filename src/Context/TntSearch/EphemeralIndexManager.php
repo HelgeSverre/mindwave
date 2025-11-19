@@ -2,6 +2,7 @@
 
 namespace Mindwave\Mindwave\Context\TntSearch;
 
+use PDO;
 use TeamTNT\TNTSearch\TNTSearch;
 
 /**
@@ -48,8 +49,8 @@ class EphemeralIndexManager
     {
         // Create a temporary SQLite database for the documents
         $tempDbPath = $this->indexPath.'/'.$name.'_temp.sqlite';
-        $pdo = new \PDO('sqlite:'.$tempDbPath);
-        $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+        $pdo = new PDO('sqlite:'.$tempDbPath);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
         // Create table
         $pdo->exec('CREATE TABLE IF NOT EXISTS documents (

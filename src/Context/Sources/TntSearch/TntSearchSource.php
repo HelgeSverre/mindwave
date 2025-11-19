@@ -4,11 +4,13 @@ namespace Mindwave\Mindwave\Context\Sources\TntSearch;
 
 use Closure;
 use Illuminate\Database\Eloquent\Builder;
+use InvalidArgumentException;
 use Mindwave\Mindwave\Context\ContextCollection;
 use Mindwave\Mindwave\Context\ContextItem;
 use Mindwave\Mindwave\Context\Contracts\ContextSource;
 use Mindwave\Mindwave\Context\TntSearch\EphemeralIndexManager;
 use Mindwave\Mindwave\Observability\Tracing\TracerManager;
+use Throwable;
 
 /**
  * TNTSearch Context Source
@@ -100,7 +102,7 @@ class TntSearchSource implements ContextSource
         $instance = new self($name);
 
         if (! file_exists($filepath)) {
-            throw new \InvalidArgumentException("CSV file not found: {$filepath}");
+            throw new InvalidArgumentException("CSV file not found: {$filepath}");
         }
 
         $csv = array_map('str_getcsv', file($filepath));
@@ -141,7 +143,7 @@ class TntSearchSource implements ContextSource
                     ->setAttribute('context.source.type', 'tntsearch')
                     ->setAttribute('context.document_count', count($this->documents))
                     ->start();
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 // Tracing is optional, continue without it
             }
         }
@@ -166,7 +168,7 @@ class TntSearchSource implements ContextSource
                 $span->setAttribute('context.index_name', $this->indexName);
                 $span->setStatus('ok');
             }
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             if ($span) {
                 $span->recordException($e);
                 $span->setStatus('error', $e->getMessage());
@@ -193,7 +195,7 @@ class TntSearchSource implements ContextSource
                     ->setAttribute('context.query', $query)
                     ->setAttribute('context.limit', $limit)
                     ->start();
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 // Tracing is optional, continue without it
             }
         }
@@ -230,7 +232,7 @@ class TntSearchSource implements ContextSource
             }
 
             return $collection;
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             // Record error
             if ($span) {
                 $span->recordException($e);
