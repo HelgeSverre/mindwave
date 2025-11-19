@@ -36,7 +36,8 @@ it('can insert one into qdrant', function () {
         apiKey: '',
         collection: 'MindwaveItems',
         host: 'localhost',
-        port: '6333'
+        port: '6333',
+        dimensions: 1536
     );
     $vectorstore->truncate();
 
@@ -60,7 +61,8 @@ it('can insert multiple into qdrant', function () {
         apiKey: '',
         collection: 'MindwaveItems',
         host: 'localhost',
-        port: '6333'
+        port: '6333',
+        dimensions: 1536
     );
 
     $vectorstore->truncate();

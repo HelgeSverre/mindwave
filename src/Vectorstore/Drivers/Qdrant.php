@@ -3,6 +3,7 @@
 namespace Mindwave\Mindwave\Vectorstore\Drivers;
 
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use Mindwave\Mindwave\Contracts\Vectorstore;
 use Mindwave\Mindwave\Document\Data\Document;
 use Mindwave\Mindwave\Embeddings\Data\EmbeddingVector;
@@ -25,13 +26,16 @@ class Qdrant implements Vectorstore
 
     protected string $vectorsName = 'items';
 
-    public function __construct(string $apiKey, string $collection, string $host, int $port = 6333)
+    protected int $dimensions;
+
+    public function __construct(string $apiKey, string $collection, string $host, int $port = 6333, int $dimensions = 1536)
     {
         $config = new Config($host, $port);
         $config->setApiKey($apiKey); // TODO(01 Jun 2023) ~ Helge: no way to set an api key in qdrant yet though...?
 
         $this->client = new QdrantClient(new GuzzleClient($config));
         $this->collection = $collection;
+        $this->dimensions = $dimensions;
     }
 
     public function truncate(): void
@@ -51,7 +55,7 @@ class Qdrant implements Vectorstore
 
         $createCollection = new CreateCollection;
         $createCollection->addVector(new VectorParams(
-            self::OPENAI_EMBEDDING_LENGTH,
+            $this->dimensions,
             VectorParams::DISTANCE_COSINE),
             $this->vectorsName
         );
@@ -72,14 +76,10 @@ class Qdrant implements Vectorstore
     {
         $this->ensureCollectionExists();
 
-        // TODO(01 Jun 2023) ~ Helge: DANGER: This is a NAIVE and UNSAFE workaround, until we get UUID support in the qdrant library
-        $count = $this->itemCount();
-
         $points = new PointsStruct;
         $points->addPoint(
-
             new PointStruct(
-                id: ++$count, // TODO(01 Jun 2023) ~ Helge: change this to uuid string when lib supports it
+                id: Str::uuid()->toString(),
                 vector: new VectorStruct($entry->vector->values, $this->vectorsName),
                 payload: $entry->meta()
             )
@@ -94,13 +94,10 @@ class Qdrant implements Vectorstore
 
         $points = new PointsStruct;
 
-        // TODO(01 Jun 2023) ~ Helge: DANGER: This is a NAIVE and UNSAFE workaround, until we get UUID support in the qdrant library
-        $count = $this->itemCount();
-
         foreach ($entries as $entry) {
             $points->addPoint(
                 new PointStruct(
-                    id: ++$count, // TODO(01 Jun 2023) ~ Helge: change this to uuid string when lib supports it
+                    id: Str::uuid()->toString(),
                     vector: new VectorStruct($entry->vector->values, $this->vectorsName),
                     payload: $entry->meta()
                 )
