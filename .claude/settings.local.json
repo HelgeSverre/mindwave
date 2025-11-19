@@ -4,6 +4,9 @@
       "WebSearch"
     ],
     "deny": [],
-    "ask": []
+    "ask": [],
+    "additionalDirectories": [
+      "/Users/helge/code/mindwave-docs"
+    ]
   }
 }
