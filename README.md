@@ -367,8 +367,51 @@ Mindwave::prompt()
 
 - ✅ **OpenAI** (GPT-4, GPT-3.5, etc.)
 - ✅ **Mistral AI** (Mistral Large, Small, etc.)
-- 🔄 **Anthropic** (Coming soon)
+- ✅ **Anthropic** (Claude 3.5 Sonnet, Opus, Haiku, etc.)
 - 🔄 **Google Gemini** (Coming soon)
+
+## Supported Vector Stores
+
+- ✅ **Qdrant** - High-performance vector database with UUID-based IDs
+- ✅ **Weaviate** - Open-source vector search engine
+- ✅ **Pinecone** - Managed vector database service
+- ✅ **In-Memory** - For testing and development
+- ✅ **File-based** - JSON file storage for simple use cases
+
+**Vector Store Configuration:**
+
+All vector stores now support configurable embedding dimensions. Set the dimension in your `.env` file to match your embedding model:
+
+```bash
+# Common values: 1536 (OpenAI ada-002, 3-small), 3072 (OpenAI 3-large)
+MINDWAVE_QDRANT_DIMENSIONS=1536
+MINDWAVE_WEAVIATE_DIMENSIONS=1536
+MINDWAVE_PINECONE_DIMENSIONS=1536
+```
+
+## Breaking Changes in v2.0
+
+**⚠️ Important:** Version 2.0 introduces breaking changes:
+
+1. **Removed `OPENAI_EMBEDDING_LENGTH` constant** - Embedding dimensions are now configured per vector store in `config/mindwave-vectorstore.php` and environment variables.
+
+2. **Qdrant ID generation changed** - Now uses UUID strings instead of auto-incrementing integers. Existing Qdrant collections will need to be recreated.
+
+3. **Weaviate dependency moved** - `timkley/weaviate-php` is now in `require` instead of `require-dev` to prevent production crashes.
+
+**Migration Guide:**
+
+```bash
+# 1. Update your .env file with dimension settings
+MINDWAVE_QDRANT_DIMENSIONS=1536
+MINDWAVE_WEAVIATE_DIMENSIONS=1536
+
+# 2. Update your config (if you published it)
+php artisan vendor:publish --tag="mindwave-config" --force
+
+# 3. Rebuild Qdrant collections (if using Qdrant)
+# The new UUID-based IDs are incompatible with old integer IDs
+```
 
 ## Documentation
 
