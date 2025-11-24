@@ -176,3 +176,37 @@ it('Can insert multiple in batch', function () {
 
     expect($vectorstore->itemCount())->toBe(5);
 });
+
+it('throws exception when inserting vector with wrong dimensions', function () {
+    $vectorstore = new \Mindwave\Mindwave\Vectorstore\Drivers\Weaviate(
+        client: new Weaviate(
+            apiUrl: 'http://localhost:8080/v1',
+            apiToken: 'password',
+        ),
+        className: 'MindwaveItems',
+        dimensions: 1536
+    );
+
+    expect(fn () => $vectorstore->insert(
+        new VectorStoreEntry(
+            new EmbeddingVector(array_fill(0, 3072, 0.5)), // Wrong dimension!
+            new Document('test')
+        )
+    ))->toThrow(InvalidArgumentException::class, 'Expected vector dimension 1536, got 3072');
+});
+
+it('throws exception when inserting multiple vectors with wrong dimensions', function () {
+    $vectorstore = new \Mindwave\Mindwave\Vectorstore\Drivers\Weaviate(
+        client: new Weaviate(
+            apiUrl: 'http://localhost:8080/v1',
+            apiToken: 'password',
+        ),
+        className: 'MindwaveItems',
+        dimensions: 1536
+    );
+
+    expect(fn () => $vectorstore->insertMany([
+        new VectorStoreEntry(new EmbeddingVector(array_fill(0, 1536, 0.5)), new Document('test 1')),
+        new VectorStoreEntry(new EmbeddingVector(array_fill(0, 3072, 0.5)), new Document('test 2')), // Wrong dimension!
+    ]))->toThrow(InvalidArgumentException::class, 'Expected vector dimension 1536, got 3072');
+});

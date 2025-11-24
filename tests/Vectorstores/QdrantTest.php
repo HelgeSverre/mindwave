@@ -138,3 +138,35 @@ it('We can perform similarity search on documents in qdrant', function () {
     // this is crude, but it works
     expect($contents)->toContain('banana', 'fruit flies');
 });
+
+it('throws exception when inserting vector with wrong dimensions', function () {
+    $vectorstore = new Qdrant(
+        apiKey: '',
+        collection: 'MindwaveItems',
+        host: 'localhost',
+        port: '6333',
+        dimensions: 1536
+    );
+
+    expect(fn () => $vectorstore->insert(
+        new VectorStoreEntry(
+            vector: new EmbeddingVector(array_fill(0, 3072, 0.5)), // Wrong dimension!
+            document: new Document('test')
+        )
+    ))->toThrow(InvalidArgumentException::class, 'Expected vector dimension 1536, got 3072');
+});
+
+it('throws exception when inserting multiple vectors with wrong dimensions', function () {
+    $vectorstore = new Qdrant(
+        apiKey: '',
+        collection: 'MindwaveItems',
+        host: 'localhost',
+        port: '6333',
+        dimensions: 1536
+    );
+
+    expect(fn () => $vectorstore->insertMany([
+        new VectorStoreEntry(new EmbeddingVector(array_fill(0, 1536, 0.5)), new Document('test 1')),
+        new VectorStoreEntry(new EmbeddingVector(array_fill(0, 3072, 0.5)), new Document('test 2')), // Wrong dimension!
+    ]))->toThrow(InvalidArgumentException::class, 'Expected vector dimension 1536, got 3072');
+});
