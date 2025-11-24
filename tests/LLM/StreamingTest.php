@@ -48,19 +48,31 @@ it('extracts content from chat completion stream chunks', function () {
     // Test legacy completion format
     $completionChunk = (object) ['choices' => [(object) ['text' => 'Legacy text']]];
     expect($method->invoke($driver, $completionChunk))->toBe('Legacy text');
+
+    // Test null content (should return empty string, not null)
+    $nullContentChunk = (object) ['choices' => [(object) ['delta' => (object) ['content' => null]]]];
+    expect($method->invoke($driver, $nullContentChunk))->toBe('');
+
+    // Test null text for legacy completions
+    $nullTextChunk = (object) ['choices' => [(object) ['text' => null]]];
+    expect($method->invoke($driver, $nullTextChunk))->toBe('');
 });
 
 it('throws exception for drivers that do not support streaming', function () {
     // Create a mock driver that extends BaseDriver but doesn't override streamText
-    $driver = new class extends BaseDriver
-    {
+    $driver = new class extends BaseDriver {
         public function generateText(string $prompt): ?string
         {
             return 'test';
         }
+
+        public function chat(array $messages, array $options = []): \Mindwave\Mindwave\LLM\Responses\ChatResponse
+        {
+            return new \Mindwave\Mindwave\LLM\Responses\ChatResponse(content: 'test');
+        }
     };
 
-    expect(fn () => $driver->streamText('test'))
+    expect(fn() => $driver->streamText('test'))
         ->toThrow(BadMethodCallException::class, 'Streaming is not supported');
 });
 
@@ -211,11 +223,15 @@ it('decorator supports streamText when driver implements it', function () {
 
 it('decorator throws exception when driver does not support streamText', function () {
     // Create a real driver that extends BaseDriver but doesn't override streamText
-    $driver = new class extends BaseDriver
-    {
+    $driver = new class extends BaseDriver {
         public function generateText(string $prompt): ?string
         {
             return 'test';
+        }
+
+        public function chat(array $messages, array $options = []): \Mindwave\Mindwave\LLM\Responses\ChatResponse
+        {
+            return new \Mindwave\Mindwave\LLM\Responses\ChatResponse(content: 'test');
         }
     };
 
@@ -225,7 +241,7 @@ it('decorator throws exception when driver does not support streamText', functio
     $decorator = new LLMDriverInstrumentorDecorator($driver, $instrumentor, 'test-provider');
 
     // The decorator should pass through to the driver's streamText, which throws an exception
-    expect(fn () => iterator_to_array($decorator->streamText('test')))
+    expect(fn() => iterator_to_array($decorator->streamText('test')))
         ->toThrow(BadMethodCallException::class);
 });
 
@@ -250,8 +266,8 @@ it('instrumentation tracks cumulative tokens during streaming', function () {
     $mockSpan->shouldReceive('setGenAiUsage')
         ->once()
         ->with(
-            Mockery::on(fn ($inputTokens) => $inputTokens === null),  // Input tokens not available in streaming
-            Mockery::on(fn ($outputTokens) => $outputTokens === 3)    // Should count 3 chunks
+            Mockery::on(fn($inputTokens) => $inputTokens === null),  // Input tokens not available in streaming
+            Mockery::on(fn($outputTokens) => $outputTokens === 3)    // Should count 3 chunks
         )
         ->andReturnSelf();
 
@@ -278,4 +294,49 @@ it('instrumentation tracks cumulative tokens during streaming', function () {
 
     // Verify chunks were yielded correctly
     expect($chunks)->toBe(['First', 'Second', 'Third']);
+});
+
+it('can stream text with Fake driver using default chunk size', function () {
+    $driver = new \Mindwave\Mindwave\LLM\Drivers\Fake;
+    $driver->respondsWith('Hello world!');
+
+    $stream = $driver->streamText('test prompt');
+    $chunks = iterator_to_array($stream);
+
+    // With default chunk size of 5, "Hello world!" should be split into chunks
+    expect($chunks)->toBe(['Hello', ' worl', 'd!']);
+});
+
+it('can stream text with Fake driver using custom chunk size', function () {
+    $driver = new \Mindwave\Mindwave\LLM\Drivers\Fake;
+    $driver->respondsWith('Hello world!')
+        ->streamChunkSize(3);
+
+    $stream = $driver->streamText('test prompt');
+    $chunks = iterator_to_array($stream);
+
+    // With chunk size of 3, "Hello world!" should be split into smaller chunks
+    expect($chunks)->toBe(['Hel', 'lo ', 'wor', 'ld!']);
+});
+
+it('handles empty response in Fake driver streaming', function () {
+    $driver = new \Mindwave\Mindwave\LLM\Drivers\Fake;
+    $driver->respondsWith('');
+
+    $stream = $driver->streamText('test prompt');
+    $chunks = iterator_to_array($stream);
+
+    expect($chunks)->toBe([]);
+});
+
+it('handles multibyte characters in Fake driver streaming', function () {
+    $driver = new \Mindwave\Mindwave\LLM\Drivers\Fake;
+    $driver->respondsWith('Hello 世界!')
+        ->streamChunkSize(5);
+
+    $stream = $driver->streamText('test prompt');
+    $chunks = iterator_to_array($stream);
+
+    // mb_substr should handle multibyte characters correctly
+    expect($chunks)->toBe(['Hello', ' 世界!']);
 });

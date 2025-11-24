@@ -16,6 +16,15 @@ interface LLM
     public function generate(PromptTemplate $promptTemplate, array $inputs = []): mixed;
 
     /**
+     * Send a chat message to the LLM.
+     *
+     * @param  array  $messages  The messages to send
+     * @param  array  $options   Additional options (temperature, max_tokens, etc.)
+     * @return \Mindwave\Mindwave\LLM\Responses\ChatResponse
+     */
+    public function chat(array $messages, array $options = []): \Mindwave\Mindwave\LLM\Responses\ChatResponse;
+
+    /**
      * Generate text with streaming support.
      *
      * Yields text deltas as they are received from the LLM provider.

@@ -21,7 +21,8 @@ class OpenAI extends BaseDriver implements LLM
         protected ?string $systemMessage = null,
         protected int $maxTokens = 800,
         protected float $temperature = 0.7,
-    ) {}
+    ) {
+    }
 
     public function model(string $model): self
     {
@@ -70,45 +71,51 @@ class OpenAI extends BaseDriver implements LLM
         if ($choice->message->toolCalls) {
             return new FunctionCall(
                 name: $choice->message->toolCalls[0]->function->name,
-                arguments: rescue(fn () => json_decode($choice->message->toolCalls[0]->function->arguments, true), report: false),
+                arguments: rescue(fn() => json_decode($choice->message->toolCalls[0]->function->arguments, true), report: false),
                 rawArguments: $choice->message->toolCalls[0]->function->arguments,
             );
         }
 
-        return $this->extractResponseText($response);
+        return $response->choices[0]->message->content;
     }
 
     public function generateText(string $prompt): ?string
     {
-        $response = ModelNames::isCompletionModel($this->model)
-            ? $this->completion($prompt)
-            : $this->chat($prompt);
+        if (ModelNames::isCompletionModel($this->model)) {
+            $response = $this->completion($prompt);
+            return $this->extractResponseText($response);
+        }
 
-        return $this->extractResponseText($response);
+        $response = $this->chat([
+            ['role' => 'user', 'content' => $prompt],
+        ]);
+
+        return $response->content;
     }
 
-    protected function extractResponseText(ChatResponse|CompletionResponse $response): string
+    protected function extractResponseText(CompletionResponse $response): string
     {
-        return $response instanceof ChatResponse
-            ? $response->choices[0]->message->content
-            : $response->choices[0]->text;
+        return $response->choices[0]->text;
     }
 
-    public function chat($prompt): ChatResponse
+    public function chat(array $messages, array $options = []): \Mindwave\Mindwave\LLM\Responses\ChatResponse
     {
-        return $this->client->chat()->create([
+        $response = $this->client->chat()->create(array_merge([
             'max_tokens' => $this->maxTokens,
             'temperature' => $this->temperature,
             'model' => $this->model,
-            'messages' => $this->systemMessage
-                ? [
-                    ['role' => 'system', 'content' => $this->systemMessage],
-                    ['role' => 'user', 'content' => $prompt],
-                ]
-                : [
-                    ['role' => 'system', 'content' => $prompt],
-                ],
-        ]);
+            'messages' => $messages,
+        ], $options));
+
+        return new \Mindwave\Mindwave\LLM\Responses\ChatResponse(
+            content: $response->choices[0]->message->content,
+            role: $response->choices[0]->message->role,
+            inputTokens: $response->usage->promptTokens,
+            outputTokens: $response->usage->completionTokens,
+            finishReason: $response->choices[0]->finishReason,
+            model: $response->model,
+            raw: (array) $response->toArray(),
+        );
     }
 
     public function completion($prompt): CompletionResponse
@@ -192,12 +199,12 @@ class OpenAI extends BaseDriver implements LLM
     {
         // For chat completions
         if (isset($chunk->choices[0]->delta->content)) {
-            return $chunk->choices[0]->delta->content;
+            return $chunk->choices[0]->delta->content ?? '';
         }
 
         // For legacy completions
         if (isset($chunk->choices[0]->text)) {
-            return $chunk->choices[0]->text;
+            return $chunk->choices[0]->text ?? '';
         }
 
         return '';

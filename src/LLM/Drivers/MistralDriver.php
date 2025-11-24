@@ -22,24 +22,58 @@ class MistralDriver extends BaseDriver implements LLM
         protected float $temperature = 0.7,
         protected bool $safeMode = false,
         protected ?int $randomSeed = null
-    ) {}
+    ) {
+    }
+
+    public function model(string $model): self
+    {
+        $this->model = $model;
+
+        return $this;
+    }
+
+    public function maxTokens(int $maxTokens): self
+    {
+        $this->maxTokens = $maxTokens;
+
+        return $this;
+    }
+
+    public function temperature(float $temperature): self
+    {
+        $this->temperature = $temperature;
+
+        return $this;
+    }
 
     public function generateText(string $prompt): ?string
     {
-        $response = $this->client->simpleChat()->create(
-            messages: [
-                [
-                    'role' => 'user',
-                    'content' => $prompt,
-                ],
-            ],
-            model: $this->model,
-            temperature: $this->temperature,
-            maxTokens: $this->maxTokens,
-            safeMode: $this->safeMode,
-            randomSeed: $this->randomSeed
-        );
+        $response = $this->chat([
+            ['role' => 'user', 'content' => $prompt],
+        ]);
 
         return $response->content;
+    }
+
+    public function chat(array $messages, array $options = []): \Mindwave\Mindwave\LLM\Responses\ChatResponse
+    {
+        $response = $this->client->chat()->create(array_merge([
+            'model' => $this->model,
+            'messages' => $messages,
+            'temperature' => $this->temperature,
+            'maxTokens' => $this->maxTokens,
+            'safeMode' => $this->safeMode,
+            'randomSeed' => $this->randomSeed
+        ], $options));
+
+        return new \Mindwave\Mindwave\LLM\Responses\ChatResponse(
+            content: $response->choices[0]->message->content,
+            role: $response->choices[0]->message->role,
+            inputTokens: $response->usage->promptTokens,
+            outputTokens: $response->usage->completionTokens,
+            finishReason: $response->choices[0]->finishReason,
+            model: $response->model,
+            raw: (array) $response,
+        );
     }
 }

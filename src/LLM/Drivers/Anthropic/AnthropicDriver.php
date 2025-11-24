@@ -18,7 +18,8 @@ class AnthropicDriver extends BaseDriver implements LLM
         protected ?string $systemMessage = null,
         protected int $maxTokens = 4096,
         protected float $temperature = 1.0,
-    ) {}
+    ) {
+    }
 
     public function model(string $model): self
     {
@@ -43,41 +44,47 @@ class AnthropicDriver extends BaseDriver implements LLM
 
     public function generateText(string $prompt): ?string
     {
-        $response = $this->chat($prompt);
+        $response = $this->chat([
+            ['role' => 'user', 'content' => $prompt],
+        ]);
 
-        return $this->extractResponseText($response);
+        return $response->content;
     }
 
-    protected function extractResponseText(CreateResponse $response): ?string
-    {
-        // Anthropic returns content as an array of blocks
-        // We need to find the first text block and extract its text
-        foreach ($response->content as $block) {
-            if ($block->type === 'text') {
-                return $block->text;
-            }
-        }
 
-        return null;
-    }
-
-    public function chat(string $prompt): CreateResponse
+    public function chat(array $messages, array $options = []): \Mindwave\Mindwave\LLM\Responses\ChatResponse
     {
-        $params = [
+        $params = array_merge([
             'model' => $this->model,
             'max_tokens' => $this->maxTokens,
             'temperature' => $this->temperature,
-            'messages' => [
-                ['role' => 'user', 'content' => $prompt],
-            ],
-        ];
+            'messages' => $messages,
+        ], $options);
 
         // System message is a separate parameter in Anthropic API
         if ($this->systemMessage) {
             $params['system'] = $this->systemMessage;
         }
 
-        return $this->client->messages()->create($params);
+        $response = $this->client->messages()->create($params);
+
+        // Extract text content
+        $content = '';
+        foreach ($response->content as $block) {
+            if ($block->type === 'text') {
+                $content .= $block->text;
+            }
+        }
+
+        return new \Mindwave\Mindwave\LLM\Responses\ChatResponse(
+            content: $content,
+            role: $response->role,
+            inputTokens: $response->usage->inputTokens,
+            outputTokens: $response->usage->outputTokens,
+            finishReason: $response->stop_reason,
+            model: $response->model,
+            raw: (array) $response->toArray(),
+        );
     }
 
     /**

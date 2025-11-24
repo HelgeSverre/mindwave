@@ -107,7 +107,7 @@ class LLMDriverInstrumentorDecorator implements LLM
             model: $model,
             prompt: $prompt,
             options: $options,
-            execute: fn () => $this->driver->generateText($prompt),
+            execute: fn() => $this->driver->generateText($prompt),
             serverAddress: $this->serverAddress
         );
     }
@@ -130,7 +130,7 @@ class LLMDriverInstrumentorDecorator implements LLM
             model: $model,
             prompt: $formatted,
             options: $options,
-            execute: fn () => $this->driver->generate($promptTemplate, $inputs),
+            execute: fn() => $this->driver->generate($promptTemplate, $inputs),
             serverAddress: $this->serverAddress
         );
     }
@@ -147,7 +147,7 @@ class LLMDriverInstrumentorDecorator implements LLM
     public function streamText(string $prompt): Generator
     {
         // Check if the underlying driver supports streaming
-        if (! method_exists($this->driver, 'streamText')) {
+        if (!method_exists($this->driver, 'streamText')) {
             // If not, throw a clear exception
             throw new \BadMethodCallException(
                 sprintf('Streaming is not supported by the %s driver', get_class($this->driver))
@@ -162,39 +162,28 @@ class LLMDriverInstrumentorDecorator implements LLM
             model: $model,
             prompt: $prompt,
             options: $options,
-            execute: fn () => $this->driver->streamText($prompt),
+            execute: fn() => $this->driver->streamText($prompt),
             serverAddress: $this->serverAddress
         );
     }
 
     /**
-     * Chat completion with automatic tracing (OpenAI-specific)
+     * Chat completion with automatic tracing
      *
-     * This method instruments chat completions if the underlying driver supports it.
-     * It checks for the 'chat' method using method_exists to maintain compatibility
-     * with different driver implementations.
-     *
-     * @param  array<array<string, mixed>>|string  $prompt  Messages or prompt string
+     * @param  array  $messages  The messages to send
+     * @param  array  $options   Additional options
      */
-    public function chat(array|string $prompt): mixed
+    public function chat(array $messages, array $options = []): \Mindwave\Mindwave\LLM\Responses\ChatResponse
     {
-        if (! method_exists($this->driver, 'chat')) {
-            // Fallback to generateText if chat not supported
-            return $this->generateText(is_array($prompt) ? json_encode($prompt) : $prompt);
-        }
-
         $model = $this->detectModel();
-        $options = $this->extractOptions();
-
-        // Normalize to messages array
-        $messages = is_array($prompt) ? $prompt : [['role' => 'user', 'content' => $prompt]];
+        $traceOptions = array_merge($this->extractOptions(), $options);
 
         return $this->instrumentor->instrumentChatCompletion(
             provider: $this->provider,
             model: $model,
             messages: $messages,
-            options: $options,
-            execute: fn () => $this->driver->chat($prompt),
+            options: $traceOptions,
+            execute: fn() => $this->driver->chat($messages, $options),
             serverAddress: $this->serverAddress
         );
     }
@@ -211,7 +200,7 @@ class LLMDriverInstrumentorDecorator implements LLM
         array|FunctionBuilder $functions,
         ?string $requiredFunction = 'auto'
     ): FunctionCall|string|null {
-        if (! method_exists($this->driver, 'functionCall')) {
+        if (!method_exists($this->driver, 'functionCall')) {
             // Fallback to generateText if functionCall not supported
             return $this->generateText($prompt);
         }
@@ -230,7 +219,7 @@ class LLMDriverInstrumentorDecorator implements LLM
             model: $model,
             messages: [['role' => 'system', 'content' => $prompt]],
             options: $options,
-            execute: fn () => $this->driver->functionCall($prompt, $functions, $requiredFunction),
+            execute: fn() => $this->driver->functionCall($prompt, $functions, $requiredFunction),
             serverAddress: $this->serverAddress
         );
     }

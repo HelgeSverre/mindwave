@@ -77,7 +77,7 @@ $response = Mindwave::llm()->chat([
     ['role' => 'user', 'content' => 'Explain Laravel in one sentence.'],
 ]);
 
-echo $response->choices[0]->message->content;
+echo $response->content;
 ```
 
 ### 2. Streaming Responses
