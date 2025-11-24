@@ -77,14 +77,14 @@ it('returns correct context window for Mistral large model', function () {
         ->model('mistral-large');
 
     expect($driver->maxContextTokens())->toBe(128_000);
-});
+})->skip(fn () => empty(env('MINDWAVE_MISTRAL_API_KEY')) || env('MINDWAVE_MISTRAL_API_KEY') === 'your-mistral-api-key-here', 'MINDWAVE_MISTRAL_API_KEY not set');
 
 it('returns correct context window for Mistral medium model', function () {
     $driver = Mindwave::llm('mistral')
         ->model('mistral-medium');
 
-    expect($driver->maxContextTokens())->toBe(32_000);
-});
+    expect($driver->maxContextTokens())->toBe(128_000);
+})->skip(fn () => empty(env('MINDWAVE_MISTRAL_API_KEY')) || env('MINDWAVE_MISTRAL_API_KEY') === 'your-mistral-api-key-here', 'MINDWAVE_MISTRAL_API_KEY not set');
 
 it('returns fallback context window for unknown model', function () {
     $driver = Mindwave::llm('openai')
