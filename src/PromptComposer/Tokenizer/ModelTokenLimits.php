@@ -10,10 +10,10 @@ class ModelTokenLimits
     public static function getContextWindow(string $model): int
     {
         return match (true) {
-            // OpenAI GPT-5 Models (200K context window)
-            str_contains($model, 'gpt-5-mini') => 200_000,
-            str_contains($model, 'gpt-5-nano') => 200_000,
-            str_contains($model, 'gpt-5') => 200_000,
+            // OpenAI GPT-5 Models (400K context window)
+            str_contains($model, 'gpt-5-mini') => 400_000,
+            str_contains($model, 'gpt-5-nano') => 400_000,
+            str_contains($model, 'gpt-5') => 400_000,
 
             // OpenAI GPT-4.1 Models (1M context window)
             str_contains($model, 'gpt-4.1-mini') => 1_000_000,
@@ -39,10 +39,10 @@ class ModelTokenLimits
             str_contains($model, 'claude-haiku-4-5') => 200_000,
             str_contains($model, 'claude-opus-4-1') => 200_000,
 
-            // Anthropic Claude 3.x Models
-            str_contains($model, 'claude-3.7-sonnet') => 200_000,
-            str_contains($model, 'claude-3.5-sonnet') => 200_000,
-            str_contains($model, 'claude-3.5-haiku') => 200_000,
+            // Anthropic Claude 3.x Models (support both hyphen and dot notation)
+            str_contains($model, 'claude-3.7-sonnet') || str_contains($model, 'claude-3-7-sonnet') => 200_000,
+            str_contains($model, 'claude-3.5-sonnet') || str_contains($model, 'claude-3-5-sonnet') => 200_000,
+            str_contains($model, 'claude-3.5-haiku') || str_contains($model, 'claude-3-5-haiku') => 200_000,
             str_contains($model, 'claude-3-opus') => 200_000,
             str_contains($model, 'claude-3-sonnet') => 200_000,
             str_contains($model, 'claude-3-haiku') => 200_000,
@@ -118,9 +118,9 @@ class ModelTokenLimits
     public static function all(): array
     {
         return [
-            'gpt-5' => 200_000,
-            'gpt-5-mini' => 200_000,
-            'gpt-5-nano' => 200_000,
+            'gpt-5' => 400_000,
+            'gpt-5-mini' => 400_000,
+            'gpt-5-nano' => 400_000,
             'gpt-4.1' => 1_000_000,
             'gpt-4.1-mini' => 1_000_000,
             'gpt-4.1-nano' => 1_000_000,
