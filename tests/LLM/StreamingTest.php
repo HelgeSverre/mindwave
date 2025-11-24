@@ -60,7 +60,8 @@ it('extracts content from chat completion stream chunks', function () {
 
 it('throws exception for drivers that do not support streaming', function () {
     // Create a mock driver that extends BaseDriver but doesn't override streamText
-    $driver = new class extends BaseDriver {
+    $driver = new class extends BaseDriver
+    {
         public function generateText(string $prompt): ?string
         {
             return 'test';
@@ -72,7 +73,7 @@ it('throws exception for drivers that do not support streaming', function () {
         }
     };
 
-    expect(fn() => $driver->streamText('test'))
+    expect(fn () => $driver->streamText('test'))
         ->toThrow(BadMethodCallException::class, 'Streaming is not supported');
 });
 
@@ -223,7 +224,8 @@ it('decorator supports streamText when driver implements it', function () {
 
 it('decorator throws exception when driver does not support streamText', function () {
     // Create a real driver that extends BaseDriver but doesn't override streamText
-    $driver = new class extends BaseDriver {
+    $driver = new class extends BaseDriver
+    {
         public function generateText(string $prompt): ?string
         {
             return 'test';
@@ -241,7 +243,7 @@ it('decorator throws exception when driver does not support streamText', functio
     $decorator = new LLMDriverInstrumentorDecorator($driver, $instrumentor, 'test-provider');
 
     // The decorator should pass through to the driver's streamText, which throws an exception
-    expect(fn() => iterator_to_array($decorator->streamText('test')))
+    expect(fn () => iterator_to_array($decorator->streamText('test')))
         ->toThrow(BadMethodCallException::class);
 });
 
@@ -266,8 +268,8 @@ it('instrumentation tracks cumulative tokens during streaming', function () {
     $mockSpan->shouldReceive('setGenAiUsage')
         ->once()
         ->with(
-            Mockery::on(fn($inputTokens) => $inputTokens === null),  // Input tokens not available in streaming
-            Mockery::on(fn($outputTokens) => $outputTokens === 3)    // Should count 3 chunks
+            Mockery::on(fn ($inputTokens) => $inputTokens === null),  // Input tokens not available in streaming
+            Mockery::on(fn ($outputTokens) => $outputTokens === 3)    // Should count 3 chunks
         )
         ->andReturnSelf();
 

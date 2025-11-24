@@ -21,8 +21,7 @@ class OpenAI extends BaseDriver implements LLM
         protected ?string $systemMessage = null,
         protected int $maxTokens = 800,
         protected float $temperature = 0.7,
-    ) {
-    }
+    ) {}
 
     public function model(string $model): self
     {
@@ -71,7 +70,7 @@ class OpenAI extends BaseDriver implements LLM
         if ($choice->message->toolCalls) {
             return new FunctionCall(
                 name: $choice->message->toolCalls[0]->function->name,
-                arguments: rescue(fn() => json_decode($choice->message->toolCalls[0]->function->arguments, true), report: false),
+                arguments: rescue(fn () => json_decode($choice->message->toolCalls[0]->function->arguments, true), report: false),
                 rawArguments: $choice->message->toolCalls[0]->function->arguments,
             );
         }
@@ -83,6 +82,7 @@ class OpenAI extends BaseDriver implements LLM
     {
         if (ModelNames::isCompletionModel($this->model)) {
             $response = $this->completion($prompt);
+
             return $this->extractResponseText($response);
         }
 

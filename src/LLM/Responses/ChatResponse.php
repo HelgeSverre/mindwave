@@ -12,6 +12,5 @@ readonly class ChatResponse
         public ?string $finishReason = null,
         public ?string $model = null,
         public array $raw = [],
-    ) {
-    }
+    ) {}
 }

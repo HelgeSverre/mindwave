@@ -107,7 +107,7 @@ class LLMDriverInstrumentorDecorator implements LLM
             model: $model,
             prompt: $prompt,
             options: $options,
-            execute: fn() => $this->driver->generateText($prompt),
+            execute: fn () => $this->driver->generateText($prompt),
             serverAddress: $this->serverAddress
         );
     }
@@ -130,7 +130,7 @@ class LLMDriverInstrumentorDecorator implements LLM
             model: $model,
             prompt: $formatted,
             options: $options,
-            execute: fn() => $this->driver->generate($promptTemplate, $inputs),
+            execute: fn () => $this->driver->generate($promptTemplate, $inputs),
             serverAddress: $this->serverAddress
         );
     }
@@ -147,7 +147,7 @@ class LLMDriverInstrumentorDecorator implements LLM
     public function streamText(string $prompt): Generator
     {
         // Check if the underlying driver supports streaming
-        if (!method_exists($this->driver, 'streamText')) {
+        if (! method_exists($this->driver, 'streamText')) {
             // If not, throw a clear exception
             throw new \BadMethodCallException(
                 sprintf('Streaming is not supported by the %s driver', get_class($this->driver))
@@ -162,7 +162,7 @@ class LLMDriverInstrumentorDecorator implements LLM
             model: $model,
             prompt: $prompt,
             options: $options,
-            execute: fn() => $this->driver->streamText($prompt),
+            execute: fn () => $this->driver->streamText($prompt),
             serverAddress: $this->serverAddress
         );
     }
@@ -171,7 +171,7 @@ class LLMDriverInstrumentorDecorator implements LLM
      * Chat completion with automatic tracing
      *
      * @param  array  $messages  The messages to send
-     * @param  array  $options   Additional options
+     * @param  array  $options  Additional options
      */
     public function chat(array $messages, array $options = []): \Mindwave\Mindwave\LLM\Responses\ChatResponse
     {
@@ -183,7 +183,7 @@ class LLMDriverInstrumentorDecorator implements LLM
             model: $model,
             messages: $messages,
             options: $traceOptions,
-            execute: fn() => $this->driver->chat($messages, $options),
+            execute: fn () => $this->driver->chat($messages, $options),
             serverAddress: $this->serverAddress
         );
     }
@@ -200,7 +200,7 @@ class LLMDriverInstrumentorDecorator implements LLM
         array|FunctionBuilder $functions,
         ?string $requiredFunction = 'auto'
     ): FunctionCall|string|null {
-        if (!method_exists($this->driver, 'functionCall')) {
+        if (! method_exists($this->driver, 'functionCall')) {
             // Fallback to generateText if functionCall not supported
             return $this->generateText($prompt);
         }
@@ -219,7 +219,7 @@ class LLMDriverInstrumentorDecorator implements LLM
             model: $model,
             messages: [['role' => 'system', 'content' => $prompt]],
             options: $options,
-            execute: fn() => $this->driver->functionCall($prompt, $functions, $requiredFunction),
+            execute: fn () => $this->driver->functionCall($prompt, $functions, $requiredFunction),
             serverAddress: $this->serverAddress
         );
     }

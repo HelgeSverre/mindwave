@@ -22,8 +22,7 @@ class MistralDriver extends BaseDriver implements LLM
         protected float $temperature = 0.7,
         protected bool $safeMode = false,
         protected ?int $randomSeed = null
-    ) {
-    }
+    ) {}
 
     public function model(string $model): self
     {
@@ -63,7 +62,7 @@ class MistralDriver extends BaseDriver implements LLM
             'temperature' => $this->temperature,
             'maxTokens' => $this->maxTokens,
             'safeMode' => $this->safeMode,
-            'randomSeed' => $this->randomSeed
+            'randomSeed' => $this->randomSeed,
         ], $options));
 
         return new \Mindwave\Mindwave\LLM\Responses\ChatResponse(

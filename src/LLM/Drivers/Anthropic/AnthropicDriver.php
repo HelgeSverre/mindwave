@@ -3,7 +3,6 @@
 namespace Mindwave\Mindwave\LLM\Drivers\Anthropic;
 
 use Anthropic\Contracts\ClientContract;
-use Anthropic\Responses\Messages\CreateResponse;
 use Anthropic\Responses\Messages\CreateStreamedResponse;
 use Anthropic\Responses\Messages\StreamResponse;
 use Generator;
@@ -18,8 +17,7 @@ class AnthropicDriver extends BaseDriver implements LLM
         protected ?string $systemMessage = null,
         protected int $maxTokens = 4096,
         protected float $temperature = 1.0,
-    ) {
-    }
+    ) {}
 
     public function model(string $model): self
     {
@@ -50,7 +48,6 @@ class AnthropicDriver extends BaseDriver implements LLM
 
         return $response->content;
     }
-
 
     public function chat(array $messages, array $options = []): \Mindwave\Mindwave\LLM\Responses\ChatResponse
     {
