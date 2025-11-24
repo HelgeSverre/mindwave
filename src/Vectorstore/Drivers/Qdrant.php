@@ -74,10 +74,14 @@ class Qdrant implements Vectorstore
 
     public function insert(VectorStoreEntry $entry): void
     {
-        $this->ensureCollectionExists();
+        $actualDimension = count($entry->vector->values);
+        if ($actualDimension !== $this->dimensions) {
+            throw new \InvalidArgumentException(
+                "Expected vector dimension {$this->dimensions}, got {$actualDimension}"
+            );
+        }
 
-        // TODO: Validate entry->vector dimension matches $this->dimensions
-        // Throw InvalidArgumentException if count($entry->vector->values) != $this->dimensions
+        $this->ensureCollectionExists();
 
         $points = new PointsStruct;
         $points->addPoint(
@@ -93,10 +97,17 @@ class Qdrant implements Vectorstore
 
     public function insertMany(array $entries): void
     {
-        $this->ensureCollectionExists();
+        // Validate all vectors have correct dimensions before inserting
+        foreach ($entries as $index => $entry) {
+            $actualDimension = count($entry->vector->values);
+            if ($actualDimension !== $this->dimensions) {
+                throw new \InvalidArgumentException(
+                    "Expected vector dimension {$this->dimensions}, got {$actualDimension} at index {$index}"
+                );
+            }
+        }
 
-        // TODO: Validate all entry vectors match $this->dimensions
-        // Throw InvalidArgumentException on first mismatch with clear error message
+        $this->ensureCollectionExists();
 
         $points = new PointsStruct;
 

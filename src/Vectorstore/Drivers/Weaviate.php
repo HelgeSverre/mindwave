@@ -56,10 +56,14 @@ class Weaviate implements Vectorstore
 
     public function insert(VectorStoreEntry $entry): void
     {
-        $this->ensureClassExists();
+        $actualDimension = count($entry->vector->values);
+        if ($actualDimension !== $this->dimensions) {
+            throw new \InvalidArgumentException(
+                "Expected vector dimension {$this->dimensions}, got {$actualDimension}"
+            );
+        }
 
-        // TODO: Validate entry->vector dimension matches $this->dimensions
-        // Throw InvalidArgumentException if count($entry->vector->values) != $this->dimensions
+        $this->ensureClassExists();
 
         $this->client->dataObject()->create([
             'id' => Str::uuid()->toString(),
@@ -71,8 +75,15 @@ class Weaviate implements Vectorstore
 
     public function insertMany(array $entries): void
     {
-        // TODO: Validate all entry vectors match $this->dimensions
-        // Throw InvalidArgumentException on first mismatch
+        // Validate all vectors have correct dimensions before inserting
+        foreach ($entries as $index => $entry) {
+            $actualDimension = count($entry->vector->values);
+            if ($actualDimension !== $this->dimensions) {
+                throw new \InvalidArgumentException(
+                    "Expected vector dimension {$this->dimensions}, got {$actualDimension} at index {$index}"
+                );
+            }
+        }
 
         $objects = collect($entries)->map(function (VectorStoreEntry $entry) {
             return [
