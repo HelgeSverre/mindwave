@@ -55,13 +55,15 @@ class Loader
     }
 
     /**
-     * @internal
+     * Attempt to load a document by detecting its content type.
+     *
+     * @internal This method is incomplete and only partially implemented.
+     * @deprecated Use specific loader methods like fromPdf(), fromHtml(), etc. instead.
+     *             This method will be removed in a future version.
      */
     public function loadFromContent($content): ?Document
     {
         $type = FileTypeDetector::detectByContent($content);
-
-        // TODO: not implemented
 
         return match ($type) {
             'application/vnd.oasis.opendocument.text' => $this->fromWord($content),
