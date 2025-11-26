@@ -16,10 +16,21 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Embeddings
+    | Embedding Providers
     |--------------------------------------------------------------------------
     |
-    | todo: meaningful comments here
+    | Configure your embedding providers here. Embeddings convert text into
+    | numerical vectors that capture semantic meaning, enabling similarity
+    | search and context discovery.
+    |
+    | OpenAI Embedding Models:
+    | - text-embedding-ada-002: 1536 dimensions, good general-purpose model
+    | - text-embedding-3-small: 1536 dimensions, faster and cheaper
+    | - text-embedding-3-large: 3072 dimensions, higher accuracy
+    |
+    | Important: Ensure your vector store dimensions match your embedding model.
+    | Set MINDWAVE_QDRANT_DIMENSIONS, MINDWAVE_PINECONE_DIMENSIONS, etc.
+    |
     */
     'embeddings' => [
         'openai' => [

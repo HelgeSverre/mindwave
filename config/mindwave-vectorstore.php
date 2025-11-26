@@ -7,17 +7,34 @@ return [
     | Default VectorStore
     |--------------------------------------------------------------------------
     |
-    | todo: taylorized description
+    | This option controls the default vector store driver that will be used
+    | by Mindwave for storing and searching document embeddings. Vector stores
+    | enable semantic similarity search, which is essential for RAG (Retrieval
+    | Augmented Generation) applications.
+    |
+    | Supported: "array", "file", "pinecone", "qdrant", "weaviate"
+    |
     */
 
     'default' => env('MINDWAVE_VECTORSTORE', 'pinecone'),
 
     /*
     |--------------------------------------------------------------------------
-    | VectorStores
+    | VectorStore Configurations
     |--------------------------------------------------------------------------
     |
-    | todo: taylorized description
+    | Configure connection information for each vector store driver.
+    |
+    | When choosing a driver, consider:
+    | - "array": In-memory, ephemeral - great for testing
+    | - "file": Local JSON file - simple persistence without external services
+    | - "pinecone": Managed cloud service with excellent scalability
+    | - "weaviate": Self-hosted or cloud with hybrid search capabilities
+    | - "qdrant": High-performance with filtering support
+    |
+    | All production stores support configurable dimensions to match your
+    | embedding model: 1536 for OpenAI ada-002/3-small, 3072 for 3-large.
+    |
     */
     'vectorstores' => [
         'array' => [
