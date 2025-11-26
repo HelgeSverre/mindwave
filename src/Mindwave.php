@@ -3,16 +3,13 @@
 namespace Mindwave\Mindwave;
 
 use InvalidArgumentException;
-use Mindwave\Mindwave\Agents\Agent;
 use Mindwave\Mindwave\Brain\Brain;
 use Mindwave\Mindwave\Brain\QA;
 use Mindwave\Mindwave\Contracts\Embeddings;
 use Mindwave\Mindwave\Contracts\LLM;
-use Mindwave\Mindwave\Contracts\Memory;
 use Mindwave\Mindwave\Contracts\Vectorstore;
 use Mindwave\Mindwave\LLM\FunctionCalling\FunctionBuilder;
 use Mindwave\Mindwave\LLM\Streaming\StreamedTextResponse;
-use Mindwave\Mindwave\Memory\ConversationMemory;
 use Mindwave\Mindwave\PromptComposer\PromptComposer;
 use Mindwave\Mindwave\PromptComposer\Tokenizer\TokenizerInterface;
 
@@ -32,18 +29,6 @@ class Mindwave
         );
 
         $this->tokenizer = $tokenizer ?? app(TokenizerInterface::class);
-    }
-
-    public function agent(
-        Memory $memory = new ConversationMemory,
-        array $tools = []
-    ): Agent {
-        return new Agent(
-            llm: $this->llm,
-            brain: $this->brain,
-            messageHistory: $memory,
-            tools: $tools,
-        );
     }
 
     public function qa(): QA
