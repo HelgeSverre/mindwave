@@ -66,17 +66,17 @@ class ConversationMemory implements Memory
         return $instance;
     }
 
-    public function addSystemMessage($message, ?array $meta = []): void
+    public function addSystemMessage(string $message, ?array $meta = []): void
     {
         $this->messages[] = ChatMessage::makeSystemMessage($message, $meta);
     }
 
-    public function addAiMessage($message, ?array $meta = []): void
+    public function addAiMessage(string $message, ?array $meta = []): void
     {
         $this->messages[] = ChatMessage::makeAiMessage($message, $meta);
     }
 
-    public function addUserMessage($message, ?array $meta = []): void
+    public function addUserMessage(string $message, ?array $meta = []): void
     {
         $this->messages[] = ChatMessage::makeUserMessage($message, $meta);
     }
