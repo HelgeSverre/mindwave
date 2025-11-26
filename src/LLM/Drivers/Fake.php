@@ -9,6 +9,8 @@ use Mindwave\Mindwave\LLM\FunctionCalling\FunctionCall;
 
 class Fake extends BaseDriver implements LLM
 {
+    protected string $model = 'fake-model';
+
     protected string $response = '';
 
     protected int $streamChunkSize = 5;

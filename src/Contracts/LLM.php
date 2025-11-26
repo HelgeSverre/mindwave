@@ -5,21 +5,64 @@ namespace Mindwave\Mindwave\Contracts;
 use Generator;
 use Mindwave\Mindwave\Prompts\PromptTemplate;
 
+/**
+ * Contract for LLM (Large Language Model) drivers.
+ *
+ * This interface defines the core methods that all LLM drivers must implement
+ * to interact with language models (OpenAI, Anthropic, Mistral, etc.).
+ */
 interface LLM
 {
+    /**
+     * Set the system message/prompt for the conversation.
+     *
+     * The system message provides context and instructions to guide the model's behavior.
+     *
+     * @param  string  $systemMessage  The system prompt content
+     * @return static Returns self for method chaining
+     */
     public function setSystemMessage(string $systemMessage): static;
 
+    /**
+     * Set additional options for API requests.
+     *
+     * @param  array  $options  Driver-specific options (e.g., temperature, top_p)
+     * @return static Returns self for method chaining
+     */
     public function setOptions(array $options): static;
 
+    /**
+     * Generate plain text from a prompt.
+     *
+     * This is the simplest way to get a response from the LLM. For more control
+     * over the response format, use chat() instead.
+     *
+     * @param  string  $prompt  The input prompt
+     * @return string|null The generated text, or null if generation failed
+     */
     public function generateText(string $prompt): ?string;
 
+    /**
+     * Generate a response using a prompt template with output parsing.
+     *
+     * The return type depends on the OutputParser configured in the template.
+     * For example, a JSON parser returns an array, a list parser returns an array of strings.
+     *
+     * @param  PromptTemplate  $promptTemplate  Template with optional OutputParser
+     * @param  array  $inputs  Variables to substitute into the template
+     * @return mixed The parsed output (type depends on the OutputParser used)
+     */
     public function generate(PromptTemplate $promptTemplate, array $inputs = []): mixed;
 
     /**
-     * Send a chat message to the LLM.
+     * Send a chat completion request with full response metadata.
      *
-     * @param  array  $messages  The messages to send
+     * Use this method when you need detailed response information like
+     * token counts, finish reason, or the raw API response.
+     *
+     * @param  array<array{role: string, content: string}>  $messages  Array of messages with role and content
      * @param  array  $options  Additional options (temperature, max_tokens, etc.)
+     * @return \Mindwave\Mindwave\LLM\Responses\ChatResponse Structured response with content, tokens, and metadata
      */
     public function chat(array $messages, array $options = []): \Mindwave\Mindwave\LLM\Responses\ChatResponse;
 
@@ -46,4 +89,13 @@ interface LLM
      * @return int The maximum number of tokens the model can handle
      */
     public function maxContextTokens(): int;
+
+    /**
+     * Get the current model identifier.
+     *
+     * Returns the model ID being used by this driver (e.g., 'gpt-4', 'claude-3-opus').
+     *
+     * @return string The model identifier
+     */
+    public function getModel(): string;
 }

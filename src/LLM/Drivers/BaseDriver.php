@@ -45,4 +45,12 @@ abstract class BaseDriver implements LLM
     {
         return ModelTokenLimits::getContextWindow($this->model);
     }
+
+    /**
+     * Get the current model identifier.
+     */
+    public function getModel(): string
+    {
+        return $this->model;
+    }
 }

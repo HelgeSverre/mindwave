@@ -22,7 +22,7 @@ class Brain
      *
      * @param  VectorStoreEntry[]  $entries
      *
-     * @throws \InvalidArgumentException  If any entry has mismatched dimensions
+     * @throws \InvalidArgumentException If any entry has mismatched dimensions
      */
     private function validateDimensions(array $entries): void
     {
@@ -37,7 +37,7 @@ class Brain
             $actual = count($entry->vector->values);
             if ($actual !== $expected) {
                 throw new \InvalidArgumentException(
-                    "Embedding dimension mismatch at index {$index}: expected {$expected}, got {$actual}. " .
+                    "Embedding dimension mismatch at index {$index}: expected {$expected}, got {$actual}. ".
                     'Ensure your embedding model dimensions match your vector store configuration.'
                 );
             }

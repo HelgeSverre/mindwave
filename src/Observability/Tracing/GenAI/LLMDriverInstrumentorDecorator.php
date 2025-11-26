@@ -450,4 +450,14 @@ class LLMDriverInstrumentorDecorator implements LLM
     {
         return $this->driver->maxContextTokens();
     }
+
+    /**
+     * Get the current model identifier.
+     *
+     * Returns the detected model name, either explicitly set or from the underlying driver.
+     */
+    public function getModel(): string
+    {
+        return $this->detectModel();
+    }
 }
