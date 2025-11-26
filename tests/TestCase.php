@@ -41,6 +41,11 @@ class TestCase extends Orchestra
         }
 
         config()->set('database.default', 'testing');
+        config()->set('database.connections.testing', [
+            'driver' => 'sqlite',
+            'database' => ':memory:',
+            'prefix' => '',
+        ]);
 
         config()->set('mindwave-vectorstore.default', 'array');
         config()->set('mindwave-embeddings.embeddings.openai.api_key', env('MINDWAVE_OPENAI_API_KEY'));
@@ -50,5 +55,19 @@ class TestCase extends Orchestra
 
         $app->useEnvironmentPath(__DIR__.'/..');
         $app->bootstrapWith([LoadEnvironmentVariables::class]);
+    }
+
+    /**
+     * Define database migrations.
+     * Only loads migrations when RefreshDatabase trait is used.
+     *
+     * @return void
+     */
+    protected function defineDatabaseMigrations()
+    {
+        // Only load migrations if the test uses RefreshDatabase trait
+        if (in_array(\Illuminate\Foundation\Testing\RefreshDatabase::class, class_uses_recursive($this))) {
+            $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+        }
     }
 }
