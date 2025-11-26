@@ -7,6 +7,7 @@ use Mindwave\Mindwave\Context\Contracts\ContextSource;
 use Mindwave\Mindwave\Contracts\LLM;
 use Mindwave\Mindwave\PromptComposer\Shrinkers\CompressShrinker;
 use Mindwave\Mindwave\PromptComposer\Shrinkers\ShrinkerInterface;
+use Mindwave\Mindwave\PromptComposer\Shrinkers\ShrinkerType;
 use Mindwave\Mindwave\PromptComposer\Shrinkers\TruncateShrinker;
 use Mindwave\Mindwave\PromptComposer\Tokenizer\TokenizerInterface;
 
@@ -53,15 +54,24 @@ class PromptComposer
 
     /**
      * Add a section to the prompt.
+     *
+     * @param  string  $name  Section name (e.g., 'system', 'user', 'context')
+     * @param  string|array  $content  Section content
+     * @param  int  $priority  Priority (higher = more important, less likely to shrink)
+     * @param  ShrinkerType|string|null  $shrinker  Shrinker to use when fitting to context window
+     * @param  array  $metadata  Additional metadata
      */
     public function section(
         string $name,
         string|array $content,
         int $priority = 50,
-        ?string $shrinker = null,
+        ShrinkerType|string|null $shrinker = null,
         array $metadata = []
     ): self {
-        $this->sections[] = Section::make($name, $content, $priority, $shrinker, $metadata);
+        // Normalize ShrinkerType enum to string for internal storage
+        $shrinkerKey = $shrinker instanceof ShrinkerType ? $shrinker->value : $shrinker;
+
+        $this->sections[] = Section::make($name, $content, $priority, $shrinkerKey, $metadata);
         $this->fitted = false;
 
         return $this;
@@ -103,7 +113,7 @@ class PromptComposer
             $content = $results->formatForPrompt();
         }
 
-        return $this->section('context', $content, $priority, 'truncate');
+        return $this->section('context', $content, $priority, ShrinkerType::Truncate);
     }
 
     /**
@@ -380,7 +390,7 @@ class PromptComposer
      */
     private function registerDefaultShrinkers(): void
     {
-        $this->shrinkers['truncate'] = new TruncateShrinker($this->tokenizer);
-        $this->shrinkers['compress'] = new CompressShrinker($this->tokenizer);
+        $this->shrinkers[ShrinkerType::Truncate->value] = new TruncateShrinker($this->tokenizer);
+        $this->shrinkers[ShrinkerType::Compress->value] = new CompressShrinker($this->tokenizer);
     }
 }
