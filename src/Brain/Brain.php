@@ -18,6 +18,33 @@ class Brain
     ) {}
 
     /**
+     * Validate that all entries have the correct embedding dimensions for the vectorstore.
+     *
+     * @param  VectorStoreEntry[]  $entries
+     *
+     * @throws \InvalidArgumentException  If any entry has mismatched dimensions
+     */
+    private function validateDimensions(array $entries): void
+    {
+        // Only validate if the vectorstore exposes dimensions
+        if (! method_exists($this->vectorstore, 'getDimensions')) {
+            return;
+        }
+
+        $expected = $this->vectorstore->getDimensions();
+
+        foreach ($entries as $index => $entry) {
+            $actual = count($entry->vector->values);
+            if ($actual !== $expected) {
+                throw new \InvalidArgumentException(
+                    "Embedding dimension mismatch at index {$index}: expected {$expected}, got {$actual}. " .
+                    'Ensure your embedding model dimensions match your vector store configuration.'
+                );
+            }
+        }
+    }
+
+    /**
      * @return Document[]
      */
     public function search(string $query, int $count = 5): array
@@ -72,9 +99,10 @@ class Brain
             );
         }
 
+        // Validate dimensions before inserting
+        $this->validateDimensions($entries);
+
         // Insert all entries in a single batch operation
-        // TODO: Validate all embedding dimensions match vector store dimensions
-        // Should throw exception if any embedding dimension != $vectorstore->dimensions
         $this->vectorstore->insertMany($entries);
 
         return $this;
@@ -99,8 +127,9 @@ class Brain
             );
         }
 
-        // TODO: Validate embedding dimensions match vector store dimensions
-        // Should throw exception if $entry->vector->count() != $vectorstore->dimensions
+        // Validate dimensions before inserting
+        $this->validateDimensions($entries);
+
         $this->vectorstore->insertMany($entries);
 
         return $this;
