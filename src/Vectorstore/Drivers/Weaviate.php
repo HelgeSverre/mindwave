@@ -160,4 +160,12 @@ class Weaviate implements Vectorstore
 
         return Arr::get($data, 'data.Aggregate.'.$this->className.'.0.meta.count');
     }
+
+    /**
+     * Get the expected vector dimensions for this collection.
+     */
+    public function getDimensions(): int
+    {
+        return $this->dimensions;
+    }
 }

@@ -31,7 +31,7 @@ class Qdrant implements Vectorstore
     public function __construct(string $apiKey, string $collection, string $host, int $port = 6333, int $dimensions = 1536)
     {
         $config = new Config($host, $port);
-        $config->setApiKey($apiKey); // TODO(01 Jun 2023) ~ Helge: no way to set an api key in qdrant yet though...?
+        $config->setApiKey($apiKey);
 
         $this->client = new QdrantClient(new GuzzleClient($config));
         $this->collection = $collection;
@@ -70,6 +70,14 @@ class Qdrant implements Vectorstore
         $response = $this->client->collections($this->collection)->info();
 
         return Arr::get($response, 'result.vectors_count');
+    }
+
+    /**
+     * Get the expected vector dimensions for this collection.
+     */
+    public function getDimensions(): int
+    {
+        return $this->dimensions;
     }
 
     public function insert(VectorStoreEntry $entry): void
