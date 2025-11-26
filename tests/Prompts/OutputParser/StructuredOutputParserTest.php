@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Collection;
+use Mindwave\Mindwave\Exceptions\MindwaveParseException;
 use Mindwave\Mindwave\Prompts\OutputParsers\StructuredOutputParser;
 
 class Person
@@ -46,10 +47,21 @@ it('can parse response into class instance', function () {
     expect($person->tags)->toEqual(collect(['adventurous', 'creative', 'entrepreneur']));
 });
 
-it('can returns null if parsing data fails.', function () {
+it('throws MindwaveParseException if parsing data fails', function () {
     $parser = new StructuredOutputParser(Person::class);
 
-    $person = $parser->parse('broken and invalid data');
+    expect(fn () => $parser->parse('broken and invalid data'))
+        ->toThrow(MindwaveParseException::class);
+});
 
-    expect($person)->toBeNull(Person::class);
+it('includes raw text in parse exception', function () {
+    $parser = new StructuredOutputParser(Person::class);
+    $invalidText = 'broken and invalid data';
+
+    try {
+        $parser->parse($invalidText);
+    } catch (MindwaveParseException $e) {
+        expect($e->getRawText())->toBe($invalidText);
+        expect($e->getMessage())->toContain('Failed to parse LLM output as JSON');
+    }
 });

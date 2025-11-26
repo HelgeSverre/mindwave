@@ -4,6 +4,7 @@ namespace Mindwave\Mindwave\Prompts\OutputParsers;
 
 use Illuminate\Support\Collection;
 use Mindwave\Mindwave\Contracts\OutputParser;
+use Mindwave\Mindwave\Exceptions\MindwaveParseException;
 use ReflectionClass;
 
 class StructuredOutputParser implements OutputParser
@@ -70,24 +71,30 @@ Here is the output schema:
 Remember to respond with a JSON blob, and NOTHING else.');
     }
 
+    /**
+     * Parse the LLM output text into a structured object.
+     *
+     * @throws MindwaveParseException When the text cannot be parsed as valid JSON
+     */
     public function parse(string $text): mixed
     {
         $reflectionClass = new ReflectionClass($this->schema);
         $data = json_decode($text, true);
 
         if (! $data) {
-            // TODO(29 May 2023) ~ Helge: Throw custom exception
-            return null;
+            throw MindwaveParseException::invalidJson($text, json_last_error_msg());
         }
 
         $instance = new $this->schema;
 
         foreach ($data as $key => $value) {
+            if (! $reflectionClass->hasProperty($key)) {
+                continue;
+            }
 
             $type = $reflectionClass->getProperty($key)->getType();
 
-            // TODO(29 May 2023) ~ Helge: There are probably libraries that do this in a more clever way, but this is fine for now.
-            $instance->{$key} = match ($type->getName()) {
+            $instance->{$key} = match ($type?->getName()) {
                 'bool' => boolval($value),
                 'int' => intval($value),
                 'float' => floatval($value),
