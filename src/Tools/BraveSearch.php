@@ -9,17 +9,16 @@ class BraveSearch implements Tool
 {
     public function name(): string
     {
-        return 'Norwegian Phonebook Search';
+        return 'Brave Web Search';
     }
 
     public function description(): string
     {
-        return 'Searches the Norwegian Phonebook for phone numbers and names of people residing in norway, search by name or phone number';
+        return 'Search the web using Brave Search API. Returns titles, URLs, and descriptions of relevant web pages.';
     }
 
     public function run($input): string
     {
-        // TODO: cleanup later
         return Http::withHeader('X-Subscription-Token', env('BRAVE_SEARCH_API_KEY'))
             ->acceptJson()
             ->asJson()
