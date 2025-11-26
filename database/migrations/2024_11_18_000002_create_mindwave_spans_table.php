@@ -57,15 +57,15 @@ return new class extends Migration
 
             $table->timestamp('created_at');
 
-            // Indexes for performance
-            $table->index('trace_id', 'idx_trace_id');
-            $table->index('span_id', 'idx_span_id');
-            $table->index('parent_span_id', 'idx_parent');
-            $table->index(['name' => 255], 'idx_name');
-            $table->index(['operation_name', 'provider_name'], 'idx_operation');
-            $table->index('request_model', 'idx_model');
-            $table->index(['input_tokens', 'output_tokens'], 'idx_tokens');
-            $table->index('created_at', 'idx_created');
+            // Indexes for performance (prefixed with 'spans_' to avoid SQLite conflicts)
+            $table->index('trace_id', 'idx_spans_trace_id');
+            $table->index('span_id', 'idx_spans_span_id');
+            $table->index('parent_span_id', 'idx_spans_parent');
+            $table->index(['name' => 255], 'idx_spans_name');
+            $table->index(['operation_name', 'provider_name'], 'idx_spans_operation');
+            $table->index('request_model', 'idx_spans_model');
+            $table->index(['input_tokens', 'output_tokens'], 'idx_spans_tokens');
+            $table->index('created_at', 'idx_spans_created');
 
             // Foreign key constraint
             $table->foreign('trace_id', 'fk_spans_trace')
