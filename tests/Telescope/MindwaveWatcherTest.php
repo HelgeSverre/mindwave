@@ -6,12 +6,6 @@ use Mindwave\Mindwave\Observability\Events\LlmRequestStarted;
 use Mindwave\Mindwave\Observability\Events\LlmResponseCompleted;
 use Mindwave\Mindwave\Telescope\MindwaveWatcher;
 
-beforeEach(function () {
-    if (! class_exists(\Laravel\Telescope\Telescope::class)) {
-        $this->markTestSkipped('Telescope is not installed');
-    }
-});
-
 describe('MindwaveWatcher', function () {
     describe('Event Registration', function () {
         it('registers event listeners on application events', function () {

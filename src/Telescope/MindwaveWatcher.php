@@ -2,7 +2,6 @@
 
 namespace Mindwave\Mindwave\Telescope;
 
-use Illuminate\Contracts\Foundation\Application;
 use Laravel\Telescope\IncomingEntry;
 use Laravel\Telescope\Telescope;
 use Laravel\Telescope\Watchers\Watcher;
@@ -37,7 +36,7 @@ class MindwaveWatcher extends Watcher
     /**
      * Register the watcher.
      */
-    public function register(Application $app): void
+    public function register($app): void
     {
         $app['events']->listen(LlmRequestStarted::class, [$this, 'recordRequest']);
         $app['events']->listen(LlmResponseCompleted::class, [$this, 'recordResponse']);
