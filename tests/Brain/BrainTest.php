@@ -5,7 +5,6 @@ use Mindwave\Mindwave\Contracts\Embeddings;
 use Mindwave\Mindwave\Contracts\Vectorstore;
 use Mindwave\Mindwave\Document\Data\Document;
 use Mindwave\Mindwave\Embeddings\Data\EmbeddingVector;
-use Mindwave\Mindwave\TextSplitters\RecursiveCharacterTextSplitter;
 use Mindwave\Mindwave\TextSplitters\TextSplitter;
 use Mindwave\Mindwave\Vectorstore\Data\VectorStoreEntry;
 
@@ -264,15 +263,26 @@ describe('Brain', function () {
                 ->andReturn($embedding);
 
             // Create an anonymous class that implements Vectorstore AND has getDimensions
-            $vectorstore = new class implements Vectorstore {
+            $vectorstore = new class implements Vectorstore
+            {
                 public function truncate(): void {}
-                public function itemCount(): int { return 0; }
+                public function itemCount(): int
+                {
+                    return 0;
+                }
                 public function insert(\Mindwave\Mindwave\Vectorstore\Data\VectorStoreEntry $entry): void {}
-                public function insertMany(array $entries): void {
+                public function insertMany(array $entries): void
+                {
                     throw new \RuntimeException('Should not reach insertMany due to dimension mismatch');
                 }
-                public function similaritySearch(\Mindwave\Mindwave\Embeddings\Data\EmbeddingVector $embedding, int $count = 5): array { return []; }
-                public function getDimensions(): int { return 5; } // Mismatch with 3-dim embedding
+                public function similaritySearch(\Mindwave\Mindwave\Embeddings\Data\EmbeddingVector $embedding, int $count = 5): array
+                {
+                    return [];
+                }
+                public function getDimensions(): int
+                {
+                    return 5;
+                } // Mismatch with 3-dim embedding
             };
 
             $brain = new Brain($vectorstore, $embeddings, $textSplitter);
@@ -294,14 +304,27 @@ describe('Brain', function () {
                 ->andReturn($embedding);
 
             $insertCalled = false;
-            $vectorstore = new class($insertCalled) implements Vectorstore {
+            $vectorstore = new class($insertCalled) implements Vectorstore
+            {
                 public function __construct(private bool &$insertCalled) {}
                 public function truncate(): void {}
-                public function itemCount(): int { return 0; }
+                public function itemCount(): int
+                {
+                    return 0;
+                }
                 public function insert(\Mindwave\Mindwave\Vectorstore\Data\VectorStoreEntry $entry): void {}
-                public function insertMany(array $entries): void { $this->insertCalled = true; }
-                public function similaritySearch(\Mindwave\Mindwave\Embeddings\Data\EmbeddingVector $embedding, int $count = 5): array { return []; }
-                public function getDimensions(): int { return 3; } // Matches 3-dim embedding
+                public function insertMany(array $entries): void
+                {
+                    $this->insertCalled = true;
+                }
+                public function similaritySearch(\Mindwave\Mindwave\Embeddings\Data\EmbeddingVector $embedding, int $count = 5): array
+                {
+                    return [];
+                }
+                public function getDimensions(): int
+                {
+                    return 3;
+                } // Matches 3-dim embedding
             };
 
             $brain = new Brain($vectorstore, $embeddings, $textSplitter);

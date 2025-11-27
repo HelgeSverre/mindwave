@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Support\Collection;
 use Mindwave\Mindwave\Contracts\Tool;
 use Mindwave\Mindwave\Contracts\Toolkit as ToolkitContract;
 use Mindwave\Mindwave\Tools\SimpleTool;

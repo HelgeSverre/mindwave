@@ -58,6 +58,7 @@ class Loader
      * Attempt to load a document by detecting its content type.
      *
      * @internal This method is incomplete and only partially implemented.
+     *
      * @deprecated Use specific loader methods like fromPdf(), fromHtml(), etc. instead.
      *             This method will be removed in a future version.
      */

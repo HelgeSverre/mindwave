@@ -69,6 +69,7 @@ describe('SimpleTool', function () {
                 description: 'Tests context',
                 callback: function ($input) use (&$capturedContext) {
                     $capturedContext = $this;
+
                     return $input;
                 }
             );
@@ -96,6 +97,7 @@ describe('SimpleTool', function () {
                 description: 'Processes JSON',
                 callback: function ($input) {
                     $data = json_decode($input, true);
+
                     return json_encode(['processed' => true, 'original' => $data]);
                 }
             );
