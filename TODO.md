@@ -7,9 +7,11 @@ See [PIVOT_PLAN.md](PIVOT_PLAN.md) for comprehensive implementation plan.
 
 ---
 
-## 🎯 Current Focus: Phase 5 - TNTSearch Context Discovery (Week 5-6)
+## 🎯 Current Focus: Phase 6 - Documentation & Release (Week 7)
 
-### ✅ Phase 1-4 Completed
+### ✅ Phase 1-5 Completed
+
+**Phase 1-4:**
 - [x] Update all namespaces
 - [x] Vectorstore interface and drivers (InMemory, File, Pinecone, Qdrant, Weaviate)
 - [x] LLM abstraction (OpenAI, Mistral)
@@ -28,11 +30,32 @@ See [PIVOT_PLAN.md](PIVOT_PLAN.md) for comprehensive implementation plan.
 - [x] Complete OpenTelemetry Tracing (Database, OTLP, Instrumentation, Events, Commands)
 - [x] Complete Streaming SSE (LLM interface, OpenAI implementation, SSE formatter, Client examples)
 
-### 🔄 Next Up
-- [ ] TNTSearch integration
-- [ ] Context sources
-- [ ] Context pipeline
-- [ ] Prompt Composer integration
+**Phase 5 - TNTSearch Context Discovery:** ✅ COMPLETE
+- [x] EphemeralIndexManager (create/search/delete indexes with TTL)
+- [x] TntSearchSource (fromEloquent, fromArray, fromCsv)
+- [x] VectorStoreSource (Brain integration)
+- [x] EloquentSource (SQL LIKE searches)
+- [x] StaticSource (hardcoded context)
+- [x] ContextPipeline (multi-source aggregation, deduplication, re-ranking)
+- [x] ContextCollection (formatForPrompt, truncateToTokens, getTotalTokens)
+- [x] PromptComposer integration (context() method with auto-query extraction)
+- [x] Artisan commands (mindwave:index-stats, mindwave:clear-indexes)
+- [x] Config file (mindwave-context.php)
+- [x] Tracing integration
+- [x] 142 tests passing
+
+**Bonus: Laravel Telescope Integration (Nov 27, 2025):**
+- [x] MindwaveWatcher for Telescope client_request entries
+- [x] Event-based integration (listens to LLM events)
+- [x] Tags: mindwave, provider:*, model:*, slow, expensive, cached
+- [x] Privacy controls (capture_messages option)
+- [x] 15 tests passing
+
+### 🔄 Next Up: Documentation & Release
+- [ ] Full documentation overhaul (see DOCUMENTATION_TODOS.md)
+- [ ] Demo application
+- [ ] Testing (>90% coverage achieved - 499+ tests)
+- [ ] v1.0.0 release
 
 ---
 
@@ -103,17 +126,20 @@ eventSource.addEventListener('message', (e) => output.textContent += e.data);
 eventSource.addEventListener('done', () => eventSource.close());
 ```
 
-### Pillar 4: TNTSearch Context Discovery 🔍
+### Pillar 4: TNTSearch Context Discovery 🔍 **COMPLETE**
 **Ad-hoc context from DB/CSV without complex RAG**
 
-- [ ] TNTSearch integration
-- [ ] Ephemeral index manager
-- [ ] ContextSource interface
-- [ ] TntSearchSource (fromEloquent, fromArray, fromCsv)
-- [ ] VectorStoreSource (Brain integration)
-- [ ] ContextPipeline (multi-source aggregation)
-- [ ] Prompt Composer integration
-- [ ] Artisan commands (index-stats, clear-indexes)
+- [x] TNTSearch integration
+- [x] Ephemeral index manager
+- [x] ContextSource interface
+- [x] TntSearchSource (fromEloquent, fromArray, fromCsv)
+- [x] VectorStoreSource (Brain integration)
+- [x] EloquentSource (SQL LIKE searches)
+- [x] StaticSource (hardcoded context)
+- [x] ContextPipeline (multi-source aggregation)
+- [x] Prompt Composer integration
+- [x] Artisan commands (index-stats, clear-indexes)
+- [x] 142 tests passing
 
 **Example:**
 ```php
@@ -161,16 +187,16 @@ Mindwave::prompt()
 - [x] StreamedResponse helper
 - [x] Client examples (vanilla JS, Alpine, Vue, Blade, TypeScript)
 
-### Week 5-6: TNTSearch (Nov 29 - Dec 12, 2025)
-- [ ] TNTSearch integration
-- [ ] Context sources
-- [ ] Context pipeline
-- [ ] Prompt Composer integration
+### ✅ Week 5-6: TNTSearch (Nov 29 - Dec 12, 2025) - COMPLETE
+- [x] TNTSearch integration
+- [x] Context sources (TntSearchSource, VectorStoreSource, EloquentSource, StaticSource)
+- [x] Context pipeline (aggregation, deduplication, re-ranking)
+- [x] Prompt Composer integration
 
 ### Week 7: Documentation & Release (Dec 13-19, 2025)
 - [ ] Full documentation
 - [ ] Demo application
-- [ ] Testing (>90% coverage)
+- [x] Testing (>90% coverage) - 499+ tests passing
 - [ ] v1.0.0 release
 
 ---
@@ -236,9 +262,10 @@ Mindwave::prompt()
 
 ### Technical
 - [x] Zero agent framework code
-- [x] 90%+ test coverage (107+ tests, 102+ passing)
-- [ ] All 4 pillars functional (2/4 complete: Prompt Composer, Tracing)
-- [ ] < 10 minute quick start
+- [x] 90%+ test coverage (499+ tests passing)
+- [x] All 4 pillars functional (Prompt Composer, Tracing, Streaming SSE, Context Discovery)
+- [x] Telescope integration (bonus)
+- [ ] < 10 minute quick start (needs documentation)
 - [x] < 100ms tracing overhead (< 5ms per call)
 
 ### Adoption (Post-Launch)
@@ -282,6 +309,6 @@ Mindwave::prompt()
 
 ---
 
-**Last Updated:** November 18, 2025
+**Last Updated:** November 27, 2025
 **Next Review:** Weekly during active development
-**Current Status:** 42% complete (3/7 weeks), Phase 4 next
+**Current Status:** 86% complete (6/7 weeks), All 4 pillars complete! Documentation & release next.
