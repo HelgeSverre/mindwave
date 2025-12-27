@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use Mindwave\Mindwave\Observability\Tracing\GenAI\GenAiAttributes;
 use Mindwave\Mindwave\Observability\Tracing\Span;
 use Mindwave\Mindwave\Observability\Tracing\SpanBuilder;
 use OpenTelemetry\API\Trace\SpanBuilderInterface;

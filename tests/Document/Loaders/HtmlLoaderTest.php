@@ -7,7 +7,7 @@ use Mindwave\Mindwave\Document\Loaders\HtmlLoader;
 
 describe('HtmlLoader', function () {
     beforeEach(function () {
-        $this->loader = new HtmlLoader();
+        $this->loader = new HtmlLoader;
     });
 
     it('extracts text from simple HTML', function () {

@@ -8,7 +8,7 @@ use Mindwave\Mindwave\Document\Loaders\WebLoader;
 
 describe('WebLoader', function () {
     beforeEach(function () {
-        $this->loader = new WebLoader();
+        $this->loader = new WebLoader;
     });
 
     describe('URL Validation', function () {
