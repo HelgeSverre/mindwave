@@ -9,7 +9,9 @@
 
 **The working developer's AI toolkit** - Long prompts, streaming, tracing, and context discovery made simple.
 
-> **v1.0 Released** - Production-ready with 500+ tests. All 4 pillars complete.
+> **v1.0.0 Released** - All 4 pillars complete with 1300+ tests.
+>
+> **Experimental** - This package is under active development. APIs may change. Use in production at your own risk.
 
 ## What is Mindwave?
 
