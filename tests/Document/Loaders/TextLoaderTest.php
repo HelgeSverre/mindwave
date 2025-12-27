@@ -7,7 +7,7 @@ use Mindwave\Mindwave\Document\Loaders\TextLoader;
 
 describe('TextLoader', function () {
     beforeEach(function () {
-        $this->loader = new TextLoader();
+        $this->loader = new TextLoader;
     });
 
     it('loads plain text content', function () {
