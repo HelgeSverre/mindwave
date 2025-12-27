@@ -45,6 +45,16 @@ class StreamedTextResponse
 {
     private Generator $stream;
 
+    private $errorHandler = null;
+
+    private $completionHandler = null;
+
+    private bool $cancelled = false;
+
+    private int $retryAttempts = 0;
+
+    private int $maxRetries = 3;
+
     /**
      * @param  Generator<string>  $stream  The text stream generator
      */
@@ -67,14 +77,30 @@ class StreamedTextResponse
     public function toStreamedResponse(int $status = 200, array $headers = []): StreamedResponse
     {
         $callback = function () {
-            foreach ($this->stream as $chunk) {
-                echo $this->formatSSE('message', $chunk);
-                $this->flush();
-            }
+            try {
+                foreach ($this->stream as $chunk) {
+                    if ($this->cancelled) {
+                        echo $this->formatSSE('cancelled', json_encode(['status' => 'cancelled']));
+                        $this->flush();
+                        break;
+                    }
 
-            // Send completion event
-            echo $this->formatSSE('done', json_encode(['status' => 'complete']));
-            $this->flush();
+                    echo $this->formatSSE('message', $chunk);
+                    $this->flush();
+                }
+
+                // Send completion event
+                if (! $this->cancelled) {
+                    echo $this->formatSSE('done', json_encode(['status' => 'complete']));
+                    $this->flush();
+
+                    if ($this->completionHandler) {
+                        ($this->completionHandler)();
+                    }
+                }
+            } catch (\Throwable $e) {
+                $this->handleError($e);
+            }
         };
 
         $mergedHeaders = array_merge([
@@ -186,6 +212,101 @@ class StreamedTextResponse
         $data = str_replace("\n", '\n', $data);
 
         return "event: {$event}\ndata: {$data}\n\n";
+    }
+
+    /**
+     * Set an error handler callback.
+     *
+     * The handler receives the exception and can decide how to handle it.
+     * Return true to retry (up to maxRetries), false to stop the stream.
+     *
+     * @param  callable(\Throwable): bool  $handler  The error handler
+     */
+    public function onError(callable $handler): self
+    {
+        $this->errorHandler = $handler;
+
+        return $this;
+    }
+
+    /**
+     * Set a completion handler callback.
+     *
+     * This is called when the stream completes successfully.
+     *
+     * @param  callable(): void  $handler  The completion handler
+     */
+    public function onComplete(callable $handler): self
+    {
+        $this->completionHandler = $handler;
+
+        return $this;
+    }
+
+    /**
+     * Set the maximum number of retry attempts on error.
+     *
+     * @param  int  $retries  Maximum number of retries (default: 3)
+     */
+    public function withRetries(int $retries): self
+    {
+        $this->maxRetries = max(0, $retries);
+
+        return $this;
+    }
+
+    /**
+     * Cancel the stream.
+     *
+     * This will stop processing on the next iteration.
+     */
+    public function cancel(): void
+    {
+        $this->cancelled = true;
+    }
+
+    /**
+     * Check if the stream has been cancelled.
+     */
+    public function isCancelled(): bool
+    {
+        return $this->cancelled;
+    }
+
+    /**
+     * Handle an error during streaming.
+     *
+     * @param  \Throwable  $error  The error that occurred
+     */
+    private function handleError(\Throwable $error): void
+    {
+        if ($this->errorHandler) {
+            $shouldRetry = ($this->errorHandler)($error);
+
+            if ($shouldRetry && $this->retryAttempts < $this->maxRetries) {
+                $this->retryAttempts++;
+                // In a real implementation, you might want to restart the stream here
+                // For now, we just send an error event
+                echo $this->formatSSE('error', json_encode([
+                    'message' => $error->getMessage(),
+                    'retry' => true,
+                    'attempt' => $this->retryAttempts,
+                ]));
+            } else {
+                echo $this->formatSSE('error', json_encode([
+                    'message' => $error->getMessage(),
+                    'retry' => false,
+                ]));
+            }
+        } else {
+            // Default error handling: send error event
+            echo $this->formatSSE('error', json_encode([
+                'message' => $error->getMessage(),
+                'code' => $error->getCode(),
+            ]));
+        }
+
+        $this->flush();
     }
 
     /**

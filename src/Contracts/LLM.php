@@ -80,6 +80,26 @@ interface LLM
     public function streamText(string $prompt): Generator;
 
     /**
+     * Stream a chat completion with structured response chunks.
+     *
+     * Unlike streamText which only yields raw text deltas, this method yields
+     * StreamChunk objects containing both content and metadata (role, tokens, etc.).
+     *
+     * This is the preferred method for streaming when you need access to:
+     * - Token usage information
+     * - Finish reason
+     * - Tool/function calls
+     * - Incremental metadata updates
+     *
+     * @param  array<array{role: string, content: string}>  $messages  Array of messages
+     * @param  array  $options  Additional options (temperature, max_tokens, etc.)
+     * @return Generator<\Mindwave\Mindwave\LLM\Responses\StreamChunk> Yields structured chunks
+     *
+     * @throws \BadMethodCallException If the driver does not support streaming
+     */
+    public function streamChat(array $messages, array $options = []): Generator;
+
+    /**
      * Get the maximum context window size in tokens for the current model.
      *
      * Returns the total number of tokens that can be used for both input

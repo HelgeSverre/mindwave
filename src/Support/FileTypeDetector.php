@@ -10,9 +10,16 @@ class FileTypeDetector
 {
     public static function detectByContent($content): ?string
     {
+        $stream = null;
+
         try {
             // Detector library works on resources, not "raw bytes"
             $stream = fopen('php://memory', 'r+');
+
+            if ($stream === false) {
+                return null;
+            }
+
             fwrite($stream, $content);
             rewind($stream);
 
@@ -25,12 +32,13 @@ class FileTypeDetector
             }
 
             return $type?->getMimeType();
-        } catch (Throwable $exception) {
-            // TODO: throw exception ?
+        } catch (Throwable) {
+            // File type detection is best-effort; return null for unknown types
             return null;
         } finally {
-            // Close stream so we don't leak memory
-            fclose($stream);
+            if ($stream !== null && is_resource($stream)) {
+                fclose($stream);
+            }
         }
     }
 }

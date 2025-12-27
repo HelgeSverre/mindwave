@@ -6,6 +6,7 @@ use Generator;
 use Mindwave\Mindwave\Contracts\LLM;
 use Mindwave\Mindwave\LLM\FunctionCalling\FunctionBuilder;
 use Mindwave\Mindwave\LLM\FunctionCalling\FunctionCall;
+use Mindwave\Mindwave\LLM\Responses\StreamChunk;
 
 class Fake extends BaseDriver implements LLM
 {
@@ -52,6 +53,42 @@ class Fake extends BaseDriver implements LLM
 
         for ($i = 0; $i < $length; $i += $this->streamChunkSize) {
             yield mb_substr($response, $i, $this->streamChunkSize);
+        }
+    }
+
+    /**
+     * Simulate streaming chat with structured chunks.
+     *
+     * @param  array<array{role: string, content: string}>  $messages  Array of messages
+     * @param  array  $options  Additional options
+     * @return Generator<StreamChunk> Yields structured chunks
+     */
+    public function streamChat(array $messages, array $options = []): Generator
+    {
+        $response = $this->response;
+        $length = mb_strlen($response);
+        $isFirst = true;
+
+        for ($i = 0; $i < $length; $i += $this->streamChunkSize) {
+            $content = mb_substr($response, $i, $this->streamChunkSize);
+            $isLast = ($i + $this->streamChunkSize) >= $length;
+
+            yield new StreamChunk(
+                content: $content,
+                role: $isFirst ? 'assistant' : null,
+                finishReason: $isLast ? 'stop' : null,
+                model: $this->model,
+                inputTokens: $isFirst ? 10 : null,
+                outputTokens: $isLast ? 10 : null,
+                raw: [
+                    'index' => $i,
+                    'chunkSize' => $this->streamChunkSize,
+                    'isFirst' => $isFirst,
+                    'isLast' => $isLast,
+                ],
+            );
+
+            $isFirst = false;
         }
     }
 

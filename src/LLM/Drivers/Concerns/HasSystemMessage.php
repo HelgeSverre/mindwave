@@ -4,7 +4,7 @@ namespace Mindwave\Mindwave\LLM\Drivers\Concerns;
 
 trait HasSystemMessage
 {
-    protected ?string $systemMessage = '';
+    protected ?string $systemMessage = null;
 
     public function setSystemMessage(string $systemMessage): static
     {
@@ -12,5 +12,4 @@ trait HasSystemMessage
 
         return $this;
     }
-
 }

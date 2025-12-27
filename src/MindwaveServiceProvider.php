@@ -42,6 +42,7 @@ class MindwaveServiceProvider extends PackageServiceProvider
                 'mindwave-vectorstore',
                 'mindwave-tracing',
                 'mindwave-context',
+                'mindwave-tools',
             ])
             ->hasMigrations([
                 'create_mindwave_traces_table',

@@ -28,12 +28,16 @@ class Qdrant implements Vectorstore
 
     protected int $dimensions;
 
-    public function __construct(string $apiKey, string $collection, string $host, int $port = 6333, int $dimensions = 1536)
+    public function __construct(string $apiKey, string $collection, string $host, int $port = 6333, int $dimensions = 1536, ?QdrantClient $client = null)
     {
-        $config = new Config($host, $port);
-        $config->setApiKey($apiKey);
+        if ($client === null) {
+            $config = new Config($host, $port);
+            $config->setApiKey($apiKey);
+            $this->client = new QdrantClient(new GuzzleClient($config));
+        } else {
+            $this->client = $client;
+        }
 
-        $this->client = new QdrantClient(new GuzzleClient($config));
         $this->collection = $collection;
         $this->dimensions = $dimensions;
     }

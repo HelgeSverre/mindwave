@@ -1,0 +1,40 @@
+version: 2
+updates:
+  - package-ecosystem: "composer"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Europe/Oslo"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "helgesverre"
+    assignees:
+      - "helgesverre"
+    labels:
+      - "dependencies"
+      - "automated"
+    versioning-strategy: increase
+
+    # Group related dependencies
+    groups:
+      laravel:
+        patterns:
+          - "illuminate/*"
+          - "laravel/*"
+
+      testing:
+        patterns:
+          - "pestphp/*"
+          - "phpunit/*"
+          - "mockery/*"
+
+      code-quality:
+        patterns:
+          - "phpstan/*"
+          - "laravel/pint"
+
+      opentelemetry:
+        patterns:
+          - "open-telemetry/*"

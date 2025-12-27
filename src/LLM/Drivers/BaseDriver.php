@@ -36,6 +36,17 @@ abstract class BaseDriver implements LLM
     }
 
     /**
+     * Default implementation throws exception.
+     * Drivers that support streaming should override this method.
+     */
+    public function streamChat(array $messages, array $options = []): Generator
+    {
+        throw new BadMethodCallException(
+            sprintf('Chat streaming is not supported by the %s driver', static::class)
+        );
+    }
+
+    /**
      * Get the maximum context window size for the current model.
      *
      * Uses the ModelTokenLimits utility to determine the token limit

@@ -9,7 +9,7 @@
 
 **The working developer's AI toolkit** - Long prompts, streaming, tracing, and context discovery made simple.
 
-> **Status:** 🚧 Under active development. v1.0 coming soon!
+> **v1.0 Released** - Production-ready with 500+ tests. All 4 pillars complete.
 
 ## What is Mindwave?
 
@@ -423,15 +423,17 @@ For now, see:
 
 ## Roadmap
 
-### v1.0 (December 2025)
-- [x] LLM abstraction (OpenAI, Mistral)
-- [ ] Prompt Composer with auto-fitting
-- [ ] Streaming SSE support
-- [ ] OpenTelemetry tracing + database storage
-- [ ] TNTSearch context discovery
+### v1.0 (December 2025) - RELEASED
+- [x] LLM abstraction (OpenAI, Anthropic, Mistral)
+- [x] Prompt Composer with auto-fitting
+- [x] Streaming SSE support
+- [x] OpenTelemetry tracing + database storage
+- [x] TNTSearch context discovery
+- [x] Laravel Telescope integration
+- [x] 500+ tests passing
 
 ### v1.1 (Q1 2026)
-- [ ] More LLM providers (Anthropic, Cohere, Groq)
+- [ ] More LLM providers (Cohere, Groq)
 - [ ] Advanced shrinkers (semantic compression)
 - [ ] Cost budgets and alerts
 - [ ] Grafana dashboard templates

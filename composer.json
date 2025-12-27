@@ -55,6 +55,7 @@
     "pestphp/pest": "^3.0",
     "pestphp/pest-plugin-arch": "^3.0",
     "pestphp/pest-plugin-laravel": "^3.0",
+    "phpro/grumphp": "^2.18",
     "phpstan/extension-installer": "^1.1",
     "phpstan/phpstan-deprecation-rules": "^2.0",
     "phpstan/phpstan-phpunit": "^2.0"
@@ -74,10 +75,29 @@
   },
   "scripts": {
     "post-autoload-dump": "@php ./vendor/bin/testbench package:discover --ansi",
-    "analyse": "vendor/bin/phpstan analyse",
     "test": "vendor/bin/pest",
-    "test-coverage": "vendor/bin/pest --coverage",
-    "format": "vendor/bin/pint"
+    "test:parallel": "vendor/bin/pest --parallel",
+    "test:coverage": "vendor/bin/pest --coverage --min=80",
+    "test:coverage-html": "vendor/bin/pest --coverage-html build/coverage",
+    "analyse": "vendor/bin/phpstan analyse",
+    "analyse:baseline": "vendor/bin/phpstan analyse --generate-baseline",
+    "analyse:clear": "vendor/bin/phpstan clear-result-cache",
+    "format": "vendor/bin/pint",
+    "format:check": "vendor/bin/pint --test",
+    "format:dirty": "vendor/bin/pint --dirty",
+    "check": [
+      "@format:check",
+      "@analyse",
+      "@test"
+    ],
+    "ci": [
+      "@check",
+      "@test:coverage"
+    ],
+    "fix": [
+      "@format",
+      "@test"
+    ]
   },
   "config": {
     "sort-packages": true,
@@ -85,7 +105,8 @@
       "pestphp/pest-plugin": true,
       "php-http/discovery": false,
       "phpstan/extension-installer": true,
-      "tbachert/spi": true
+      "tbachert/spi": true,
+      "phpro/grumphp": true
     }
   },
   "extra": {

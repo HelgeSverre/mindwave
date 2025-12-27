@@ -1,0 +1,490 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Called ''env'' outside of the config directory which returns null when the config is cached, use ''config''\.$#'
+			identifier: larastan.noEnvCallsOutsideOfConfig
+			count: 3
+			path: config/mindwave-context.php
+
+		-
+			message: '#^Called ''env'' outside of the config directory which returns null when the config is cached, use ''config''\.$#'
+			identifier: larastan.noEnvCallsOutsideOfConfig
+			count: 3
+			path: config/mindwave-embeddings.php
+
+		-
+			message: '#^Called ''env'' outside of the config directory which returns null when the config is cached, use ''config''\.$#'
+			identifier: larastan.noEnvCallsOutsideOfConfig
+			count: 19
+			path: config/mindwave-llm.php
+
+		-
+			message: '#^Called ''env'' outside of the config directory which returns null when the config is cached, use ''config''\.$#'
+			identifier: larastan.noEnvCallsOutsideOfConfig
+			count: 25
+			path: config/mindwave-tracing.php
+
+		-
+			message: '#^Called ''env'' outside of the config directory which returns null when the config is cached, use ''config''\.$#'
+			identifier: larastan.noEnvCallsOutsideOfConfig
+			count: 15
+			path: config/mindwave-vectorstore.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Commands/ExportTracesCommand.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$end_time\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Commands/ExportTracesCommand.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$estimated_cost\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Commands/ExportTracesCommand.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$service_name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Commands/ExportTracesCommand.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$start_time\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Commands/ExportTracesCommand.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$status\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Commands/ExportTracesCommand.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$total_input_tokens\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Commands/ExportTracesCommand.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$total_output_tokens\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Commands/ExportTracesCommand.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$total_spans\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Commands/ExportTracesCommand.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$trace_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Commands/ExportTracesCommand.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:provider\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Commands/ExportTracesCommand.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Model\:\:getDurationInMilliseconds\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Commands/ExportTracesCommand.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Model\:\:getTotalTokens\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Commands/ExportTracesCommand.php
+
+		-
+			message: '#^Match expression does not handle remaining values\: string\|null$#'
+			identifier: match.unhandled
+			count: 1
+			path: src/Commands/ExportTracesCommand.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Commands/PruneTracesCommand.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$estimated_cost\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Commands/PruneTracesCommand.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$service_name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Commands/PruneTracesCommand.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$status\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Commands/PruneTracesCommand.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$total_spans\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Commands/PruneTracesCommand.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$trace_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Commands/PruneTracesCommand.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:model\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Commands/TraceStatsCommand.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:provider\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Commands/TraceStatsCommand.php
+
+		-
+			message: '#^Unsafe usage of new static\(\)\.$#'
+			identifier: new.static
+			count: 2
+			path: src/Context/ContextCollection.php
+
+		-
+			message: '#^Method Mindwave\\Mindwave\\Contracts\\CallsFunctions\:\:functionCall\(\) has invalid return type Mindwave\\Mindwave\\LLM\\Drivers\\OpenAI\\Functions\\FunctionCall\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Contracts/CallsFunctions.php
+
+		-
+			message: '#^Parameter \$functions of method Mindwave\\Mindwave\\Contracts\\CallsFunctions\:\:functionCall\(\) has invalid type Mindwave\\Mindwave\\LLM\\Drivers\\OpenAI\\Functions\\FunctionBuilder\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Contracts/CallsFunctions.php
+
+		-
+			message: '#^Trait Mindwave\\Mindwave\\Document\\Traits\\isDocument is used zero times and is not analysed\.$#'
+			identifier: trait.unused
+			count: 1
+			path: src/Document/Traits/isDocument.php
+
+		-
+			message: '#^Access to an undefined property Anthropic\\Responses\\Messages\\CreateStreamedResponseMessage\:\:\$usage\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/LLM/Drivers/Anthropic/AnthropicDriver.php
+
+		-
+			message: '#^Access to an undefined property Mindwave\\Mindwave\\LLM\\Drivers\\BaseDriver\:\:\$model\.$#'
+			identifier: property.notFound
+			count: 2
+			path: src/LLM/Drivers/BaseDriver.php
+
+		-
+			message: '#^Access to an undefined property Saloon\\Http\\Response\:\:\$choices\.$#'
+			identifier: property.notFound
+			count: 3
+			path: src/LLM/Drivers/MistralDriver.php
+
+		-
+			message: '#^Access to an undefined property Saloon\\Http\\Response\:\:\$model\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/LLM/Drivers/MistralDriver.php
+
+		-
+			message: '#^Access to an undefined property Saloon\\Http\\Response\:\:\$usage\.$#'
+			identifier: property.notFound
+			count: 2
+			path: src/LLM/Drivers/MistralDriver.php
+
+		-
+			message: '#^Offset ''meta'' on array\{role\: ''ai'', content\: string\} on left side of \?\? does not exist\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: src/Memory/ConversationMemory.php
+
+		-
+			message: '#^Offset ''meta'' on array\{role\: ''system'', content\: string\} on left side of \?\? does not exist\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: src/Memory/ConversationMemory.php
+
+		-
+			message: '#^Offset ''meta'' on array\{role\: ''user'', content\: string\} on left side of \?\? does not exist\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: src/Memory/ConversationMemory.php
+
+		-
+			message: '#^Unsafe usage of new static\(\)\.$#'
+			identifier: new.static
+			count: 1
+			path: src/Memory/ConversationMemory.php
+
+		-
+			message: '#^Call to an undefined method Mindwave\\Mindwave\\Contracts\\LLM\:\:functionCall\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Mindwave.php
+
+		-
+			message: '#^Call to an undefined static method UnitEnum\:\:tryFrom\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: src/Mindwave.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between mixed and null will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: src/Observability/Events/LlmTokenStreamed.php
+
+		-
+			message: '#^Generic type Illuminate\\Database\\Eloquent\\Relations\\HasMany\<Mindwave\\Mindwave\\Observability\\Models\\Span\> in PHPDoc tag @return does not specify all template types of class Illuminate\\Database\\Eloquent\\Relations\\HasMany\: TRelatedModel, TDeclaringModel$#'
+			identifier: generics.lessTypes
+			count: 1
+			path: src/Observability/Models/Span.php
+
+		-
+			message: '#^Generic type Illuminate\\Database\\Eloquent\\Relations\\HasMany\<Mindwave\\Mindwave\\Observability\\Models\\SpanMessage\> in PHPDoc tag @return does not specify all template types of class Illuminate\\Database\\Eloquent\\Relations\\HasMany\: TRelatedModel, TDeclaringModel$#'
+			identifier: generics.lessTypes
+			count: 1
+			path: src/Observability/Models/Span.php
+
+		-
+			message: '#^Method Mindwave\\Mindwave\\Observability\\Models\\Span\:\:children\(\) should return Illuminate\\Database\\Eloquent\\Relations\\HasMany\<Mindwave\\Mindwave\\Observability\\Models\\Span\> but returns Illuminate\\Database\\Eloquent\\Relations\\HasMany\<Mindwave\\Mindwave\\Observability\\Models\\Span, \$this\(Mindwave\\Mindwave\\Observability\\Models\\Span\)\>\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Observability/Models/Span.php
+
+		-
+			message: '#^Method Mindwave\\Mindwave\\Observability\\Models\\Span\:\:messages\(\) should return Illuminate\\Database\\Eloquent\\Relations\\HasMany\<Mindwave\\Mindwave\\Observability\\Models\\SpanMessage\> but returns Illuminate\\Database\\Eloquent\\Relations\\HasMany\<Mindwave\\Mindwave\\Observability\\Models\\SpanMessage, \$this\(Mindwave\\Mindwave\\Observability\\Models\\Span\)\>\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Observability/Models/Span.php
+
+		-
+			message: '#^Method Mindwave\\Mindwave\\Observability\\Models\\Span\:\:parent\(\) should return Illuminate\\Database\\Eloquent\\Relations\\BelongsTo\<Mindwave\\Mindwave\\Observability\\Models\\Span, Mindwave\\Mindwave\\Observability\\Models\\Span\> but returns Illuminate\\Database\\Eloquent\\Relations\\BelongsTo\<Mindwave\\Mindwave\\Observability\\Models\\Span, \$this\(Mindwave\\Mindwave\\Observability\\Models\\Span\)\>\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Observability/Models/Span.php
+
+		-
+			message: '#^Method Mindwave\\Mindwave\\Observability\\Models\\Span\:\:trace\(\) should return Illuminate\\Database\\Eloquent\\Relations\\BelongsTo\<Mindwave\\Mindwave\\Observability\\Models\\Trace, Mindwave\\Mindwave\\Observability\\Models\\Span\> but returns Illuminate\\Database\\Eloquent\\Relations\\BelongsTo\<Mindwave\\Mindwave\\Observability\\Models\\Trace, \$this\(Mindwave\\Mindwave\\Observability\\Models\\Span\)\>\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Observability/Models/Span.php
+
+		-
+			message: '#^PHPDoc type array\<string\> of property Mindwave\\Mindwave\\Observability\\Models\\Span\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
+			identifier: property.phpDocType
+			count: 1
+			path: src/Observability/Models/Span.php
+
+		-
+			message: '#^Call to function is_array\(\) with array will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 2
+			path: src/Observability/Models/SpanMessage.php
+
+		-
+			message: '#^Method Mindwave\\Mindwave\\Observability\\Models\\SpanMessage\:\:span\(\) should return Illuminate\\Database\\Eloquent\\Relations\\BelongsTo\<Mindwave\\Mindwave\\Observability\\Models\\Span, Mindwave\\Mindwave\\Observability\\Models\\SpanMessage\> but returns Illuminate\\Database\\Eloquent\\Relations\\BelongsTo\<Mindwave\\Mindwave\\Observability\\Models\\Span, \$this\(Mindwave\\Mindwave\\Observability\\Models\\SpanMessage\)\>\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Observability/Models/SpanMessage.php
+
+		-
+			message: '#^PHPDoc type array\<string\> of property Mindwave\\Mindwave\\Observability\\Models\\SpanMessage\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
+			identifier: property.phpDocType
+			count: 1
+			path: src/Observability/Models/SpanMessage.php
+
+		-
+			message: '#^Generic type Illuminate\\Database\\Eloquent\\Relations\\HasMany\<Mindwave\\Mindwave\\Observability\\Models\\Span\> in PHPDoc tag @return does not specify all template types of class Illuminate\\Database\\Eloquent\\Relations\\HasMany\: TRelatedModel, TDeclaringModel$#'
+			identifier: generics.lessTypes
+			count: 1
+			path: src/Observability/Models/Trace.php
+
+		-
+			message: '#^Generic type Illuminate\\Database\\Eloquent\\Relations\\HasOne\<Mindwave\\Mindwave\\Observability\\Models\\Span\> in PHPDoc tag @return does not specify all template types of class Illuminate\\Database\\Eloquent\\Relations\\HasOne\: TRelatedModel, TDeclaringModel$#'
+			identifier: generics.lessTypes
+			count: 1
+			path: src/Observability/Models/Trace.php
+
+		-
+			message: '#^Method Mindwave\\Mindwave\\Observability\\Models\\Trace\:\:rootSpan\(\) should return Illuminate\\Database\\Eloquent\\Relations\\HasOne\<Mindwave\\Mindwave\\Observability\\Models\\Span\> but returns Illuminate\\Database\\Eloquent\\Relations\\HasOne\<Mindwave\\Mindwave\\Observability\\Models\\Span, \$this\(Mindwave\\Mindwave\\Observability\\Models\\Trace\)\>\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Observability/Models/Trace.php
+
+		-
+			message: '#^Method Mindwave\\Mindwave\\Observability\\Models\\Trace\:\:spans\(\) should return Illuminate\\Database\\Eloquent\\Relations\\HasMany\<Mindwave\\Mindwave\\Observability\\Models\\Span\> but returns Illuminate\\Database\\Eloquent\\Relations\\HasMany\<Mindwave\\Mindwave\\Observability\\Models\\Span, \$this\(Mindwave\\Mindwave\\Observability\\Models\\Trace\)\>\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Observability/Models/Trace.php
+
+		-
+			message: '#^PHPDoc type array\<string\> of property Mindwave\\Mindwave\\Observability\\Models\\Trace\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
+			identifier: property.phpDocType
+			count: 1
+			path: src/Observability/Models/Trace.php
+
+		-
+			message: '#^Call to an undefined method OpenTelemetry\\SDK\\Trace\\SpanDataInterface\:\:getParentSpanContext\(\)\.$#'
+			identifier: method.notFound
+			count: 3
+			path: src/Observability/Tracing/Exporters/DatabaseSpanExporter.php
+
+		-
+			message: '#^Match arm comparison between string and 0 is always false\.$#'
+			identifier: match.alwaysFalse
+			count: 1
+			path: src/Observability/Tracing/Exporters/DatabaseSpanExporter.php
+
+		-
+			message: '#^Match arm comparison between string and 1 is always false\.$#'
+			identifier: match.alwaysFalse
+			count: 1
+			path: src/Observability/Tracing/Exporters/DatabaseSpanExporter.php
+
+		-
+			message: '#^Match arm comparison between string and 2 is always false\.$#'
+			identifier: match.alwaysFalse
+			count: 1
+			path: src/Observability/Tracing/Exporters/DatabaseSpanExporter.php
+
+		-
+			message: '#^Instanceof between OpenTelemetry\\SDK\\Trace\\SpanExporterInterface and OpenTelemetry\\SDK\\Trace\\SpanExporterInterface will always evaluate to true\.$#'
+			identifier: instanceof.alwaysTrue
+			count: 1
+			path: src/Observability/Tracing/Exporters/MultiExporter.php
+
+		-
+			message: '#^Binary operation "\*" between string and 1000 results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 1
+			path: src/Observability/Tracing/Exporters/OtlpExporterFactory.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between mixed and null will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
+			count: 1
+			path: src/Observability/Tracing/GenAI/GenAiAttributeValidator.php
+
+		-
+			message: '#^Call to an undefined method Mindwave\\Mindwave\\Observability\\Tracing\\Span\:\:getSpanId\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Observability/Tracing/GenAI/GenAiInstrumentor.php
+
+		-
+			message: '#^Call to an undefined method Mindwave\\Mindwave\\Observability\\Tracing\\Span\:\:getTraceId\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Observability/Tracing/GenAI/GenAiInstrumentor.php
+
+		-
+			message: '#^Call to function method_exists\(\) with Mindwave\\Mindwave\\Contracts\\LLM and ''streamChat'' will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: src/Observability/Tracing/GenAI/LLMDriverInstrumentorDecorator.php
+
+		-
+			message: '#^Call to function method_exists\(\) with Mindwave\\Mindwave\\Contracts\\LLM and ''streamText'' will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: src/Observability/Tracing/GenAI/LLMDriverInstrumentorDecorator.php
+
+		-
+			message: '#^Method Mindwave\\Mindwave\\Observability\\Tracing\\GenAI\\LLMDriverInstrumentorDecorator\:\:streamChat\(\) should return Generator\<mixed, Mindwave\\Mindwave\\LLM\\Responses\\StreamChunk, mixed, mixed\> but returns Generator\<mixed, string, mixed, mixed\>\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Observability/Tracing/GenAI/LLMDriverInstrumentorDecorator.php
+
+		-
+			message: '#^Call to an undefined method OpenTelemetry\\API\\Trace\\SpanBuilderInterface\:\:setNoParent\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Observability/Tracing/SpanBuilder.php
+
+		-
+			message: '''
+				#^Call to method getDefault\(\) of deprecated class OpenTelemetry\\SDK\\Common\\Time\\ClockFactory\:
+				Use OpenTelemetry\\API\\Common\\Time\\Clock$#
+			'''
+			identifier: staticMethod.deprecatedClass
+			count: 1
+			path: src/Observability/Tracing/TracerManager.php
+
+		-
+			message: '''
+				#^Fetching class constant SERVICE_NAME of deprecated interface OpenTelemetry\\SemConv\\ResourceAttributes\:
+				Use \{@see OpenTelemetry\\SemConv\\Attributes\}\\\* or \{@see OpenTelemetry\\SemConv\\Unstable\\Attributes\}\\\* instead\.$#
+			'''
+			identifier: classConstant.deprecatedInterface
+			count: 1
+			path: src/Observability/Tracing/TracerManager.php
+
+		-
+			message: '''
+				#^Fetching class constant SERVICE_VERSION of deprecated interface OpenTelemetry\\SemConv\\ResourceAttributes\:
+				Use \{@see OpenTelemetry\\SemConv\\Attributes\}\\\* or \{@see OpenTelemetry\\SemConv\\Unstable\\Attributes\}\\\* instead\.$#
+			'''
+			identifier: classConstant.deprecatedInterface
+			count: 1
+			path: src/Observability/Tracing/TracerManager.php
+
+		-
+			message: '#^Call to function method_exists\(\) with Mindwave\\Mindwave\\Contracts\\LLM and ''getModel'' will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: src/PromptComposer/PromptComposer.php
+
+		-
+			message: '#^Ternary operator condition is always true\.$#'
+			identifier: ternary.alwaysTrue
+			count: 1
+			path: src/PromptComposer/PromptComposer.php
+
+		-
+			message: '#^Call to an undefined method ReflectionType\:\:getName\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: src/Prompts/OutputParsers/StructuredOutputParser.php
+
+		-
+			message: '#^Variable \$stream might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: src/Support/FileTypeDetector.php
+
+		-
+			message: '#^Called ''env'' outside of the config directory which returns null when the config is cached, use ''config''\.$#'
+			identifier: larastan.noEnvCallsOutsideOfConfig
+			count: 1
+			path: src/Tools/BraveSearch.php
+
+		-
+			message: '#^Call to an undefined method Probots\\Pinecone\\Client\:\:index\(\)\.$#'
+			identifier: method.notFound
+			count: 5
+			path: src/Vectorstore/Drivers/Pinecone.php

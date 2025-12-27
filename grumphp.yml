@@ -1,0 +1,53 @@
+grumphp:
+  stop_on_failure: true
+  ignore_unstaged_changes: false
+
+  tasks:
+    # PHP Syntax Check (very fast)
+    phplint:
+      exclude: ['vendor', 'build', 'storage']
+      jobs: ~
+      short_open_tag: false
+      ignore_patterns: []
+      triggered_by: ['php']
+
+    # Composer Validation
+    composer:
+      file: ./composer.json
+      no_check_all: true
+      no_check_lock: false
+      no_check_publish: false
+      no_local_repository: false
+      with_dependencies: false
+      strict: false
+
+    # Code Style (Laravel Pint) - using shell task
+    shell:
+      scripts:
+        - ['vendor/bin/pint', '--test', '--dirty']
+
+    # Static Analysis (PHPStan)
+    phpstan:
+      autoload_file: ~
+      configuration: phpstan.neon.dist
+      level: null  # Use config file
+      force_patterns: []
+      ignore_patterns: []
+      triggered_by: ['php']
+      memory_limit: "1G"
+      use_grumphp_paths: false
+
+  # Environment-specific settings
+  testsuites:
+    git_pre_commit:
+      tasks:
+        - phplint
+        - composer
+        - shell
+
+    git_pre_push:
+      tasks:
+        - phplint
+        - composer
+        - shell
+        - phpstan

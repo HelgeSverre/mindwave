@@ -381,8 +381,8 @@ class PromptComposer
             return $this->llm->getModel();
         }
 
-        // Default fallback
-        return 'gpt-4';
+        // Use config default model
+        return config('mindwave-llm.llms.openai.model', 'gpt-4-1106-preview');
     }
 
     /**

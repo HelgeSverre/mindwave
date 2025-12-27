@@ -2,15 +2,17 @@
 
 namespace Mindwave\Mindwave\LLM\Drivers;
 
+use Generator;
 use HelgeSverre\Mistral\Mistral;
 use Mindwave\Mindwave\Contracts\LLM;
+use Mindwave\Mindwave\Exceptions\StreamingException;
+use Mindwave\Mindwave\LLM\Responses\StreamChunk;
+use Throwable;
 
 /**
  * Mistral AI LLM Driver
  *
- * Note: Streaming is not currently implemented for this driver.
- * The streamText() method will throw a BadMethodCallException.
- * This may be added in a future version if the underlying client supports it.
+ * Supports both standard and streaming text generation.
  */
 class MistralDriver extends BaseDriver implements LLM
 {
@@ -74,5 +76,114 @@ class MistralDriver extends BaseDriver implements LLM
             model: $response->model,
             raw: (array) $response,
         );
+    }
+
+    /**
+     * Generate text with streaming support.
+     *
+     * @param  string  $prompt  The prompt to send to the LLM
+     * @return Generator<string> Yields text deltas as they arrive
+     */
+    public function streamText(string $prompt): Generator
+    {
+        try {
+            $messages = $this->systemMessage
+                ? [
+                    ['role' => 'system', 'content' => $this->systemMessage],
+                    ['role' => 'user', 'content' => $prompt],
+                ]
+                : [
+                    ['role' => 'user', 'content' => $prompt],
+                ];
+
+            $stream = $this->client->chat()->createStreamed(
+                messages: $messages,
+                model: $this->model,
+                temperature: $this->temperature,
+                maxTokens: $this->maxTokens,
+                safeMode: $this->safeMode,
+                randomSeed: $this->randomSeed,
+            );
+
+            foreach ($stream as $chunk) {
+                $content = $this->extractStreamedContent($chunk);
+                if ($content !== '') {
+                    yield $content;
+                }
+            }
+        } catch (Throwable $e) {
+            if ($e instanceof StreamingException) {
+                throw $e;
+            }
+            throw StreamingException::connectionFailed('mistral', $this->model, $e);
+        }
+    }
+
+    /**
+     * Stream a chat completion with structured response chunks.
+     *
+     * @param  array<array{role: string, content: string}>  $messages  Array of messages
+     * @param  array  $options  Additional options
+     * @return Generator<StreamChunk> Yields structured chunks with content and metadata
+     */
+    public function streamChat(array $messages, array $options = []): Generator
+    {
+        try {
+            $stream = $this->client->chat()->createStreamed(
+                messages: $messages,
+                model: $this->model,
+                temperature: $this->temperature,
+                maxTokens: $this->maxTokens,
+                safeMode: $this->safeMode,
+                randomSeed: $this->randomSeed,
+            );
+
+            foreach ($stream as $response) {
+                yield $this->mapToStreamChunk($response);
+            }
+        } catch (Throwable $e) {
+            throw StreamingException::connectionFailed('mistral', $this->model, $e);
+        }
+    }
+
+    /**
+     * Map Mistral streamed response to StreamChunk.
+     *
+     * @param  \HelgeSverre\Mistral\Dto\Chat\StreamedChatCompletionResponse  $response  The Mistral streamed response
+     * @return StreamChunk The mapped chunk
+     */
+    protected function mapToStreamChunk($response): StreamChunk
+    {
+        $choice = $response->choices[0] ?? null;
+
+        if (! $choice) {
+            return new StreamChunk(raw: (array) $response);
+        }
+
+        return new StreamChunk(
+            content: $choice->delta->content ?? null,
+            role: $choice->delta->role ?? null,
+            finishReason: $choice->finishReason ?? null,
+            model: $response->model ?? null,
+            inputTokens: $response->usage->promptTokens ?? null,
+            outputTokens: $response->usage->completionTokens ?? null,
+            raw: (array) $response,
+        );
+    }
+
+    /**
+     * Extract content from a streamed response chunk.
+     *
+     * @param  \HelgeSverre\Mistral\Dto\Chat\StreamedChatCompletionResponse  $chunk  The streamed chunk
+     * @return string The content delta
+     */
+    protected function extractStreamedContent($chunk): string
+    {
+        // Mistral streaming chunks have choices array with delta containing content
+        if (isset($chunk->choices[0]->delta->content)) {
+            return $chunk->choices[0]->delta->content ?? '';
+        }
+
+        return '';
     }
 }

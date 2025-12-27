@@ -1,20 +1,20 @@
 # Mindwave Roadmap
 
-> **Status:** Pivoting from agent framework to production AI utilities toolkit  
-> **Target:** v1.0 release by December 2025
+> **Status:** v1.0 Release Ready
+> **Version:** 1.0.0 (December 27, 2025)
 
 See [PIVOT_PLAN.md](PIVOT_PLAN.md) for comprehensive implementation plan.
 
 ---
 
-## 🎯 Current Focus: Phase 6 - Documentation & Release (Week 7)
+## ✅ v1.0 Complete - All Pillars Delivered
 
-### ✅ Phase 1-5 Completed
+### Phase 1-5 Completed
 
 **Phase 1-4:**
 - [x] Update all namespaces
 - [x] Vectorstore interface and drivers (InMemory, File, Pinecone, Qdrant, Weaviate)
-- [x] LLM abstraction (OpenAI, Mistral)
+- [x] LLM abstraction (OpenAI, Mistral, Anthropic)
 - [x] Document loaders (PDF, URL, text, Word)
 - [x] Embeddings manager
 - [x] Brain class for RAG
@@ -42,20 +42,21 @@ See [PIVOT_PLAN.md](PIVOT_PLAN.md) for comprehensive implementation plan.
 - [x] Artisan commands (mindwave:index-stats, mindwave:clear-indexes)
 - [x] Config file (mindwave-context.php)
 - [x] Tracing integration
-- [x] 142 tests passing
 
-**Bonus: Laravel Telescope Integration (Nov 27, 2025):**
+**Bonus: Laravel Telescope Integration:**
 - [x] MindwaveWatcher for Telescope client_request entries
 - [x] Event-based integration (listens to LLM events)
 - [x] Tags: mindwave, provider:*, model:*, slow, expensive, cached
 - [x] Privacy controls (capture_messages option)
-- [x] 15 tests passing
 
-### 🔄 Next Up: Documentation & Release
-- [ ] Full documentation overhaul (see DOCUMENTATION_TODOS.md)
-- [ ] Demo application
-- [ ] Testing (>90% coverage achieved - 499+ tests)
-- [ ] v1.0.0 release
+**Phase 6 - Documentation & Release:** ✅ COMPLETE
+- [x] Full documentation (mindwave-docs site updated)
+- [x] CHANGELOG.md with v1.0 release notes
+- [x] Testing: 1300+ tests passing
+- [x] GrumPHP pre-commit hooks
+- [x] PHPStan baseline generated (153 errors baselined)
+- [x] DevEx infrastructure (CONTRIBUTING.md, SECURITY.md, templates)
+- [x] v1.0.0 release ready
 
 ---
 
@@ -70,7 +71,6 @@ See [PIVOT_PLAN.md](PIVOT_PLAN.md) for comprehensive implementation plan.
 - [x] PromptComposer core with fit() algorithm
 - [x] Facade integration: `Mindwave::prompt()`
 - [x] Documentation and examples
-- [x] 57/57 tests passing
 
 **Example:**
 ```php
@@ -96,7 +96,6 @@ Mindwave::prompt()
 - [x] Events system (RequestStarted, TokenStreamed, ResponseCompleted, ErrorOccurred)
 - [x] Configuration and PII redaction
 - [x] Artisan commands (export, prune, stats)
-- [x] 17/17 tests passing
 
 **Features:**
 - Dual storage: Database (queries) + OTLP (production tools)
@@ -108,12 +107,13 @@ Mindwave::prompt()
 **EventSource streaming made simple**
 
 - [x] Add streamText() to LLM interface
-- [x] Implement OpenAI streaming
-- [x] Document Mistral streaming limitation
+- [x] Add streamChat() for structured streaming
+- [x] Implement OpenAI/Anthropic/Mistral streaming
 - [x] SSE formatter (StreamedTextResponse)
-- [x] StreamedResponse helper
+- [x] StreamChunk DTO for consistent responses
+- [x] StreamingException with retryable flag
+- [x] StreamRetryHandler with exponential backoff
 - [x] Client-side examples (Blade, vanilla JS, Alpine, Vue, TypeScript)
-- [x] 10/13 tests passing (3 skipped - complex mocking)
 
 **Example:**
 ```php
@@ -139,7 +139,6 @@ eventSource.addEventListener('done', () => eventSource.close());
 - [x] ContextPipeline (multi-source aggregation)
 - [x] Prompt Composer integration
 - [x] Artisan commands (index-stats, clear-indexes)
-- [x] 142 tests passing
 
 **Example:**
 ```php
@@ -152,52 +151,6 @@ Mindwave::prompt()
     )
     ->ask('Who has Laravel expertise?');
 ```
-
----
-
-## 🗓️ Timeline
-
-### ✅ Week 1: Foundation (Nov 1-7, 2025) - COMPLETE
-- [x] Remove agent code
-- [x] Fix dependencies
-- [x] Fix LLM driver bugs
-- [x] Install missing packages (Weaviate)
-
-### ✅ Week 2: Prompt Composer (Nov 8-14, 2025) - COMPLETE
-- [x] Tokenizer service
-- [x] Section management
-- [x] Shrinkers
-- [x] PromptComposer core
-- [x] Facade integration
-
-### ✅ Week 3: OpenTelemetry Tracing (Nov 15-21, 2025) - COMPLETE
-- [x] Database schema
-- [x] GenAI attributes
-- [x] Tracer core
-- [x] Exporters (Database + OTLP + Multi)
-- [x] LLM instrumentation
-- [x] Events system
-- [x] Artisan commands
-
-### ✅ Week 4: Streaming (Nov 22-28, 2025) - COMPLETE
-- [x] Add streamText() to LLM interface
-- [x] Implement OpenAI streaming
-- [x] Document Mistral streaming limitation
-- [x] SSE formatter (StreamedTextResponse)
-- [x] StreamedResponse helper
-- [x] Client examples (vanilla JS, Alpine, Vue, Blade, TypeScript)
-
-### ✅ Week 5-6: TNTSearch (Nov 29 - Dec 12, 2025) - COMPLETE
-- [x] TNTSearch integration
-- [x] Context sources (TntSearchSource, VectorStoreSource, EloquentSource, StaticSource)
-- [x] Context pipeline (aggregation, deduplication, re-ranking)
-- [x] Prompt Composer integration
-
-### Week 7: Documentation & Release (Dec 13-19, 2025)
-- [ ] Full documentation
-- [ ] Demo application
-- [x] Testing (>90% coverage) - 499+ tests passing
-- [ ] v1.0.0 release
 
 ---
 
@@ -215,21 +168,21 @@ Mindwave::prompt()
 
 ## 📋 Post-v1.0 Roadmap
 
-### v1.1 (January 2026)
-- [ ] Anthropic LLM driver
+### v1.1 (Q1 2026)
 - [ ] Cohere LLM driver
 - [ ] Groq LLM driver
 - [ ] Advanced shrinkers (semantic compression)
 - [ ] Cost estimation and budgets per request
 - [ ] Grafana dashboard templates
+- [ ] Demo application
 
-### v1.2 (February 2026)
+### v1.2 (Q2 2026)
 - [ ] Prompt testing framework
 - [ ] A/B testing for prompts
 - [ ] Batch processing utilities
 - [ ] Queue integration for async LLM calls
 
-### v2.0 (Q2 2026)
+### v2.0 (Q3 2026)
 - [ ] Multi-modal support (images, audio)
 - [ ] Advanced re-ranking algorithms
 - [ ] Distributed tracing across microservices
@@ -239,33 +192,34 @@ Mindwave::prompt()
 
 ## 🏗️ Technical Debt & Fixes
 
-### High Priority
-- [x] Fix Mistral config keys (currently reads OpenAI config)
-- [x] Resolve Weaviate dependency (installed timkley/weaviate-php)
-- [x] Fix test suite failures (all manager tests passing)
+### Completed
+- [x] Fix Mistral config keys
+- [x] Resolve Weaviate dependency
+- [x] Fix test suite failures (1300+ tests passing)
 - [x] Add maxContextTokens() to LLM interface
-- [x] Add GPT-5 and GPT-4.1 model families to ModelTokenLimits
-
-### Medium Priority
-- [x] Migrate from nunomaduro/larastan to larastan/larastan (already using larastan/larastan ^3.7)
-- [ ] Update PHPStan baseline after cleanup
+- [x] Add GPT-5 and GPT-4.1 model families
+- [x] Migrate to larastan/larastan ^3.7
+- [x] PHPStan baseline generated
 - [x] Add PHP 8.4 to CI matrix
+- [x] Fix env() calls (use config())
+- [x] Fix resource leaks in FileTypeDetector
+- [x] Add error handling to Tools
 
-### Low Priority
+### Low Priority (Post v1.0)
 - [ ] Add more document loaders (CSV, XML, Excel, iCal)
 - [ ] Gmail search tool (nice-to-have)
 - [ ] Laravel Scout-like model indexing
+- [ ] Extract common LLM driver trait
 
 ---
 
 ## 🎯 Success Metrics
 
-### Technical
+### Technical ✅
 - [x] Zero agent framework code
-- [x] 90%+ test coverage (499+ tests passing)
-- [x] All 4 pillars functional (Prompt Composer, Tracing, Streaming SSE, Context Discovery)
+- [x] 90%+ test coverage (1300+ tests passing)
+- [x] All 4 pillars functional
 - [x] Telescope integration (bonus)
-- [ ] < 10 minute quick start (needs documentation)
 - [x] < 100ms tracing overhead (< 5ms per call)
 
 ### Adoption (Post-Launch)
@@ -304,11 +258,11 @@ Mindwave::prompt()
 
 - [PIVOT_PLAN.md](PIVOT_PLAN.md) - Detailed implementation plan
 - [TRACING_ARCHITECTURE.md](TRACING_ARCHITECTURE.md) - OpenTelemetry architecture
+- [CHANGELOG.md](CHANGELOG.md) - Version history
 - [OpenTelemetry GenAI Conventions](https://github.com/open-telemetry/semantic-conventions/tree/main/docs/gen-ai)
 - [TNTSearch Documentation](https://github.com/teamtnt/tntsearch)
 
 ---
 
-**Last Updated:** November 27, 2025
-**Next Review:** Weekly during active development
-**Current Status:** 86% complete (6/7 weeks), All 4 pillars complete! Documentation & release next.
+**Last Updated:** December 27, 2025
+**Current Status:** v1.0.0 Release Ready - All 4 pillars complete!

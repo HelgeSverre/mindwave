@@ -168,6 +168,43 @@ class LLMDriverInstrumentorDecorator implements LLM
     }
 
     /**
+     * Stream a chat completion with structured chunks and automatic tracing
+     *
+     * This method automatically instruments the streaming chat completion call,
+     * capturing request parameters, structured chunks with metadata, and token usage.
+     * Each chunk fires a LlmTokenStreamed event for real-time monitoring.
+     *
+     * @param  array<array{role: string, content: string}>  $messages  Array of messages
+     * @param  array  $options  Additional options
+     * @return Generator<\Mindwave\Mindwave\LLM\Responses\StreamChunk> Yields structured chunks
+     */
+    public function streamChat(array $messages, array $options = []): Generator
+    {
+        // Check if the underlying driver supports streaming
+        if (! method_exists($this->driver, 'streamChat')) {
+            // If not, throw a clear exception
+            throw new \BadMethodCallException(
+                sprintf('Chat streaming is not supported by the %s driver', get_class($this->driver))
+            );
+        }
+
+        $model = $this->detectModel();
+        $traceOptions = array_merge($this->extractOptions(), $options);
+
+        // Convert messages to a prompt string for tracing
+        $prompt = json_encode($messages);
+
+        return $this->instrumentor->instrumentStreamedChatCompletion(
+            provider: $this->provider,
+            model: $model,
+            prompt: $prompt,
+            options: $traceOptions,
+            execute: fn () => $this->driver->streamChat($messages, $options),
+            serverAddress: $this->serverAddress
+        );
+    }
+
+    /**
      * Chat completion with automatic tracing
      *
      * @param  array  $messages  The messages to send

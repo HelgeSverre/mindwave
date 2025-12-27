@@ -4,14 +4,17 @@ namespace Mindwave\Mindwave\LLM\Drivers\OpenAI;
 
 use Generator;
 use Mindwave\Mindwave\Contracts\LLM;
+use Mindwave\Mindwave\Exceptions\StreamingException;
 use Mindwave\Mindwave\LLM\Drivers\BaseDriver;
 use Mindwave\Mindwave\LLM\FunctionCalling\FunctionBuilder;
 use Mindwave\Mindwave\LLM\FunctionCalling\FunctionCall;
+use Mindwave\Mindwave\LLM\Responses\StreamChunk;
 use OpenAI\Contracts\ClientContract;
 use OpenAI\Responses\Chat\CreateResponse as ChatResponse;
 use OpenAI\Responses\Chat\CreateStreamedResponse as StreamedChatResponse;
 use OpenAI\Responses\Completions\CreateResponse as CompletionResponse;
 use OpenAI\Responses\StreamResponse;
+use Throwable;
 
 class OpenAI extends BaseDriver implements LLM
 {
@@ -136,25 +139,32 @@ class OpenAI extends BaseDriver implements LLM
      */
     public function streamText(string $prompt): Generator
     {
-        $stream = ModelNames::isCompletionModel($this->model)
-            ? $this->streamCompletion($prompt)
-            : $this->streamChat($prompt);
+        try {
+            $stream = ModelNames::isCompletionModel($this->model)
+                ? $this->streamCompletion($prompt)
+                : $this->streamChatRaw($prompt);
 
-        foreach ($stream as $chunk) {
-            $content = $this->extractStreamedContent($chunk);
-            if ($content !== '') {
-                yield $content;
+            foreach ($stream as $chunk) {
+                $content = $this->extractStreamedContent($chunk);
+                if ($content !== '') {
+                    yield $content;
+                }
             }
+        } catch (Throwable $e) {
+            if ($e instanceof StreamingException) {
+                throw $e;
+            }
+            throw StreamingException::connectionFailed('openai', $this->model, $e);
         }
     }
 
     /**
-     * Create a streaming chat completion request.
+     * Create a streaming chat completion request (raw stream).
      *
      * @param  string  $prompt  The prompt to send
      * @return StreamResponse<StreamedChatResponse> Stream of chat completion chunks
      */
-    protected function streamChat(string $prompt): StreamResponse
+    protected function streamChatRaw(string $prompt): StreamResponse
     {
         return $this->client->chat()->createStreamed([
             'max_tokens' => $this->maxTokens,
@@ -187,6 +197,58 @@ class OpenAI extends BaseDriver implements LLM
             'prompt' => $prompt,
             'stream' => true,
         ]);
+    }
+
+    /**
+     * Stream a chat completion with structured response chunks.
+     *
+     * @param  array<array{role: string, content: string}>  $messages  Array of messages
+     * @param  array  $options  Additional options
+     * @return Generator<StreamChunk> Yields structured chunks with content and metadata
+     */
+    public function streamChat(array $messages, array $options = []): Generator
+    {
+        try {
+            $stream = $this->client->chat()->createStreamed(array_merge([
+                'max_tokens' => $this->maxTokens,
+                'temperature' => $this->temperature,
+                'model' => $this->model,
+                'messages' => $messages,
+                'stream' => true,
+            ], $options));
+
+            foreach ($stream as $response) {
+                yield $this->mapToStreamChunk($response);
+            }
+        } catch (Throwable $e) {
+            throw StreamingException::connectionFailed('openai', $this->model, $e);
+        }
+    }
+
+    /**
+     * Map OpenAI streamed response to StreamChunk.
+     *
+     * @param  StreamedChatResponse  $response  The OpenAI streamed response
+     * @return StreamChunk The mapped chunk
+     */
+    protected function mapToStreamChunk(StreamedChatResponse $response): StreamChunk
+    {
+        $choice = $response->choices[0] ?? null;
+
+        if (! $choice) {
+            return new StreamChunk(raw: (array) $response->toArray());
+        }
+
+        return new StreamChunk(
+            content: $choice->delta->content ?? null,
+            role: $choice->delta->role ?? null,
+            finishReason: $choice->finishReason ?? null,
+            model: $response->model ?? null,
+            inputTokens: null, // OpenAI doesn't provide incremental token counts
+            outputTokens: null,
+            toolCalls: isset($choice->delta->toolCalls) ? (array) $choice->delta->toolCalls : null,
+            raw: (array) $response->toArray(),
+        );
     }
 
     /**

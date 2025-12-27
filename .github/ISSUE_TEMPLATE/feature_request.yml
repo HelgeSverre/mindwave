@@ -1,0 +1,65 @@
+name: Feature Request
+description: Suggest a new feature for Mindwave
+title: "[Feature]: "
+labels: ["enhancement", "triage"]
+assignees:
+  - helgesverre
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting a feature!
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem Statement
+      description: What problem does this feature solve?
+      placeholder: "I'm frustrated when..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution
+      description: How would you like this to work?
+      placeholder: |
+        ```php
+        Mindwave::newFeature()
+            ->doSomething()
+            ->run();
+        ```
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: What other solutions did you consider?
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Feature Category
+      options:
+        - LLM Integration
+        - Prompt Management
+        - Streaming
+        - Tracing/Observability
+        - Context Discovery
+        - Vector Stores
+        - Testing/DevEx
+        - Documentation
+        - Other
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: contribution
+    attributes:
+      label: Contribution
+      options:
+        - label: I'd be willing to implement this feature
