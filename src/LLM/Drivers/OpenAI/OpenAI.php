@@ -4,6 +4,7 @@ namespace Mindwave\Mindwave\LLM\Drivers\OpenAI;
 
 use Generator;
 use Mindwave\Mindwave\Contracts\LLM;
+use Mindwave\Mindwave\Exceptions\MindwaveParseException;
 use Mindwave\Mindwave\Exceptions\StreamingException;
 use Mindwave\Mindwave\LLM\Drivers\BaseDriver;
 use Mindwave\Mindwave\LLM\FunctionCalling\FunctionBuilder;
@@ -68,17 +69,29 @@ class OpenAI extends BaseDriver implements LLM
             },
         ]);
 
+        if (empty($response->choices)) {
+            throw new \RuntimeException('OpenAI API returned no choices in response');
+        }
+
         $choice = $response->choices[0];
 
         if ($choice->message->toolCalls) {
+            $rawArguments = $choice->message->toolCalls[0]->function->arguments;
+
+            try {
+                $arguments = json_decode($rawArguments, true, 512, JSON_THROW_ON_ERROR);
+            } catch (\JsonException $e) {
+                throw MindwaveParseException::invalidJson($rawArguments, $e->getMessage());
+            }
+
             return new FunctionCall(
                 name: $choice->message->toolCalls[0]->function->name,
-                arguments: rescue(fn () => json_decode($choice->message->toolCalls[0]->function->arguments, true), report: false),
-                rawArguments: $choice->message->toolCalls[0]->function->arguments,
+                arguments: $arguments,
+                rawArguments: $rawArguments,
             );
         }
 
-        return $response->choices[0]->message->content;
+        return $choice->message->content;
     }
 
     public function generateText(string $prompt): ?string
@@ -98,6 +111,10 @@ class OpenAI extends BaseDriver implements LLM
 
     protected function extractResponseText(CompletionResponse $response): string
     {
+        if (empty($response->choices)) {
+            throw new \RuntimeException('OpenAI API returned no choices in response');
+        }
+
         return $response->choices[0]->text;
     }
 
@@ -109,6 +126,10 @@ class OpenAI extends BaseDriver implements LLM
             'model' => $this->model,
             'messages' => $messages,
         ], $options));
+
+        if (empty($response->choices)) {
+            throw new \RuntimeException('OpenAI API returned no choices in response');
+        }
 
         return new \Mindwave\Mindwave\LLM\Responses\ChatResponse(
             content: $response->choices[0]->message->content,

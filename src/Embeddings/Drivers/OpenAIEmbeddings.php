@@ -24,7 +24,13 @@ class OpenAIEmbeddings implements Embeddings
 
     public function embedText(string $text): EmbeddingVector
     {
-        return Arr::first($this->embedTexts([$text]));
+        $results = $this->embedTexts([$text]);
+
+        if (empty($results)) {
+            throw new \RuntimeException('OpenAI API returned no embeddings in response');
+        }
+
+        return $results[0];
     }
 
     public function embedTexts(array $texts): array
@@ -33,6 +39,10 @@ class OpenAIEmbeddings implements Embeddings
             'model' => $this->model,
             'input' => $texts,
         ]);
+
+        if (empty($response->embeddings)) {
+            throw new \RuntimeException('OpenAI API returned no embeddings in response');
+        }
 
         $embeddings = [];
 
