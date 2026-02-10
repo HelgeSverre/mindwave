@@ -23,7 +23,7 @@ it('Can use classify function to quickly classify whatever into a classification
     expect(Mindwave::classify('Melkesjokolade 200g Freia', $classes))->toEqual('sweets_snacks');
     expect(Mindwave::classify('Biola Syrnet Melk Blåbær 1000g Tine', $classes))->toEqual('dairy');
 
-});
+})->skip(fn () => empty(env('OPENAI_API_KEY')), 'OPENAI_API_KEY not set');
 
 it('Can use classify function to quickly classify an input using an enum.', function () {
 
@@ -45,4 +45,4 @@ it('Can use classify function to quickly classify an input using an enum.', func
     expect(Mindwave::classify('Pepsi Max 4stk x 1,5l, 6l', FoodCategories::class))->toEqual(FoodCategories::beverages);
     expect(Mindwave::classify('Melkesjokolade 200g Freia', FoodCategories::class))->toEqual(FoodCategories::sweetsSnacks);
     expect(Mindwave::classify('Biola Syrnet Melk Blåbær 1000g Tine', FoodCategories::class))->toEqual(FoodCategories::dairy);
-});
+})->skip(fn () => empty(env('OPENAI_API_KEY')), 'OPENAI_API_KEY not set');

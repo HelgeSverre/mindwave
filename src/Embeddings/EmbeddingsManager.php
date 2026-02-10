@@ -18,7 +18,7 @@ class EmbeddingsManager extends Manager
     {
         return new OpenAIEmbeddings(
             client: OpenAI::client(
-                apiKey: $this->config->get('mindwave-embeddings.embeddings.openai.api_key'),
+                apiKey: $this->config->get('mindwave-embeddings.embeddings.openai.api_key') ?? '',
                 organization: $this->config->get('mindwave-embeddings.embeddings.openai.org_id')
             ),
             model: $this->config->get('mindwave-embeddings.embeddings.openai.model')

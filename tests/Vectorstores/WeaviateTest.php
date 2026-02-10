@@ -36,7 +36,7 @@ it('We can connect to weaviate in the docker container', function () {
 
     $vectorstore = new \Mindwave\Mindwave\Vectorstore\Drivers\Weaviate(
         client: new Weaviate(
-            apiUrl: 'http://localhost:8080/v1',
+            apiUrl: 'http://localhost:8080',
             apiToken: 'password',
         ),
         className: 'MindwaveItems',
@@ -60,7 +60,7 @@ it('We can truncate weaviate index', function () {
 
     $vectorstore = new \Mindwave\Mindwave\Vectorstore\Drivers\Weaviate(
         client: new Weaviate(
-            apiUrl: 'http://localhost:8080/v1',
+            apiUrl: 'http://localhost:8080',
             apiToken: 'password',
         ),
         className: 'MindwaveItems',
@@ -87,7 +87,7 @@ it('We can connect search weaviate', function () {
 
     $vectorstore = new \Mindwave\Mindwave\Vectorstore\Drivers\Weaviate(
         client: new Weaviate(
-            apiUrl: 'http://localhost:8080/v1',
+            apiUrl: 'http://localhost:8080',
             apiToken: 'password',
         ),
         className: 'MindwaveItems',
@@ -143,7 +143,7 @@ it('Can insert multiple in batch', function () {
 
     $vectorstore = new \Mindwave\Mindwave\Vectorstore\Drivers\Weaviate(
         client: new Weaviate(
-            apiUrl: 'http://localhost:8080/v1',
+            apiUrl: 'http://localhost:8080',
             apiToken: 'password',
         ),
         className: 'MindwaveItems',
@@ -180,7 +180,7 @@ it('Can insert multiple in batch', function () {
 it('throws exception when inserting vector with wrong dimensions', function () {
     $vectorstore = new \Mindwave\Mindwave\Vectorstore\Drivers\Weaviate(
         client: new Weaviate(
-            apiUrl: 'http://localhost:8080/v1',
+            apiUrl: 'http://localhost:8080',
             apiToken: 'password',
         ),
         className: 'MindwaveItems',
@@ -198,7 +198,7 @@ it('throws exception when inserting vector with wrong dimensions', function () {
 it('throws exception when inserting multiple vectors with wrong dimensions', function () {
     $vectorstore = new \Mindwave\Mindwave\Vectorstore\Drivers\Weaviate(
         client: new Weaviate(
-            apiUrl: 'http://localhost:8080/v1',
+            apiUrl: 'http://localhost:8080',
             apiToken: 'password',
         ),
         className: 'MindwaveItems',

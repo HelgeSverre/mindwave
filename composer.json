@@ -55,6 +55,7 @@
     "pestphp/pest": "^3.0",
     "pestphp/pest-plugin-arch": "^3.0",
     "pestphp/pest-plugin-laravel": "^3.0",
+    "php-parallel-lint/php-parallel-lint": "^1.4",
     "phpro/grumphp": "^2.18",
     "phpstan/extension-installer": "^1.1",
     "phpstan/phpstan-deprecation-rules": "^2.0",

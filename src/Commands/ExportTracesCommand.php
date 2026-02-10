@@ -72,6 +72,7 @@ class ExportTracesCommand extends Command
                 'csv' => $this->exportCsv($query, $output, $total),
                 'json' => $this->exportJson($query, $output, $total),
                 'ndjson' => $this->exportNdjson($query, $output, $total),
+                default => throw new \InvalidArgumentException("Unsupported format: {$format}"),
             };
 
             if ($outputPath) {

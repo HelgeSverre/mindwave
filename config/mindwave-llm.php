@@ -55,5 +55,33 @@ return [
             'max_tokens' => env('MINDWAVE_ANTHROPIC_MAX_TOKENS', 4096),
             'temperature' => env('MINDWAVE_ANTHROPIC_TEMPERATURE', 1.0),
         ],
+
+        'groq' => [
+            'api_key' => env('GROQ_API_KEY'),
+            'model' => env('MINDWAVE_GROQ_MODEL', 'llama-3.3-70b-versatile'),
+            'max_tokens' => env('MINDWAVE_GROQ_MAX_TOKENS', 1000),
+            'temperature' => env('MINDWAVE_GROQ_TEMPERATURE', 0.4),
+        ],
+
+        'xai' => [
+            'api_key' => env('XAI_API_KEY'),
+            'model' => env('MINDWAVE_XAI_MODEL', 'grok-3-mini'),
+            'max_tokens' => env('MINDWAVE_XAI_MAX_TOKENS', 1000),
+            'temperature' => env('MINDWAVE_XAI_TEMPERATURE', 0.4),
+        ],
+
+        'moonshot' => [
+            'api_key' => env('MOONSHOT_API_KEY'),
+            'model' => env('MINDWAVE_MOONSHOT_MODEL', 'kimi-latest'),
+            'max_tokens' => env('MINDWAVE_MOONSHOT_MAX_TOKENS', 1000),
+            'temperature' => env('MINDWAVE_MOONSHOT_TEMPERATURE', 0.4),
+        ],
+
+        'gemini' => [
+            'api_key' => env('GOOGLE_API_KEY'),
+            'model' => env('MINDWAVE_GEMINI_MODEL', 'gemini-2.0-flash'),
+            'max_tokens' => env('MINDWAVE_GEMINI_MAX_TOKENS', 1000),
+            'temperature' => env('MINDWAVE_GEMINI_TEMPERATURE', 0.4),
+        ],
     ],
 ];

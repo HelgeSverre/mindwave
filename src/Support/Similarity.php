@@ -27,6 +27,12 @@ class Similarity
         }
 
         // Calculate the cosine similarity
-        return $dotProduct / (sqrt($magnitudeA) * sqrt($magnitudeB));
+        $magnitudeProduct = sqrt($magnitudeA) * sqrt($magnitudeB);
+
+        if ($magnitudeProduct == 0.0) {
+            return 0.0;
+        }
+
+        return $dotProduct / $magnitudeProduct;
     }
 }

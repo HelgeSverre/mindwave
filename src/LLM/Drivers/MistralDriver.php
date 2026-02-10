@@ -67,6 +67,10 @@ class MistralDriver extends BaseDriver implements LLM
             'randomSeed' => $this->randomSeed,
         ], $options));
 
+        if (empty($response->choices)) {
+            throw new \RuntimeException('Mistral API returned no choices in response');
+        }
+
         return new \Mindwave\Mindwave\LLM\Responses\ChatResponse(
             content: $response->choices[0]->message->content,
             role: $response->choices[0]->message->role,
