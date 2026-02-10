@@ -27,7 +27,7 @@ class LLMManager extends Manager
     public function createOpenAIDriver(?ClientContract $client = null): OpenAIDriver
     {
         $client = $client ?? OpenAI::client(
-            apiKey: $this->config->get('mindwave-llm.llms.openai.api_key'),
+            apiKey: $this->config->get('mindwave-llm.llms.openai.api_key') ?? '',
             organization: $this->config->get('mindwave-llm.llms.openai.org_id')
         );
 
@@ -58,7 +58,7 @@ class LLMManager extends Manager
     public function createAnthropicDriver(): AnthropicDriver
     {
         $client = \Anthropic::client(
-            apiKey: $this->config->get('mindwave-llm.llms.anthropic.api_key')
+            apiKey: $this->config->get('mindwave-llm.llms.anthropic.api_key') ?? ''
         );
 
         return new AnthropicDriver(

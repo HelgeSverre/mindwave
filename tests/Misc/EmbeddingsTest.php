@@ -13,7 +13,7 @@ it('can resolve the embeddings from the container', function () {
     expect($result)->toBeInstanceOf(EmbeddingVector::class);
     expect($result->values)->toBeArray();
     expect($result->values)->toHaveCount(1536);
-});
+})->skip(fn () => empty(env('OPENAI_API_KEY')), 'OPENAI_API_KEY not set');
 
 it('embeds a query using OpenAI API', function () {
     $client = OpenAI::client(env('OPENAI_API_KEY'));
@@ -24,7 +24,7 @@ it('embeds a query using OpenAI API', function () {
     expect($result)->toBeInstanceOf(EmbeddingVector::class);
     expect($result->values)->toBeArray();
     expect($result->values)->toHaveCount(1536);
-});
+})->skip(fn () => empty(env('OPENAI_API_KEY')), 'OPENAI_API_KEY not set');
 
 it('embeds a collection of knowledge items using OpenAI API', function () {
     $client = OpenAI::client(env('OPENAI_API_KEY'));
@@ -43,7 +43,7 @@ it('embeds a collection of knowledge items using OpenAI API', function () {
     // And each of them contains 1536 items.
     expect($result[0])->toHaveCount(1536);
     expect($result[1])->toHaveCount(1536);
-});
+})->skip(fn () => empty(env('OPENAI_API_KEY')), 'OPENAI_API_KEY not set');
 
 it('can embed knowledge that exceed the max token length of the embedding model.', function () {
     $client = OpenAI::client(env('OPENAI_API_KEY'));
