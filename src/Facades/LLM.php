@@ -5,7 +5,7 @@ namespace Mindwave\Mindwave\Facades;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @mixin \Mindwave\Mindwave\Contracts\LLM
+ * @mixin \Mindwave\Mindwave\LLM\LLMManager
  *
  * @see \Mindwave\Mindwave\LLM\LLMManager
  */
