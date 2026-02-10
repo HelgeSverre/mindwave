@@ -41,6 +41,9 @@ class InMemory implements Vectorstore
     public function similaritySearch(EmbeddingVector $embedding, int $count = 5): array
     {
         return collect($this->items)
+            ->filter(function ($item) use ($embedding) {
+                return count($item['vector']) === count($embedding->toArray());
+            })
             ->map(function ($item) use ($embedding) {
                 return new VectorStoreEntry(
                     vector: $vector = new EmbeddingVector($item['vector']),

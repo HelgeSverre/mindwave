@@ -111,20 +111,25 @@ describe('Similarity', function () {
                 ->toThrow(InvalidArgumentException::class, 'Vectors must have the same length, got 0 and 2');
         });
 
-        it('throws DivisionByZeroError for two empty vectors', function () {
+        it('returns 0.0 for two empty vectors', function () {
             $vectorA = new EmbeddingVector([]);
             $vectorB = new EmbeddingVector([]);
 
-            expect(fn () => Similarity::cosine($vectorA, $vectorB))
-                ->toThrow(DivisionByZeroError::class);
+            expect(Similarity::cosine($vectorA, $vectorB))->toBe(0.0);
         });
 
-        it('throws DivisionByZeroError for zero vector', function () {
+        it('returns 0.0 for zero vector', function () {
             $vectorA = new EmbeddingVector([0.0, 0.0, 0.0]);
             $vectorB = new EmbeddingVector([1.0, 2.0, 3.0]);
 
-            expect(fn () => Similarity::cosine($vectorA, $vectorB))
-                ->toThrow(DivisionByZeroError::class);
+            expect(Similarity::cosine($vectorA, $vectorB))->toBe(0.0);
+        });
+
+        it('returns 0.0 when both vectors are zero', function () {
+            $vectorA = new EmbeddingVector([0.0, 0.0, 0.0]);
+            $vectorB = new EmbeddingVector([0.0, 0.0, 0.0]);
+
+            expect(Similarity::cosine($vectorA, $vectorB))->toBe(0.0);
         });
     });
 });
