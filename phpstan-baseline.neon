@@ -21,6 +21,12 @@ parameters:
 		-
 			message: '#^Called ''env'' outside of the config directory which returns null when the config is cached, use ''config''\.$#'
 			identifier: larastan.noEnvCallsOutsideOfConfig
+			count: 2
+			path: config/mindwave-tools.php
+
+		-
+			message: '#^Called ''env'' outside of the config directory which returns null when the config is cached, use ''config''\.$#'
+			identifier: larastan.noEnvCallsOutsideOfConfig
 			count: 25
 			path: config/mindwave-tracing.php
 
@@ -105,12 +111,6 @@ parameters:
 		-
 			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Model\:\:getTotalTokens\(\)\.$#'
 			identifier: method.notFound
-			count: 1
-			path: src/Commands/ExportTracesCommand.php
-
-		-
-			message: '#^Match expression does not handle remaining values\: string\|null$#'
-			identifier: match.unhandled
 			count: 1
 			path: src/Commands/ExportTracesCommand.php
 
@@ -438,7 +438,7 @@ parameters:
 		-
 			message: '''
 				#^Fetching class constant SERVICE_NAME of deprecated interface OpenTelemetry\\SemConv\\ResourceAttributes\:
-				Use \{@see OpenTelemetry\\SemConv\\Attributes\}\\\* or \{@see OpenTelemetry\\SemConv\\Unstable\\Attributes\}\\\* instead\.$#
+				Use \{@see OpenTelemetry\\SemConv\\Attributes\}\\\* or \{@see OpenTelemetry\\SemConv\\Incubating\\Attributes\}\\\* instead\.$#
 			'''
 			identifier: classConstant.deprecatedInterface
 			count: 1
@@ -447,7 +447,7 @@ parameters:
 		-
 			message: '''
 				#^Fetching class constant SERVICE_VERSION of deprecated interface OpenTelemetry\\SemConv\\ResourceAttributes\:
-				Use \{@see OpenTelemetry\\SemConv\\Attributes\}\\\* or \{@see OpenTelemetry\\SemConv\\Unstable\\Attributes\}\\\* instead\.$#
+				Use \{@see OpenTelemetry\\SemConv\\Attributes\}\\\* or \{@see OpenTelemetry\\SemConv\\Incubating\\Attributes\}\\\* instead\.$#
 			'''
 			identifier: classConstant.deprecatedInterface
 			count: 1
@@ -470,18 +470,6 @@ parameters:
 			identifier: method.notFound
 			count: 2
 			path: src/Prompts/OutputParsers/StructuredOutputParser.php
-
-		-
-			message: '#^Variable \$stream might not be defined\.$#'
-			identifier: variable.undefined
-			count: 1
-			path: src/Support/FileTypeDetector.php
-
-		-
-			message: '#^Called ''env'' outside of the config directory which returns null when the config is cached, use ''config''\.$#'
-			identifier: larastan.noEnvCallsOutsideOfConfig
-			count: 1
-			path: src/Tools/BraveSearch.php
 
 		-
 			message: '#^Call to an undefined method Probots\\Pinecone\\Client\:\:index\(\)\.$#'
